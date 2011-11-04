@@ -2,8 +2,8 @@ package net.raysforge.rayslang;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class RayClass {
@@ -22,33 +22,33 @@ public class RayClass {
 	public static RayClass parse(RaySource rs) {
 		RayClass rc = new RayClass();
 
-		LinkedList<String> queue = new LinkedList<String>();
 
 		while (true) {
-			String token = RayUtils.getSourceToken(rs);
-			if (token == null || token.length() == 0)
+			Deque<String> deque = rs.getSourceTokenUntil(";", "(");
+
+			if (deque.size() == 0)
 				break;
-			if (token.equals("#")) {
-				while (rs.pos < rs.src.length && rs.src[rs.pos] != '\n')
-					rs.pos++;
-				continue;
-			} else if (token.equals(";")) {
+			String last = deque.pollLast();
+			if ( last.equals(";")) {
 				
-				String name = queue.pop();
-				String type = queue.pop();
+				String name = deque.pop();
+				String type = deque.pop();
 				Visibility v = Visibility.protected_;
-				if( ! queue.isEmpty())
-					v = Visibility.valueOf(queue.pop()+"_"); 
+				if( ! deque.isEmpty())
+					v = Visibility.valueOf(deque.pop()+"_"); 
 				rc.variables.add( new RayVar(v, type, name, ""));
 				System.out.println("var: "+ type + " - " + name);
-			} else if (token.equals("(")) {
-				String innerText = RayUtils.getInnerText(rs, '(', ')');
-				System.out.println("innerText: "+ innerText);
-			} else if (token.equals("{")) {
-				String innerText = RayUtils.getInnerText(rs, '{', '}');
-				System.out.println("innerCode: "+ innerText);
-			} else {
-				queue.push(token);
+			} else if (last.equals("(")) {
+				
+				String name = deque.pop();
+				String type = deque.pop();
+
+				RayMethod rm = RayMethod.parse( type, name, rs);
+				rc.methods.put(name, rm);
+				// 
+				// System.out.println("innerText: "+ innerText);
+			} else if (last.equals("{")) {
+				System.out.println("hm");
 			}
 			//System.out.println("XX" + token + "YY");
 		}

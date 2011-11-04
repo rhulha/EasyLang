@@ -13,4 +13,16 @@ public class RayMethod {
 	
 	String code;
 
+	public static RayMethod parse(String type, String name, RaySource rs) {
+		
+		RayMethod rm = new RayMethod();
+		
+		String parameter = rs.getInnerText( '(', ')');
+		
+		rm.code = rs.getInnerText( '{', '}');
+
+		
+		return rm;
+	}
+
 }

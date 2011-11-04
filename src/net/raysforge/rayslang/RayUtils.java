@@ -24,119 +24,11 @@ package net.raysforge.rayslang;
 public class RayUtils
 {
 
-
-    public static String getSourceToken(RaySource rs)
-    {
-        return getSourceToken(rs, false);
-    }
-
-    public static String getSourceToken(RaySource rs, boolean peak)
-    {
-        rs.eatSpacesAndReturns();
-        int start = rs.pos;
-
-        if (!rs.more())
-        {
-            return null;
-        }
-        if (rs.isLetterOrDigitOrBang()) // ! like ruby
-        {
-            while (rs.more() && rs.isLetterOrDigitOrBang() )
-                rs.pos++;
-        }
-        else if (rs.src[rs.pos] == '#') // kommentare ignorieren
-        {
-            while (rs.pos < rs.src.length && rs.src[rs.pos] != '\n')
-                rs.pos++;
-            return getSourceToken(rs, peak);
-        }
-        else if (rs.src[rs.pos] == '"')
-        {
-            rs.pos++;
-            while (rs.pos < rs.src.length && rs.src[rs.pos] != '"')
-                rs.pos++;
-            if (rs.pos >= rs.src.length)
-                throw new RuntimeException("Unclosed String");
-            rs.pos++;
-        }
-        else if (rs.src[rs.pos] == '\'')
-        {
-            rs.pos++;
-            while (rs.pos < rs.src.length && rs.src[rs.pos] != '\'')
-                rs.pos++;
-            if (rs.src[rs.pos] != '\'')
-                throw new RuntimeException("Unclosed String");
-            rs.pos++;
-        }
-        else
-            rs.pos++;
-        if (peak == true)
-        {
-            rs.pos = start;
-        }
-        return new String(rs.src, start, rs.pos-start);
-    }
-
-    public static String getToken(RaySource rs)
-    {
-        rs.eatSpacesAndReturns();
-        int a = rs.pos;
-        while (rs.pos < rs.src.length)
-        {
-            if (rs.isDivider())
-                break;
-            rs.pos++;
-        }
-        return new String(rs.src, a, rs.pos-a);
-    }
-
     public static void RunExp(String s)
     {
         throw new RuntimeException(s);
     }
 
-    public static void eatSpaces(RaySource rs)
-    {
-        while (rs.pos < rs.src.length && (rs.src[rs.pos] == ' ' || rs.src[rs.pos] == '\t'))
-            rs.pos++;
-    }
-
-    // getInnerText
-    // holt den inhalt zwischen open und close
-    // wobei das erste open bereits von dem aufrufer
-    // geholt sein muss.
-    public static String getInnerText(RaySource rs, char open, char close)
-    {
-        StringBuffer code = new StringBuffer();
-        int brace_counter = 0;
-        while (true)
-        {
-            if (rs.pos >= rs.src.length)
-            {
-                return null;
-            }
-            char c = rs.src[rs.pos];
-            if (c == open)
-            {
-                brace_counter++;
-                // code.appendInPlace(parse(rs, hook).src);
-                // code.appendInPlace(close);
-            }
-            if (c == close) //|| src[pos] == close)
-            {
-                if (brace_counter > 0)
-                    brace_counter--;
-                else
-                {
-                    rs.pos++;
-                    break;
-                }
-            }
-            code.append(c); // TODO: optimize
-            rs.pos++;
-        }
-        return code.toString();
-    }
     /*
         private RayString getToken2()
         {

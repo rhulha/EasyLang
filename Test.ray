@@ -1,14 +1,14 @@
 
+# test
 
 Integer i;
-
 String s;
 
-
-
-public String sayHello()
+public void main()
 {
 
-  return "Hello World";
+	Integer x = 5;
+	x.add!(7);
+	x.print();
 
 }
