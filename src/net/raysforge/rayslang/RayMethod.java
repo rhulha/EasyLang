@@ -18,9 +18,14 @@ public class RayMethod {
 		RayMethod rm = new RayMethod();
 		
 		String parameter = rs.getInnerText( '(', ')');
+		System.out.println("parameter "+ parameter);
+		
+		String sourceToken = rs.getSourceToken();
+		if( ! sourceToken.equals("{"))
+			RayUtils.RunExp("missing { " + rs.pos);
 		
 		rm.code = rs.getInnerText( '{', '}');
-
+		System.out.println("rm.code "+ rm.code);
 		
 		return rm;
 	}
