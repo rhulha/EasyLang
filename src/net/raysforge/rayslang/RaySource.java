@@ -1,6 +1,5 @@
 package net.raysforge.rayslang;
 
-import java.util.Deque;
 import java.util.LinkedList;
 
 public class RaySource {
@@ -75,15 +74,15 @@ public class RaySource {
 		return getSourceToken(false);
 	}
 	
-	public Deque<String> getSourceTokenUntil(String ... any)
+	public LinkedList<Token> getSourceTokenUntil(String ... any)
 	{
-		LinkedList<String> queue = new LinkedList<String>();
+		LinkedList<Token> queue = new LinkedList<Token>();
 
 		while (true) {
 			String token = getSourceToken();
 			if (token == null || token.length() == 0)
 				break;
-			queue.add(token);
+			queue.add(new Token(token));
 			for( String s : any)
 			{
 				if (token.equals(s)) {

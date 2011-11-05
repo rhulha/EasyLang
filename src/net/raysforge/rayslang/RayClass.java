@@ -8,43 +8,48 @@ import java.util.List;
 
 public class RayClass {
 
-	String name;
-	String package_;
+	protected String name;
+	String package_="default";
+	RayLang rayLang;
 
 	List<RayVar> variables = new ArrayList<RayVar>();
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
-	public static RayClass parse(File file) {
-		return parse(new RaySource(FileUtils.readCompleteFile(file)));
+	public static RayClass parse(RayLang rayLang, String name, File file) {
+		return parse( rayLang, name, new RaySource(FileUtils.readCompleteFile(file)));
 	}
 
-	public static RayClass parse(RaySource rs) {
+	public static RayClass parse( RayLang rayLang, String name, RaySource rs ) {
 		RayClass rc = new RayClass();
-
+		rc.name = name;
+		rc.rayLang = rayLang;
 
 		while (true) {
-			Deque<String> deque = rs.getSourceTokenUntil(";", "(");
+			Deque<Token> deque = rs.getSourceTokenUntil(";", "(");
 
 			if (deque.size() == 0)
 				break;
-			String last = deque.pollLast();
+			Token last = deque.pollLast();
 			if ( last.equals(";")) {
 				
-				String name = deque.pop();
-				String type = deque.pop();
+				Token varName = deque.pollLast();
+				Token typeStr = deque.pollLast();
+				RayClass type = rayLang.classes.get("default."+typeStr);
 				Visibility v = Visibility.protected_;
 				if( ! deque.isEmpty())
 					v = Visibility.valueOf(deque.pop()+"_"); 
-				rc.variables.add( new RayVar(v, type, name, ""));
-				System.out.println("var: "+ type + " - " + name);
+				rc.variables.add( new RayVar(v, type, varName.s(), ""));
+				System.out.println("var: "+ type + " - " + varName);
 			} else if (last.equals("(")) {
 				
-				String name = deque.pop();
-				String type = deque.pop();
+				Token methodName = deque.pollLast();
+				Token typeStr = deque.pollLast();
+				Token visStr = deque.pollLast();
+				RayClass type = rayLang.classes.get("default."+typeStr);
 
-				RayMethod rm = RayMethod.parse( rc, type, name, rs);
-				rc.methods.put(name, rm);
+				RayMethod rm = RayMethod.parse( rc, type, methodName.s(), rs);
+				rc.methods.put(methodName.s(), rm);
 				// 
 				// System.out.println("innerText: "+ innerText);
 			} else if (last.equals("{")) {
@@ -60,8 +65,13 @@ public class RayClass {
 		return package_ + "." + name;
 	}
 
-	public void invoke(String method) {
-		
+	@Override
+	public String toString() {
+		return getFullName();
+	}
+
+	public RayMethod getMethod(String name) {
+		return methods.get(name);
 	}
 
 }

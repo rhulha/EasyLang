@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import net.raysforge.rayslang.def.RayFloat;
+import net.raysforge.rayslang.def.RayInteger;
+import net.raysforge.rayslang.def.RayString;
+
 
 //Integer extends Float extends String
 
@@ -20,10 +24,14 @@ public class RayLang {
 	
 	public void run() throws IOException {
 		
-		RayClass rc = RayClass.parse( new File("test.ray"));
+		classes.put( "default.String", new RayString());
+		classes.put( "default.Float", new RayFloat());
+		classes.put( "default.Integer", new RayInteger());
+
+		RayClass rc = RayClass.parse( this, "Test", new File("Test.ray"));
 		classes.put( rc.getFullName(), rc);
-		rc.invoke( "main");
-		
+		RayMethod rm = rc.getMethod( "main");
+		rm.invoke("main", null);
 		
 		//rc.run( "test");
 		
@@ -38,7 +46,11 @@ public class RayLang {
 	public static void main(String[] args) throws IOException {
 		
 		new RayLang().run();
+	}
 
+	public RayClass getClass(String package_, Token className) {
+		return classes.get(package_+"."+className);
+		
 	}
 
 }
