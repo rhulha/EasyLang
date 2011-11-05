@@ -7,15 +7,18 @@ public class RayMethod {
 	
 	String name;
 	
+	RayClass parentClass;
+	
 	List<RayVar> parameter = new ArrayList<RayVar>();
 	
 	RayVar returnType;
 	
 	String code;
-
-	public static RayMethod parse(String type, String name, RaySource rs) {
+	
+	public static RayMethod parse( RayClass parentClass, String type, String name, RaySource rs) {
 		
 		RayMethod rm = new RayMethod();
+		rm.parentClass = parentClass;
 		
 		String parameter = rs.getInnerText( '(', ')');
 		System.out.println("parameter "+ parameter);
@@ -25,7 +28,6 @@ public class RayMethod {
 			RayUtils.RunExp("missing { " + rs.pos);
 		
 		rm.code = rs.getInnerText( '{', '}');
-		System.out.println("rm.code "+ rm.code);
 		
 		return rm;
 	}

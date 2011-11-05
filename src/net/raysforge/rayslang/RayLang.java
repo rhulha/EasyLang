@@ -20,8 +20,9 @@ public class RayLang {
 	
 	public void run() throws IOException {
 		
-		RayClass rc = RayClass.parse(new File("test.ray"));
-		classes.put(rc.getFullName(), rc);
+		RayClass rc = RayClass.parse( new File("test.ray"));
+		classes.put( rc.getFullName(), rc);
+		rc.invoke( "main");
 		
 		
 		//rc.run( "test");

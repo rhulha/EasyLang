@@ -43,7 +43,7 @@ public class RayClass {
 				String name = deque.pop();
 				String type = deque.pop();
 
-				RayMethod rm = RayMethod.parse( type, name, rs);
+				RayMethod rm = RayMethod.parse( rc, type, name, rs);
 				rc.methods.put(name, rm);
 				// 
 				// System.out.println("innerText: "+ innerText);
@@ -58,6 +58,10 @@ public class RayClass {
 
 	public String getFullName() {
 		return package_ + "." + name;
+	}
+
+	public void invoke(String method) {
+		
 	}
 
 }
