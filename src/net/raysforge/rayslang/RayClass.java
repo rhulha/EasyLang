@@ -2,7 +2,6 @@ package net.raysforge.rayslang;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,26 +25,26 @@ public class RayClass {
 		rc.rayLang = rayLang;
 
 		while (true) {
-			Deque<Token> deque = rs.getSourceTokenUntil(";", "(");
+			TokenList tokenList = rs.getSourceTokenUntil(";", "(");
 
-			if (deque.size() == 0)
+			if (tokenList.size() == 0)
 				break;
-			Token last = deque.pollLast();
+			Token last = tokenList.pollLast();
 			if ( last.equals(";")) {
 				
-				Token varName = deque.pollLast();
-				Token typeStr = deque.pollLast();
+				Token varName = tokenList.pollLast();
+				Token typeStr = tokenList.pollLast();
 				RayClass type = rayLang.classes.get("default."+typeStr);
 				Visibility v = Visibility.protected_;
-				if( ! deque.isEmpty())
-					v = Visibility.valueOf(deque.pop()+"_"); 
+				if( ! tokenList.isEmpty())
+					v = Visibility.valueOf(tokenList.pop()+"_"); 
 				rc.variables.add( new RayVar(v, type, varName.s(), ""));
 				System.out.println("var: "+ type + " - " + varName);
 			} else if (last.equals("(")) {
 				
-				Token methodName = deque.pollLast();
-				Token typeStr = deque.pollLast();
-				Token visStr = deque.pollLast();
+				Token methodName = tokenList.pollLast();
+				Token typeStr = tokenList.pollLast();
+				//Token visStr = tokenList.pollLast();
 				RayClass type = rayLang.classes.get("default."+typeStr);
 
 				RayMethod rm = RayMethod.parse( rc, type, methodName.s(), rs);

@@ -1,7 +1,6 @@
 package net.raysforge.rayslang;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class RayMethod {
@@ -14,18 +13,18 @@ public class RayMethod {
 
 	RayVar returnType;
 
-	String code;
+	RaySource code;
 
 	public static RayMethod parse(RayClass parentClass, RayClass type, String name, RaySource rs) {
 
 		RayMethod rm = new RayMethod();
 		rm.parentClass = parentClass;
 
-		String parameter = rs.getInnerText('(', ')');
+		RaySource parameter = rs.getInnerText('(', ')');
 		System.out.println("parameter " + parameter);
 
-		String sourceToken = rs.getSourceToken();
-		if (!sourceToken.equals("{"))
+		Token token = rs.getSourceToken();
+		if (!token.isOpenBrace())
 			RayUtils.RunExp("missing { " + rs.pos);
 
 		rm.code = rs.getInnerText('{', '}');
@@ -37,20 +36,30 @@ public class RayMethod {
 		
 		List<RayVar> variables = new ArrayList<RayVar>();
 
-		RaySource rs = new RaySource(code.toCharArray());
+		RaySource rs = new RaySource(code.src.clone());
 		while (true) {
-			LinkedList<Token> tokens = rs.getSourceTokenUntil(";");
-			if (tokens.isEmpty())
+			TokenList tokenList = rs.getSourceTokenUntil(";", "(");
+			if (tokenList.isEmpty())
 				break;
 			else {
-				System.out.println("ex: " + tokens);
-				
-				if( tokens.get(0).isIdentifier() && tokens.get(1).isIdentifier() && tokens.get(2).isEqualsSign() && tokens.get(3).isValue() && tokens.get(4).isSemicolon() )
+				if( tokenList.equalsPattern("ii=v;") )
 				{
-					RayClass rc = parentClass.rayLang.getClass("default", tokens.get(0));
+					System.out.println("variable decl. and assignment found: " + tokenList);
+
+					RayClass rc = parentClass.rayLang.getClass("default", tokenList.get(0));
 					
-					RayVar rv = new RayVar(rc, tokens.get(1).s(), tokens.get(3).s());
-					System.out.println("juhu: " + rv);
+					RayVar rv = new RayVar(rc, tokenList.get(1).s(), tokenList.get(3).s());
+
+					variables.add(rv);
+					
+				} else if( tokenList.equalsPattern("i.i("))
+				{
+					System.out.println("message invocation found: " + tokenList);
+					RaySource params = rs.getInnerText('(', ')');
+					TokenList paramTokenList = params.getSourceTokenUntil();
+					
+				} else {
+					System.out.println("unknown code in line: " + tokenList);
 				}
 					
 				

@@ -42,7 +42,7 @@ public class RaySource {
 	// holt den inhalt zwischen open und close
 	// wobei das erste open bereits von dem aufrufer
 	// geholt sein muss.
-	public String getInnerText(char open, char close) {
+	public RaySource getInnerText(char open, char close) {
 		StringBuffer code = new StringBuffer();
 		int brace_counter = 0;
 		while (true) {
@@ -67,33 +67,33 @@ public class RaySource {
 			code.append(c); // TODO: optimize
 			pos++;
 		}
-		return code.toString();
+		return new RaySource( code.toString().toCharArray());
 	}
 
-	public String getSourceToken() {
+	public Token getSourceToken() {
 		return getSourceToken(false);
 	}
 	
-	public LinkedList<Token> getSourceTokenUntil(String ... any)
+	public TokenList getSourceTokenUntil(String ... any)
 	{
 		LinkedList<Token> queue = new LinkedList<Token>();
 
 		while (true) {
-			String token = getSourceToken();
+			Token token = getSourceToken();
 			if (token == null || token.length() == 0)
 				break;
-			queue.add(new Token(token));
+			queue.add(token);
 			for( String s : any)
 			{
 				if (token.equals(s)) {
-					return queue;
+					return new TokenList( queue);
 				}
 			}
 		}
-		return queue;
+		return new TokenList( queue);
 	}
 
-	public String getSourceToken(boolean peak) {
+	public Token getSourceToken(boolean peak) {
 		eatSpacesAndReturns();
 		int start = pos;
 
@@ -128,7 +128,7 @@ public class RaySource {
 		if (peak == true) {
 			pos = start;
 		}
-		return new String(src, start, pos - start);
+		return new Token( new String(src, start, pos - start));
 	}
 
 	public String getToken() {
@@ -145,6 +145,11 @@ public class RaySource {
 	public void eatSpaces() {
 		while (pos < src.length && (src[pos] == ' ' || src[pos] == '\t'))
 			pos++;
+	}
+	
+	@Override
+	public String toString() {
+		return new String(src, pos, src.length-pos);
 	}
 
 }

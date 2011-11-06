@@ -39,4 +39,28 @@ public class Token {
 		return ';' == token.charAt(0);
 	}
 
+	public boolean isDot() {
+		return '.' == token.charAt(0);
+	}
+
+	public boolean isOpenBrace() {
+		return '{' == token.charAt(0);
+	}
+
+	public boolean isOpenParentheses() {
+		return '(' == token.charAt(0);
+	}
+
+	public boolean isOpenBracket() {
+		return '[' == token.charAt(0);
+	}
+
+	public int length() {
+		return token.length();
+	}
+	
+	public int getLength() {
+		return token.length();
+	}
+
 }
