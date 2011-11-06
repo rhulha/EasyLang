@@ -52,10 +52,12 @@ public class RayLang {
 		classes.put( "default.Integer", integerClass);
 		
 		new RayMethod( integerClass, "add!", true);
+		new RayMethod( integerClass, "square!", true);
 		new RayMethod( integerClass, "print", true);
 		
 		
 	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		

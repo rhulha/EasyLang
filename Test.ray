@@ -1,5 +1,5 @@
 
-# test
+# test comment
 
 Integer i;
 String s;
@@ -10,5 +10,11 @@ public void main(Test t)
 	Integer x = 5;
 	x.add!(7);
 	x.print();
+	
+	Integer y = 5213123;
+	y.add!(7234234);
+	y.square!();
+	y.print();
 
 }
+

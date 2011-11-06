@@ -82,8 +82,8 @@ public class TokenList {
 	public static void main(String[] args) {
 		RaySource rs = new RaySource("x.add!(7);".toCharArray());
 		TokenList tl = rs.getSourceTokenUntil(";", "(");
-		System.out.println(tl);
+		RayLog.log(tl);
 		boolean ep = tl.equalsPattern("i.i(");
-		System.out.println(ep);
+		RayLog.log(ep);
 	}
 }

@@ -31,7 +31,7 @@ public class RayMethod {
 		RayMethod rm = new RayMethod(parentClass, name, false);
 
 		RaySource parameter = rs.getInnerText('(', ')');
-		System.out.println("parameter " + parameter);
+		RayLog.log("parameter " + parameter);
 
 		Token token = rs.getSourceToken();
 		if (!token.isOpenBrace())
@@ -44,7 +44,7 @@ public class RayMethod {
 
 	public RayVar invoke( RayVar instance, RayVar ... parameter) {
 		
-		System.out.println("RayMethod.invoke this: " + this + ", instance: " + instance);
+		RayLog.log("RayMethod.invoke this: " + this + ", instance: " + instance);
 
 		if( isNative )
 		{
@@ -62,7 +62,7 @@ public class RayMethod {
 			else {
 				if( tokenList.equalsPattern("ii=v;") )
 				{
-					System.out.println("variable decl. and assignment found: " + tokenList);
+					RayLog.log("variable decl. and assignment found: " + tokenList);
 
 					RayClass rc = parentClass.rayLang.getClass("default", tokenList.get(0));
 					
@@ -72,7 +72,7 @@ public class RayMethod {
 					
 				} else if( tokenList.equalsPattern("i.i("))
 				{
-					System.out.println("message invocation found: " + tokenList);
+					RayLog.log("message invocation found: " + tokenList);
 					
 					Token varName = tokenList.get(0);
 					Token methodName = tokenList.get(2);
@@ -96,7 +96,7 @@ public class RayMethod {
 							myparams.add( new RayVar(parentClass, "unknown", v));
 
 						} else {
-							System.out.println("unknown code in line: " + paramTokenList);
+							RayLog.log("unknown code in line: " + paramTokenList);
 						}
 					}
 
@@ -104,7 +104,7 @@ public class RayMethod {
 					
 					
 				} else {
-					System.out.println("unknown code in line: " + tokenList);
+					RayLog.log("unknown code in line: " + tokenList);
 				}
 					
 				

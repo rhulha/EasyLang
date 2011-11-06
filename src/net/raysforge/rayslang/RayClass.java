@@ -45,7 +45,7 @@ public class RayClass {
 				if( ! tokenList.isEmpty())
 					v = Visibility.valueOf(tokenList.pop()+"_"); 
 				rc.variables.put( varName.s(), new RayVar(v, type, varName.s(), ""));
-				System.out.println("var: "+ type + " - " + varName);
+				RayLog.log("var: "+ type + " - " + varName);
 			} else if (last.equals("(")) {
 				
 				Token methodName = tokenList.pollLast();
@@ -55,11 +55,11 @@ public class RayClass {
 
 				RayMethod.parse( rc, type, methodName.s(), rs);
 
-				// System.out.println("innerText: "+ innerText);
+				// RayLog.log("innerText: "+ innerText);
 			} else if (last.equals("{")) {
-				System.out.println("hm");
+				RayLog.log("hm");
 			}
-			//System.out.println("XX" + token + "YY");
+			//RayLog.log("XX" + token + "YY");
 		}
 
 		return rc;

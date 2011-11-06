@@ -20,7 +20,7 @@ import java.util.List;
             RayString rs = RayUtils.getSourceToken(rsrc);
             if (rs == null || i>100)
                 break;
-            System.out.println("'"+rs+"'");
+            RayLog.log("'"+rs+"'");
 
         }
  */
@@ -82,7 +82,7 @@ public class RayUtils {
 	        }
 	        int pp= pos;
 	        pos= p + 1;
-	        //         System.out.println( pp + " " + pos);
+	        //         RayLog.log( pp + " " + pos);
 	        return new RayString(src, pp, p);
 	    }
 	    */
