@@ -1,5 +1,8 @@
 package net.raysforge.rayslang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // gibt zwei arten token zu holen
 // 1. vorher aufräumen und dan token holen ( returns und spacer weg danach kommt token )
 // 2. token holen ( return ist bei zeilen ohne ; auch eins ) danach mist weg machen
@@ -21,59 +24,66 @@ package net.raysforge.rayslang;
 
         }
  */
-public class RayUtils
-{
+public class RayUtils {
 
-    public static void RunExp(String s)
-    {
-        throw new RuntimeException(s);
-    }
+	public static <T> List<T> newArrayList() {
+		return new ArrayList<T>();
+	}
 
-    /*
-        private RayString getToken2()
-        {
-            int start, end;
-    
-            if (src[pos] == ';') // ende
-            {
-                // kill following ; \r \n ' ';
-                while ((pos < src.length) && ((src[pos] == ' ') || (src[pos] == '\t')))
-                    pos++;
-            }
-            else if ((pos < src.length) && ((src[pos] == '\n') || (src[pos] == '\r')))
-            {
-    
-            }
-            else if (src[pos] == 'a') // var oder ident
-            {
-                // kill following ; \r \n;
-            }
-            else if (src[pos] == '1') // nr anf
-            {
-                // kill following ; \r \n;
-            }
-    
-            while ((pos < src.length) && ((src[pos] == '\n') || (src[pos] == '\r')))
-                pos++;
-            int p= pos;
-            while (true)
-            {
-                if (p >= src.length)
-                    if (p == pos)
-                        return null;
-                    else
-                    {
-                        p--;
-                        break;
-                    }
-                if (src[p] == ';')
-                    break;
-                p++;
-            }
-            int pp= pos;
-            pos= p + 1;
-            //         System.out.println( pp + " " + pos);
-            return new RayString(src, pp, p);
-        }
-        */
+	public static void assert_(boolean b) {
+		if (!b)
+			throw new RuntimeException();
+	}
+
+	public static void RunExp(String s) {
+		throw new RuntimeException(s);
+	}
+
+	/*
+	    private RayString getToken2()
+	    {
+	        int start, end;
+	
+	        if (src[pos] == ';') // ende
+	        {
+	            // kill following ; \r \n ' ';
+	            while ((pos < src.length) && ((src[pos] == ' ') || (src[pos] == '\t')))
+	                pos++;
+	        }
+	        else if ((pos < src.length) && ((src[pos] == '\n') || (src[pos] == '\r')))
+	        {
+	
+	        }
+	        else if (src[pos] == 'a') // var oder ident
+	        {
+	            // kill following ; \r \n;
+	        }
+	        else if (src[pos] == '1') // nr anf
+	        {
+	            // kill following ; \r \n;
+	        }
+	
+	        while ((pos < src.length) && ((src[pos] == '\n') || (src[pos] == '\r')))
+	            pos++;
+	        int p= pos;
+	        while (true)
+	        {
+	            if (p >= src.length)
+	                if (p == pos)
+	                    return null;
+	                else
+	                {
+	                    p--;
+	                    break;
+	                }
+	            if (src[p] == ';')
+	                break;
+	            p++;
+	        }
+	        int pp= pos;
+	        pos= p + 1;
+	        //         System.out.println( pp + " " + pos);
+	        return new RayString(src, pp, p);
+	    }
+	    */
 }

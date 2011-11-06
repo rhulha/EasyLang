@@ -2,7 +2,6 @@ package net.raysforge.rayslang;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 import net.raysforge.rayslang.def.RayFloat;
@@ -14,6 +13,13 @@ import net.raysforge.rayslang.def.RayString;
 
 // Names: Pure, Simply, Kids, Easy
 
+// goal: subset of Java
+// few rules, no exceptions:
+
+// only default invisible constructor, init method instead.
+// no void, all methods must return something
+// no null pointer
+
 
 public class RayLang {
 
@@ -24,23 +30,31 @@ public class RayLang {
 	
 	public void run() throws IOException {
 		
-		classes.put( "default.String", new RayString());
-		classes.put( "default.Float", new RayFloat());
-		classes.put( "default.Integer", new RayInteger());
-
+		initNativeClasses();
+		
 		RayClass rc = RayClass.parse( this, "Test", new File("Test.ray"));
-		classes.put( rc.getFullName(), rc);
+		
+		RayVar rv = rc.getNewInstance();
+		
 		RayMethod rm = rc.getMethod( "main");
-		rm.invoke("main", null);
+		rm.invoke( rv);
 		
 		//rc.run( "test");
 		
 	}
-	
-	public RayClass parseClass(InputStream is)
-	{
-		RayClass rc = new RayClass();
-		return rc;
+
+	private void initNativeClasses() {
+		RayClass stringClass = new RayString(this);
+		classes.put( "default.String", stringClass);
+		RayClass floatClass = new RayFloat(this);
+		classes.put( "default.Float", floatClass);
+		RayClass integerClass = new RayInteger(this);
+		classes.put( "default.Integer", integerClass);
+		
+		new RayMethod( integerClass, "add!", true);
+		new RayMethod( integerClass, "print", true);
+		
+		
 	}
 	
 	public static void main(String[] args) throws IOException {

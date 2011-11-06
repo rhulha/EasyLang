@@ -1,11 +1,12 @@
 package net.raysforge.rayslang.def;
 
 import net.raysforge.rayslang.RayClass;
+import net.raysforge.rayslang.RayLang;
 
 public class RayString extends RayClass {
 	
-	public RayString() {
-		name = "String";
+	public RayString(RayLang rayLang) {
+		super(rayLang, "String");
 	}
 
 }
