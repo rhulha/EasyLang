@@ -14,6 +14,8 @@ public class RayInstance {
 
 	public RayInstance(RayClass type) {
 		this.type = type;
+		if( type.isNative)
+			Thread.dumpStack();
 	}
 
 	public RayInstance(NativeClass nativeClass) {

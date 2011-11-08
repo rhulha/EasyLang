@@ -47,11 +47,10 @@ public class RayMethod {
 
 	public RayInstance invoke( RayInstance instance, RayInstance ... parameter) {
 		
-		RayLog.debug("RayMethod.invoke this: " + this + ", instance: " + instance);
+		RayLog.debug("RayMethod.invoke instance: " + name + " " + instance);
 
-		if( isNative )
+		if( instance.type.isNative )
 		{
-			RayLog.debug("RayMethod.invoke this: " + this + ", instance: " + instance.nativeClass);
 			return instance.nativeClass.invoke( instance.nativeClass, name, parameter);
 		}
 		
@@ -71,7 +70,7 @@ public class RayMethod {
 					String mytypeName = tokenList.get(0).s();
 					String myname = tokenList.get(1).s();
 					String myvalue = tokenList.get(3).s();
-					RayClass mytype = parentClass.rayLang.getClass("default", mytypeName);
+					RayClass mytype = instance.type.rayLang.getClass("default", mytypeName);
 					RayVar rv = new RayVar( Visibility.private_, mytype, myname, mytype.getNewInstance() );
 
 					variables.put( rv.name, rv);
