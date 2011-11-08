@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import net.raysforge.rayslang.def.RayFloat;
 import net.raysforge.rayslang.def.RayInteger;
 import net.raysforge.rayslang.def.RayString;
 
@@ -23,7 +22,7 @@ import net.raysforge.rayslang.def.RayString;
 
 public class RayLang {
 
-	HashMap<String, RayClass> classes = new HashMap<String, RayClass>();
+	public HashMap<String, RayClass> classes = new HashMap<String, RayClass>();
 
 	public RayLang() {
 	}
@@ -33,26 +32,18 @@ public class RayLang {
 		initNativeClasses();
 		
 		RayClass rc = RayClass.parse( this, "Test", new File("Test.ray"));
-		
+		RayInstance ri = rc.getNewInstance();
 		RayMethod rm = rc.getMethod( "main");
-		rm.invoke( rc);
+		rm.invoke( ri);
 		
 		//rc.run( "test");
 		
 	}
 
 	private void initNativeClasses() {
-		RayClass stringClass = new RayString(this);
-		classes.put( "default.String", stringClass);
-		RayClass floatClass = new RayFloat(this);
-		classes.put( "default.Float", floatClass);
-		RayClass integerClass = new RayInteger(this);
-		classes.put( "default.Integer", integerClass);
 		
-		new RayMethod( integerClass, "add!", true);
-		new RayMethod( integerClass, "square!", true);
-		new RayMethod( integerClass, "print", true);
-		
+		new RayInteger().register(this);
+		new RayString().register(this);
 		
 	}
 	
@@ -62,7 +53,7 @@ public class RayLang {
 		new RayLang().run();
 	}
 
-	public RayClass getClass(String package_, Token className) {
+	public RayClass getClass(String package_, String className) {
 		return classes.get(package_+"."+className);
 		
 	}

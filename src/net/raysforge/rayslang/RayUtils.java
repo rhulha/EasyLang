@@ -43,6 +43,10 @@ public class RayUtils {
 		throw new RuntimeException(s);
 	}
 
+	public static void assertNotNull(Object o) {
+		assert_(o!=null);
+	}
+
 	/*
 	    private RayString getToken2()
 	    {

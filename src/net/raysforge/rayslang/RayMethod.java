@@ -14,13 +14,14 @@ public class RayMethod {
 
 	List<RayVar> parameter = new ArrayList<RayVar>();
 
-	RayVar returnType;
+	RayClass returnType;
 
 	RaySource code;
 
 	private final boolean isNative;
 
 	public RayMethod(RayClass parentClass, String name, boolean isNative) {
+		RayUtils.assertNotNull(parentClass);
 		this.name = name;
 		this.parentClass = parentClass;
 		this.isNative = isNative;
@@ -44,13 +45,14 @@ public class RayMethod {
 		return rm;
 	}
 
-	public RayClass invoke( RayClass rc, RayClass ... parameter) {
+	public RayInstance invoke( RayInstance instance, RayInstance ... parameter) {
 		
-		RayLog.debug("RayMethod.invoke this: " + this + ", rc: " + rc);
+		RayLog.debug("RayMethod.invoke this: " + this + ", instance: " + instance);
 
 		if( isNative )
 		{
-			return parentClass.invokeNative( rc, name, parameter);
+			RayLog.debug("RayMethod.invoke this: " + this + ", instance: " + instance.nativeClass);
+			return instance.nativeClass.invoke( instance.nativeClass, name, parameter);
 		}
 		
 		
@@ -66,10 +68,11 @@ public class RayMethod {
 				{
 					RayLog.trace("variable decl. and assignment found: " + tokenList);
 
-					RayClass myrc = parentClass.rayLang.getClass("default", tokenList.get(0)).getNewInstance();
-					myrc.setValue( tokenList.get(3).s());
-					
-					RayVar rv = new RayVar( tokenList.get(1).s(), myrc );
+					String mytypeName = tokenList.get(0).s();
+					String myname = tokenList.get(1).s();
+					String myvalue = tokenList.get(3).s();
+					RayClass mytype = parentClass.rayLang.getClass("default", mytypeName);
+					RayVar rv = new RayVar( Visibility.private_, mytype, myname, mytype.getNewInstance() );
 
 					variables.put( rv.name, rv);
 					
@@ -83,14 +86,13 @@ public class RayMethod {
 					// check parameter
 					if( rayVar == null)
 					{
-						rayVar = parentClass.variables.get(varName.s()); // TODO: loop over parents ?
+						rayVar = instance.variables.get(varName.s()); // TODO: loop over parents ?
 					}
 
-					RayMethod method = rayVar.reference.getMethod(methodName.s());
+					RayMethod method = rayVar.type.getMethod(methodName.s());
 					if( method == null)
 					{
-						System.out.println("methodName.s() " + rayVar.reference +  methodName.s());
-						
+						RayLog.warn("methodName.s() " + rayVar.instance + " " + methodName.s());
 						RayUtils.RunExp("fuu");
 					}
 					
@@ -99,15 +101,14 @@ public class RayMethod {
 					TokenList paramTokenList = params.getSourceTokenUntil();
 					RayUtils.assert_(rs.getSourceToken().isSemicolon());
 					
-					List<RayClass> myparams = RayUtils.newArrayList(); 
+					List<RayInstance> myparams = RayUtils.newArrayList(); 
 					for (int i = 0; i < paramTokenList.size(); i++) {
 						if( paramTokenList.get(i).isQuote())
 						{
-							System.out.println("unsupported");
+							RayLog.warn("unsupported");
 						} else if (paramTokenList.get(i).isDigit()) {
 							String v = paramTokenList.get(i).s();
-							RayInteger ri = new RayInteger(parentClass.rayLang);
-							ri.setValue(v);
+							RayInstance ri = new RayInstance(new RayInteger(Long.parseLong(v)));
 							myparams.add( ri);
 
 						} else {
@@ -115,7 +116,7 @@ public class RayMethod {
 						}
 					}
 
-					method.invoke( rayVar.getReference(), myparams.toArray(new RayClass[0]));
+					method.invoke( rayVar.instance, myparams.toArray(new RayInstance[0]));
 					
 					
 				} else {

@@ -4,26 +4,24 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 
-import net.raysforge.rayslang.def.RayString;
+import net.raysforge.rayslang.def.NativeClass;
 
 public class RayClass {
 
 	protected String name;
 	String package_="default";
 	RayLang rayLang;
-
-	HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
+	public NativeClass nativeClass;
+	boolean isNative;
+	
+	HashMap<String, RayField> fields = new HashMap<String, RayField>();
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
-	public RayClass(RayLang rayLang) {
+	public RayClass(RayLang rayLang, String name) {
+		this.name = name;
 		this.rayLang = rayLang;
 		rayLang.classes.put( getFullName(), this);
-	}
-
-	public RayClass(RayLang rayLang, String name) {
-		this( rayLang);
-		this.name = name;
 	}
 
 	public static RayClass parse(RayLang rayLang, String name, File file) {
@@ -44,10 +42,11 @@ public class RayClass {
 				Token varName = tokenList.pollLast();
 				Token typeStr = tokenList.pollLast();
 				RayClass type = rayLang.classes.get("default."+typeStr);
+				RayUtils.assert_( type != null);
 				Visibility v = Visibility.protected_;
 				if( ! tokenList.isEmpty())
 					v = Visibility.valueOf(tokenList.pop()+"_"); 
-				rc.variables.put( varName.s(), new RayVar( v, varName.s(), type.getNewInstance()));
+				rc.fields.put( varName.s(), new RayField( v, type, varName.s()));
 				RayLog.trace("var: "+ type + " - " + varName);
 			} else if (last.equals("(")) {
 				
@@ -68,27 +67,23 @@ public class RayClass {
 		return rc;
 	}
 
-	public RayClass getNewInstance() {
-		RayClass rc = extracted();
-		rc.methods = methods;
-		rc.package_ = package_;
-		rc.variables = RayUtils.newHashMap();
-		Set<String> keySet = variables.keySet();
-		for (String key : keySet) {
-			RayVar rayVar = rc.variables.get(key);
-			rc.variables.put(key, new RayVar(rayVar.visibility, rayVar.name, rayVar.reference));
+	public RayInstance getNewInstance() {
+		
+		if( isNative )
+		{
+			return new RayInstance(nativeClass.getNewInstance());
+		} else {
+			RayInstance ri = new RayInstance(this);
+			
+			Set<String> keySet = fields.keySet();
+			for (String key : keySet) {
+				RayField rayField = this.fields.get(key);
+				ri.variables.put(key, new RayVar(rayField.visibility, 
+						this, rayField.name,
+						rayField.type.getNewInstance()));
+			}
+			return ri;
 		}
-		return rc;
-	}
-
-	private RayClass extracted()  {
-		RayClass rc=null;
-		try {
-			rc = (RayClass) this.getClass().getConstructors()[0].newInstance(rayLang);
-		} catch (Exception e) {
-			RayUtils.RunExp(e.getMessage());
-		}
-		return rc;
 	}
 
 	public String getFullName() {
@@ -103,24 +98,17 @@ public class RayClass {
 	public RayMethod getMethod(String name) {
 		return methods.get(name);
 	}
-	
-	public String getValue()
-	{
-		return "class: " + getFullName();
-	}
-	
-	public void setValue(String s) {
-		RayUtils.RunExp("setValue not supported on: " + this.getFullName());
-	}
 
+	/*
 	public RayClass invokeNative(RayClass rc, String methodName, RayClass ... parameter) {
 		if( methodName.equals("print") && (parameter.length == 0) )
 		{
-			System.err.println(((RayString)rc).getValue());
+			System err.println(((RayString)rc).getValue());
 		} else {
 			RayUtils.RunExp("method not found: " + methodName);
 		}
 		return null;
 	}
+	*/
 
 }
