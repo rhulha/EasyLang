@@ -2,6 +2,9 @@ package net.raysforge.rayslang;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
+
+import net.raysforge.rayslang.def.RayString;
 
 public class RayClass {
 
@@ -44,8 +47,8 @@ public class RayClass {
 				Visibility v = Visibility.protected_;
 				if( ! tokenList.isEmpty())
 					v = Visibility.valueOf(tokenList.pop()+"_"); 
-				rc.variables.put( varName.s(), new RayVar(v, type, varName.s(), ""));
-				RayLog.log("var: "+ type + " - " + varName);
+				rc.variables.put( varName.s(), new RayVar( v, varName.s(), type.getNewInstance()));
+				RayLog.trace("var: "+ type + " - " + varName);
 			} else if (last.equals("(")) {
 				
 				Token methodName = tokenList.pollLast();
@@ -57,11 +60,34 @@ public class RayClass {
 
 				// RayLog.log("innerText: "+ innerText);
 			} else if (last.equals("{")) {
-				RayLog.log("hm");
+				RayLog.warn("hm");
 			}
 			//RayLog.log("XX" + token + "YY");
 		}
 
+		return rc;
+	}
+
+	public RayClass getNewInstance() {
+		RayClass rc = extracted();
+		rc.methods = methods;
+		rc.package_ = package_;
+		rc.variables = RayUtils.newHashMap();
+		Set<String> keySet = variables.keySet();
+		for (String key : keySet) {
+			RayVar rayVar = rc.variables.get(key);
+			rc.variables.put(key, new RayVar(rayVar.visibility, rayVar.name, rayVar.reference));
+		}
+		return rc;
+	}
+
+	private RayClass extracted()  {
+		RayClass rc=null;
+		try {
+			rc = (RayClass) this.getClass().getConstructors()[0].newInstance(rayLang);
+		} catch (Exception e) {
+			RayUtils.RunExp(e.getMessage());
+		}
 		return rc;
 	}
 
@@ -77,15 +103,20 @@ public class RayClass {
 	public RayMethod getMethod(String name) {
 		return methods.get(name);
 	}
-
-	public RayVar getNewInstance() {
-		return new RayVar(this, "unimportant", "");
+	
+	public String getValue()
+	{
+		return "class: " + getFullName();
+	}
+	
+	public void setValue(String s) {
+		RayUtils.RunExp("setValue not supported on: " + this.getFullName());
 	}
 
-	public RayVar invokeNative(RayVar instance, String methodName, RayVar ... parameter) {
+	public RayClass invokeNative(RayClass rc, String methodName, RayClass ... parameter) {
 		if( methodName.equals("print") && (parameter.length == 0) )
 		{
-			System.err.println(instance.getValue());
+			System.err.println(((RayString)rc).getValue());
 		} else {
 			RayUtils.RunExp("method not found: " + methodName);
 		}

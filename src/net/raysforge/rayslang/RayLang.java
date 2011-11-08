@@ -34,10 +34,8 @@ public class RayLang {
 		
 		RayClass rc = RayClass.parse( this, "Test", new File("Test.ray"));
 		
-		RayVar rv = rc.getNewInstance();
-		
 		RayMethod rm = rc.getMethod( "main");
-		rm.invoke( rv);
+		rm.invoke( rc);
 		
 		//rc.run( "test");
 		

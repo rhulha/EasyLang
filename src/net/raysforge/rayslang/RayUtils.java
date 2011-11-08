@@ -1,7 +1,7 @@
 package net.raysforge.rayslang;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 // gibt zwei arten token zu holen
 // 1. vorher aufräumen und dan token holen ( returns und spacer weg danach kommt token )
@@ -26,8 +26,12 @@ import java.util.List;
  */
 public class RayUtils {
 
-	public static <T> List<T> newArrayList() {
+	public static <T> ArrayList<T> newArrayList() {
 		return new ArrayList<T>();
+	}
+
+	public static <K,V> HashMap<K,V> newHashMap() {
+		return new HashMap<K,V>();
 	}
 
 	public static void assert_(boolean b) {

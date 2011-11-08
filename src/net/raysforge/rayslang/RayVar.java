@@ -3,37 +3,31 @@ package net.raysforge.rayslang;
 public class RayVar {
 
 	protected Visibility visibility;
-	protected RayClass type;
+	protected RayClass reference;
 	protected String name;
-	protected String value;
 	
-	public RayVar(RayClass type, String name, String value) {
-		super();
-		this.visibility = Visibility.local_;
-		this.type = type;
-		this.name = name;
-		this.value = value;
+	public RayVar( String name, RayClass reference) {
+		this( Visibility.local_, name, reference);
 	}
 
-	public RayVar(Visibility visibility, RayClass type, String name, String value) {
+	public RayVar(Visibility visibility, String name, RayClass reference) {
 		super();
 		this.visibility = visibility;
-		this.type = type;
 		this.name = name;
-		this.value = value;
+		this.reference = reference;
 	}
 	
-	public String getValue() {
-		return value;
+	public RayClass getReference() {
+		return reference;
 	}
 	
-	public void setValue(String value) {
-		this.value = value;
+	public void setReference(RayClass reference) {
+		this.reference = reference;
 	}
 	
 	@Override
 	public String toString() {
-		return value;
+		return name + ": " + reference.toString();
 	}
 
 	

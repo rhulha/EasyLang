@@ -26,6 +26,14 @@ public class Token {
 		return Character.isDigit( c ) || '"' == c ;
 	}
 	
+	public boolean isQuote() {
+		return '"' == token.charAt(0) ;
+	}
+	
+	public boolean isDigit() {
+		return Character.isDigit( token.charAt(0) );
+	}
+	
 	public String s()
 	{
 		return token;

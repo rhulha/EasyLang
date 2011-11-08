@@ -2,9 +2,9 @@ package net.raysforge.rayslang.def;
 
 import java.util.Arrays;
 
+import net.raysforge.rayslang.RayClass;
 import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RayLog;
-import net.raysforge.rayslang.RayVar;
 
 
 public class RayInteger extends RayFloat {
@@ -15,25 +15,26 @@ public class RayInteger extends RayFloat {
 	}
 	
 	
-	public RayVar invokeNative( RayVar instance, String methodName, RayVar ... parameter )
+	public RayClass invokeNative( RayClass rc, String methodName, RayClass ... parameter )
 	{
-		RayLog.log( methodName + " " + Arrays.asList(parameter) + " on " + instance.getValue());
+		RayLog.info( methodName + " " + Arrays.asList(parameter) + " on " + rc.getFullName());
 
 		if( methodName.equals("add!") && (parameter.length == 1) )
 		{
-			int a = Integer.parseInt( instance.getValue());
-			instance.setValue( "" + ( a + Integer.parseInt( parameter[0].getValue() )));
+			int a = Integer.parseInt( rc.getValue().toString());
+			System.out.println(rc.getFullName());
+			rc.setValue( "" + ( a + Long.parseLong( parameter[0].getValue() )));
 			
 		} else if( methodName.equals("square!") && (parameter.length == 0) )
 		{
-			long a = Long.parseLong( instance.getValue());
+			long a = Long.parseLong( rc.getValue());
 			System.out.println("test: " + a);
-			instance.setValue( "" + ( a * a));
+			rc.setValue( "" + ( a * a));
 			
 		} else {
-			return super.invokeNative(instance, methodName, parameter);
+			return super.invokeNative(rc, methodName, parameter);
 		}
-		return instance;
+		return rc;
 	}
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.raysforge.rayslang.def.RayInteger;
+
 public class RayMethod {
 
 	protected String name;
@@ -31,7 +33,7 @@ public class RayMethod {
 		RayMethod rm = new RayMethod(parentClass, name, false);
 
 		RaySource parameter = rs.getInnerText('(', ')');
-		RayLog.log("parameter " + parameter);
+		RayLog.trace("parameter " + parameter);
 
 		Token token = rs.getSourceToken();
 		if (!token.isOpenBrace())
@@ -42,13 +44,13 @@ public class RayMethod {
 		return rm;
 	}
 
-	public RayVar invoke( RayVar instance, RayVar ... parameter) {
+	public RayClass invoke( RayClass rc, RayClass ... parameter) {
 		
-		RayLog.log("RayMethod.invoke this: " + this + ", instance: " + instance);
+		RayLog.debug("RayMethod.invoke this: " + this + ", rc: " + rc);
 
 		if( isNative )
 		{
-			return parentClass.invokeNative( instance, name, parameter);
+			return parentClass.invokeNative( rc, name, parameter);
 		}
 		
 		
@@ -62,49 +64,62 @@ public class RayMethod {
 			else {
 				if( tokenList.equalsPattern("ii=v;") )
 				{
-					RayLog.log("variable decl. and assignment found: " + tokenList);
+					RayLog.trace("variable decl. and assignment found: " + tokenList);
 
-					RayClass rc = parentClass.rayLang.getClass("default", tokenList.get(0));
+					RayClass myrc = parentClass.rayLang.getClass("default", tokenList.get(0)).getNewInstance();
+					myrc.setValue( tokenList.get(3).s());
 					
-					RayVar rv = new RayVar(rc, tokenList.get(1).s(), tokenList.get(3).s());
+					RayVar rv = new RayVar( tokenList.get(1).s(), myrc );
 
 					variables.put( rv.name, rv);
 					
 				} else if( tokenList.equalsPattern("i.i("))
 				{
-					RayLog.log("message invocation found: " + tokenList);
+					RayLog.trace("message invocation found: " + tokenList);
 					
 					Token varName = tokenList.get(0);
 					Token methodName = tokenList.get(2);
 					RayVar rayVar = variables.get(varName.s());
-					RayMethod method = rayVar.type.getMethod(methodName.s());
-					RayVar rv = variables.get(varName.s());
 					// check parameter
-					if( rv == null) 
-						rv = parentClass.variables.get(varName.s()); // TODO: loop over parents ?
+					if( rayVar == null)
+					{
+						rayVar = parentClass.variables.get(varName.s()); // TODO: loop over parents ?
+					}
+
+					RayMethod method = rayVar.reference.getMethod(methodName.s());
+					if( method == null)
+					{
+						System.out.println("methodName.s() " + rayVar.reference +  methodName.s());
+						
+						RayUtils.RunExp("fuu");
+					}
 					
 					
 					RaySource params = rs.getInnerText('(', ')');
 					TokenList paramTokenList = params.getSourceTokenUntil();
 					RayUtils.assert_(rs.getSourceToken().isSemicolon());
 					
-					List<RayVar> myparams = RayUtils.newArrayList(); 
+					List<RayClass> myparams = RayUtils.newArrayList(); 
 					for (int i = 0; i < paramTokenList.size(); i++) {
-						if( paramTokenList.get(i).isValue())
+						if( paramTokenList.get(i).isQuote())
 						{
+							System.out.println("unsupported");
+						} else if (paramTokenList.get(i).isDigit()) {
 							String v = paramTokenList.get(i).s();
-							myparams.add( new RayVar(parentClass, "unknown", v));
+							RayInteger ri = new RayInteger(parentClass.rayLang);
+							ri.setValue(v);
+							myparams.add( ri);
 
 						} else {
-							RayLog.log("unknown code in line: " + paramTokenList);
+							RayLog.warn("unknown code in line: " + paramTokenList);
 						}
 					}
 
-					method.invoke( rv, myparams.toArray(new RayVar[0]));
+					method.invoke( rayVar.getReference(), myparams.toArray(new RayClass[0]));
 					
 					
 				} else {
-					RayLog.log("unknown code in line: " + tokenList);
+					RayLog.warn("unknown code in line: " + tokenList);
 				}
 					
 				
