@@ -25,32 +25,34 @@ public class RayLang {
 	public HashMap<String, RayClass> classes = new HashMap<String, RayClass>();
 
 	public RayLang() {
+		initNativeClasses();
 	}
 	
-	public void run() throws IOException {
-		
-		initNativeClasses();
-		
-		RayClass rc = RayClass.parse( this, "Test", new File("Test.ray"));
-		RayInstance ri = rc.getNewInstance();
-		RayMethod rm = rc.getMethod( "main");
-		rm.invoke( ri);
-		
-		//rc.run( "test");
-		
-	}
-
 	private void initNativeClasses() {
-		
 		new RayInteger().register(this);
 		new RayString().register(this);
-		
 	}
-	
 	
 	public static void main(String[] args) throws IOException {
 		
-		new RayLang().run();
+		RayLang rayLang = new RayLang();
+		rayLang.parse(new File("raysrc"));
+		RayClass rc = rayLang.getClass("default", "Test");
+		RayInstance ri = rc.getNewInstance();
+		RayMethod rm = rc.getMethod( "main");
+		rm.invoke( ri);
+	}
+
+	private void parse(File dir) {
+		File[] list = dir.listFiles();
+		for (int i = 0; i < list.length; i++) {
+			File file = list[i];
+			if( file.isDirectory())
+				parse( file);
+			else if( file.getName().endsWith(".ray"))
+				RayClass.parse( this, file.getName().substring(0, file.getName().length()-4), file);
+		}
+		
 	}
 
 	public RayClass getClass(String package_, String className) {

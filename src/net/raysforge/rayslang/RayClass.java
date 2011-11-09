@@ -17,7 +17,7 @@ public class RayClass {
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
-	public RayClass(RayLang rayLang, String name) {
+	public RayClass( RayLang rayLang, String name) {
 		this.name = name;
 		this.rayLang = rayLang;
 		rayLang.classes.put( getFullName(), this);
