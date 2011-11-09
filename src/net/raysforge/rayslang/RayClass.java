@@ -12,7 +12,6 @@ public class RayClass {
 	String package_="default";
 	RayLang rayLang;
 	public NativeClass nativeClass;
-	boolean isNative;
 	
 	HashMap<String, RayField> fields = new HashMap<String, RayField>();
 
@@ -69,7 +68,7 @@ public class RayClass {
 
 	public RayInstance getNewInstance() {
 		
-		if( isNative )
+		if( nativeClass != null )
 		{
 			return new RayInstance(nativeClass.getNewInstance());
 		} else {
@@ -97,6 +96,10 @@ public class RayClass {
 
 	public RayMethod getMethod(String name) {
 		return methods.get(name);
+	}
+
+	public boolean isNative() {
+		return nativeClass != null;
 	}
 
 	/*

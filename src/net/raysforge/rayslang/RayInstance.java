@@ -14,13 +14,21 @@ public class RayInstance {
 
 	public RayInstance(RayClass type) {
 		this.type = type;
-		if( type.isNative)
-			Thread.dumpStack();
 	}
 
 	public RayInstance(NativeClass nativeClass) {
 		this.nativeClass = nativeClass;
 	}
 
+	@Override
+	public String toString() {
+		return "RayInstance [type=" + type + ", nativeClass=" + nativeClass + ", variables=" + variables + "]";
+	}
+
+	public boolean isNative() {
+		return nativeClass != null;
+	}
+	
+	
 
 }

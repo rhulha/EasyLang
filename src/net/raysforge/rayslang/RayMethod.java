@@ -49,10 +49,13 @@ public class RayMethod {
 		
 		RayLog.debug("RayMethod.invoke instance: " + name + " " + instance);
 
-		if( instance.type.isNative )
+		if( instance.isNative() )
 		{
 			return instance.nativeClass.invoke( instance.nativeClass, name, parameter);
 		}
+		
+		System.out.println(name + " " + instance);
+		RayUtils.assert_(!isNative);
 		
 		
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();

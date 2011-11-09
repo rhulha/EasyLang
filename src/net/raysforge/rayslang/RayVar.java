@@ -47,4 +47,12 @@ public class RayVar {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		return "RayVar [visibility=" + visibility + ", type=" + type + ", name=" + name + ", instance=" + instance + "]";
+	}
+
+	
+	
+
 }
