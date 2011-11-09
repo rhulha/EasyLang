@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.raysforge.rayslang.def.RayInteger;
+import net.raysforge.rayslang.def.RayString;
 
 public class RayMethod {
 
@@ -54,7 +55,7 @@ public class RayMethod {
 			return instance.nativeClass.invoke( instance.nativeClass, name, parameter);
 		}
 		
-		System.out.println(name + " " + instance);
+		//System.out.println(name + " " + instance);
 		RayUtils.assert_(!isNative);
 		
 		
@@ -72,9 +73,16 @@ public class RayMethod {
 
 					String mytypeName = tokenList.get(0).s();
 					String myname = tokenList.get(1).s();
-					String myvalue = tokenList.get(3).s();
+					Token value = tokenList.get(3);
 					RayClass mytype = instance.type.rayLang.getClass("default", mytypeName);
-					RayVar rv = new RayVar( Visibility.private_, mytype, myname, mytype.getNewInstance() );
+					RayInstance ri=null;
+					if( value.isDigit() )
+					{
+						ri = new RayInstance(new RayInteger(Long.parseLong(value.s())));
+					} else if( value.isQuote() ) {
+						ri = new RayInstance(new RayString(value.s().substring(1,value.length()-2)));
+					}
+					RayVar rv = new RayVar( Visibility.private_, mytype, myname, ri );
 
 					variables.put( rv.name, rv);
 					
@@ -99,8 +107,8 @@ public class RayMethod {
 					}
 					
 					
-					RaySource params = rs.getInnerText('(', ')');
-					TokenList paramTokenList = params.getSourceTokenUntil();
+					RaySource paramSrc = rs.getInnerText('(', ')');
+					TokenList paramTokenList = paramSrc.getSourceTokenUntil();
 					RayUtils.assert_(rs.getSourceToken().isSemicolon());
 					
 					List<RayInstance> myparams = RayUtils.newArrayList(); 
@@ -110,6 +118,7 @@ public class RayMethod {
 							RayLog.warn("unsupported");
 						} else if (paramTokenList.get(i).isDigit()) {
 							String v = paramTokenList.get(i).s();
+							System.out.println("XXX "+v);
 							RayInstance ri = new RayInstance(new RayInteger(Long.parseLong(v)));
 							myparams.add( ri);
 

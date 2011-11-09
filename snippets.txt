@@ -1,0 +1,9 @@
+					if( mytype.nativeClass instanceof RayInteger )
+					{
+						RayInteger ri = (RayInteger) mytype.nativeClass;
+						ri.setIntValue(Long.parseLong(value.s()));
+					} else if( mytype.nativeClass instanceof RayString && value.length() > 0)
+					{
+						RayInteger ri = (RayInteger) mytype.nativeClass;
+						ri.setStringValue(value.s().substring(1,value.length()-2)); // remove quotes
+					}

@@ -20,15 +20,13 @@ public class RayInstance {
 		this.nativeClass = nativeClass;
 	}
 
-	@Override
-	public String toString() {
-		return "RayInstance [type=" + type + ", nativeClass=" + nativeClass + ", variables=" + variables + "]";
-	}
-
 	public boolean isNative() {
 		return nativeClass != null;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "RayInstance [type=" + type + ", nativeClass=" + nativeClass + ", variables=" + variables + "]";
+	}
 
 }

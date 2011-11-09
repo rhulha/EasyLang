@@ -4,7 +4,7 @@ public class RayLog {
 	
 	enum Level { error, warn, info, debug, trace };
 	
-	static Level level = Level.debug;
+	static Level level = Level.info;
 	
 	public static void warn( Object s)
 	{
