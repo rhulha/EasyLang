@@ -40,7 +40,7 @@ public class RayInteger extends RayFloat implements NativeClass {
 	public RayInstance invoke(NativeClass nc, String methodName, RayInstance... parameter) {
 		RayInteger rint = (RayInteger) nc;
 
-		RayLog.info(methodName + " " + Arrays.asList(parameter) + " on " + nc);
+		RayLog.debug(methodName + " " + Arrays.asList(parameter) + " on " + nc);
 
 		if (methodName.equals("add!") && (parameter.length == 1)) {
 			RayInstance p0 = parameter[0];
@@ -70,6 +70,7 @@ public class RayInteger extends RayFloat implements NativeClass {
 	}
 
 	public void setIntValue(long intValue) {
+		RayLog.debug( "setIntValue: " + intValue);
 		this.intValue = intValue;
 	}
 	

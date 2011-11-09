@@ -11,8 +11,12 @@ public void main(Test t)
 	x.add!(7);
 	x.print();
 	
-	Integer y = 5213123;
-	y.add!(234);
+	Integer y = 100;
+	y.print();
+	y.add!(x);
+	y.print();
+	y.add!(8);
+	y.print();
 	y.square!();
 	y.print();
 

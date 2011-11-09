@@ -5,7 +5,7 @@ public class RayVar {
 	protected Visibility visibility;
 	protected RayClass type;
 	protected String name;
-	protected RayInstance instance;
+	private RayInstance instance;
 
 	public RayVar(Visibility visibility, RayClass type, String name, RayInstance instance) {
 		super();
