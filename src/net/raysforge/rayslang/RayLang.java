@@ -12,12 +12,18 @@ import net.raysforge.rayslang.def.RayString;
 
 // Names: Pure, Simply, Kids, Easy
 
+// no constructors == less rules, easy extends
+
 // goal: subset of Java
 // few rules, no exceptions:
 
 // only default invisible constructor, init method instead.
 // no void, all methods must return something
 // no null pointer
+
+// default is serializable
+
+// no checked exceptions, only runtime exceptions 
 
 
 public class RayLang {
@@ -37,9 +43,9 @@ public class RayLang {
 		
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
-		RayClass rc = rayLang.getClass("default", "Test");
+		RayClass rc = rayLang.getClass("default", "Sokoban");
 		RayInstance ri = rc.getNewInstance();
-		RayMethod rm = rc.getMethod( "main");
+		RayMethod rm = rc.getMethod( "start");
 		rm.invoke( ri);
 	}
 

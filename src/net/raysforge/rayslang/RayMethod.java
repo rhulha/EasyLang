@@ -39,7 +39,7 @@ public class RayMethod {
 
 		Token token = rs.getSourceToken();
 		if (!token.isOpenBrace())
-			RayUtils.RunExp("missing { " + rs.pos);
+			RayUtils.runtimeExcp("missing { " + rs.pos);
 
 		rm.code = rs.getInnerText('{', '}');
 
@@ -96,7 +96,7 @@ public class RayMethod {
 					RayMethod method = rayVar.type.getMethod(methodName.s());
 					if (method == null) {
 						RayLog.warn("methodName.s() " + rayVar.getInstance() + " " + methodName.s());
-						RayUtils.RunExp("fuu");
+						RayUtils.runtimeExcp("fuu");
 					}
 
 					RaySource paramSrc = rs.getInnerText('(', ')');

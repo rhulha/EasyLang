@@ -1,0 +1,11 @@
+
+
+Fenster fenster = neu Fenster();
+
+publik nichts start()
+{
+	fenster.setzeBreite(800);
+	fenster.setzeHöhe(600);
+	fenster.zeigeAn();
+}
+

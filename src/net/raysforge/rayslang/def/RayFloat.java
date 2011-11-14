@@ -5,7 +5,7 @@ import net.raysforge.rayslang.RayLang;
 
 public class RayFloat extends RayString implements NativeClass {
 	
-	double floatValue;
+	private double floatValue;
 	
 	@Override
 	public void register(RayLang rayLang) {

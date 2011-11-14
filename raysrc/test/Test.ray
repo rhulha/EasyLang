@@ -4,7 +4,7 @@
 Integer i;
 String s;
 
-public void main(Test t)
+public void start(Test t)
 {
 
 	Integer x = 5;

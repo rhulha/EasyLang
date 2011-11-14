@@ -9,7 +9,7 @@ public interface NativeClass {
 	
 	public NativeClass getNewInstance();
 	
-	public RayInstance invoke( NativeClass nc, String methodName,  RayInstance ... params);
+	public RayInstance invoke( NativeClass nc, String methodName,  RayInstance ... parameter);
 	
 
 }

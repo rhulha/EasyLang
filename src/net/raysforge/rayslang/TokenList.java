@@ -55,7 +55,7 @@ public class TokenList {
 					break;
 
 				default:
-					RayUtils.RunExp("unknown pattern element");
+					RayUtils.runtimeExcp("unknown pattern element");
 			}
 			
 		}

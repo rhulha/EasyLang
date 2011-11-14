@@ -39,7 +39,7 @@ public class RayUtils {
 			throw new RuntimeException();
 	}
 
-	public static void RunExp(String s) {
+	public static void runtimeExcp(String s) {
 		throw new RuntimeException(s);
 	}
 

@@ -9,25 +9,25 @@ import net.raysforge.rayslang.def.NativeClass;
 public class RayClass {
 
 	protected String name;
-	String package_="default";
+	String package_ = "default";
 	RayLang rayLang;
 	public NativeClass nativeClass;
-	
+
 	HashMap<String, RayField> fields = new HashMap<String, RayField>();
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
-	public RayClass( RayLang rayLang, String name) {
+	public RayClass(RayLang rayLang, String name) {
 		this.name = name;
 		this.rayLang = rayLang;
-		rayLang.classes.put( getFullName(), this);
+		rayLang.classes.put(getFullName(), this);
 	}
 
 	public static RayClass parse(RayLang rayLang, String name, File file) {
-		return parse( rayLang, name, new RaySource(FileUtils.readCompleteFile(file)));
+		return parse(rayLang, name, new RaySource(FileUtils.readCompleteFile(file)));
 	}
 
-	public static RayClass parse( RayLang rayLang, String name, RaySource rs ) {
+	public static RayClass parse(RayLang rayLang, String name, RaySource rs) {
 		RayClass rc = new RayClass(rayLang, name);
 
 		while (true) {
@@ -35,30 +35,53 @@ public class RayClass {
 
 			if (tokenList.size() == 0)
 				break;
-			Token last = tokenList.pollLast();
-			if ( last.equals(";")) {
-				
-				Token varName = tokenList.pollLast();
-				Token typeStr = tokenList.pollLast();
-				RayClass type = rayLang.classes.get("default."+typeStr);
-				RayUtils.assert_( type != null);
+
+			if (tokenList.equalsPattern("ii;")) {
+				Token typeStr = tokenList.get(0);
+				Token varName = tokenList.get(1);
+				RayClass type = rayLang.classes.get("default." + typeStr);
+				if (type == null)
+					RayUtils.runtimeExcp(typeStr + " not found");
+
 				Visibility v = Visibility.protected_;
-				if( ! tokenList.isEmpty())
-					v = Visibility.valueOf(tokenList.pop()+"_"); 
-				rc.fields.put( varName.s(), new RayField( v, type, varName.s()));
-				RayLog.trace("var: "+ type + " - " + varName);
-			} else if (last.equals("(")) {
+				rc.fields.put(varName.s(), new RayField(v, type, varName.s()));
+				RayLog.trace("var: " + type + " - " + varName);
+
+			} else if (tokenList.equalsPattern("ii=ii(")) {
+				System.out.println("xxx: "  +  tokenList);
+
+				Token typeStr = tokenList.get(0);
+				Token varName = tokenList.get(1);
+				RayClass type = rayLang.classes.get("default." + typeStr);
+				if (type == null)
+					RayUtils.runtimeExcp(typeStr + " not found");
 				
-				Token methodName = tokenList.pollLast();
-				Token typeStr = tokenList.pollLast();
+				RayUtils.assert_(tokenList.get(1).equals(KeyWord.NEW.getLocalText()));
+				
+			} else if (tokenList.equalsPattern("iii;")) {
+
+				Token typeStr = tokenList.get(1);
+				Token varName = tokenList.get(2);
+				RayClass type = rayLang.classes.get("default." + typeStr);
+				if (type == null)
+					RayUtils.runtimeExcp(typeStr + " not found");
+
+				Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
+				rc.fields.put(varName.s(), new RayField(v, type, varName.s()));
+				RayLog.trace("var: " + type + " - " + varName);
+			} else if (tokenList.equalsPattern("iii(")) {
+
+				// Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
+				Token typeStr = tokenList.get(1);
+				Token methodName = tokenList.get(2);
 				//Token visStr = tokenList.pollLast();
-				RayClass type = rayLang.classes.get("default."+typeStr);
+				RayClass type = rayLang.classes.get("default." + typeStr);
 
-				RayMethod.parse( rc, type, methodName.s(), rs);
-
-				// RayLog.log("innerText: "+ innerText);
-			} else if (last.equals("{")) {
-				RayLog.warn("hm");
+				RayLog.trace("methodName: " + rc.name + "." + methodName);
+				RayMethod.parse(rc, type, methodName.s(), rs);
+				
+			} else {
+				RayLog.warn("hm: " + tokenList);
 			}
 			//RayLog.log("XX" + token + "YY");
 		}
@@ -67,19 +90,16 @@ public class RayClass {
 	}
 
 	public RayInstance getNewInstance() {
-		
-		if( nativeClass != null )
-		{
+
+		if (nativeClass != null) {
 			return new RayInstance(nativeClass.getNewInstance());
 		} else {
 			RayInstance ri = new RayInstance(this);
-			
+
 			Set<String> keySet = fields.keySet();
 			for (String key : keySet) {
 				RayField rayField = this.fields.get(key);
-				ri.variables.put(key, new RayVar(rayField.visibility, 
-						this, rayField.name,
-						rayField.type.getNewInstance()));
+				ri.variables.put(key, new RayVar(rayField.visibility, this, rayField.name, rayField.type.getNewInstance()));
 			}
 			return ri;
 		}
