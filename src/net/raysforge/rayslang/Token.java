@@ -71,4 +71,8 @@ public class Token {
 		return token.length();
 	}
 
+	public boolean isClosedParentheses() {
+		return ')' == token.charAt(0);
+	}
+
 }

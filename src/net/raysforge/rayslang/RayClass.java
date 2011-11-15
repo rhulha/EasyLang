@@ -13,7 +13,7 @@ public class RayClass {
 	RayLang rayLang;
 	public NativeClass nativeClass;
 
-	HashMap<String, RayField> fields = new HashMap<String, RayField>();
+	HashMap<String, RayVar> fields = new HashMap<String, RayVar>();
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
@@ -44,19 +44,30 @@ public class RayClass {
 					RayUtils.runtimeExcp(typeStr + " not found");
 
 				Visibility v = Visibility.protected_;
-				rc.fields.put(varName.s(), new RayField(v, type, varName.s()));
+				rc.fields.put(varName.s(), new RayVar(v, type, varName.s(), null));
 				RayLog.trace("var: " + type + " - " + varName);
 
 			} else if (tokenList.equalsPattern("ii=ii(")) {
-				System.out.println("xxx: "  +  tokenList);
 
-				Token typeStr = tokenList.get(0);
+				Token varType = tokenList.get(0);
 				Token varName = tokenList.get(1);
-				RayClass type = rayLang.classes.get("default." + typeStr);
-				if (type == null)
-					RayUtils.runtimeExcp(typeStr + " not found");
+				RayClass varTypeClass = rayLang.classes.get("default." + varType);
+				if (varTypeClass == null)
+					RayUtils.runtimeExcp(varType + " not found");
 				
-				RayUtils.assert_(tokenList.get(1).equals(KeyWord.NEW.getLocalText()));
+				RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()));
+				
+				Token instanceType = tokenList.get(4);
+				RayClass instanceTypeClass = rayLang.classes.get("default." + instanceType);
+				
+				RayUtils.assert_(instanceTypeClass == varTypeClass); // check for inhertiance ? // TODO: check using equals ?
+				
+				Visibility v = Visibility.protected_;
+				RayVar rayVar = new RayVar(v, varTypeClass, varName.s(), instanceTypeClass.getNewInstance());
+				rc.fields.put(varName.s(), rayVar);
+				
+				RayUtils.assert_(rs.getSourceToken().isClosedParentheses());
+				RayUtils.assert_(rs.getSourceToken().isSemicolon());
 				
 			} else if (tokenList.equalsPattern("iii;")) {
 
@@ -67,7 +78,7 @@ public class RayClass {
 					RayUtils.runtimeExcp(typeStr + " not found");
 
 				Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
-				rc.fields.put(varName.s(), new RayField(v, type, varName.s()));
+				rc.fields.put(varName.s(), new RayVar(v, type, varName.s(), null));
 				RayLog.trace("var: " + type + " - " + varName);
 			} else if (tokenList.equalsPattern("iii(")) {
 
@@ -98,8 +109,8 @@ public class RayClass {
 
 			Set<String> keySet = fields.keySet();
 			for (String key : keySet) {
-				RayField rayField = this.fields.get(key);
-				ri.variables.put(key, new RayVar(rayField.visibility, this, rayField.name, rayField.type.getNewInstance()));
+				RayVar rayVar = this.fields.get(key);
+				ri.variables.put(key, new RayVar(rayVar.visibility, this, rayVar.name, rayVar.type.getNewInstance()));
 			}
 			return ri;
 		}

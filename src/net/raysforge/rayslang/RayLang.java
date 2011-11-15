@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import net.raysforge.rayslang.def.RayFrame;
 import net.raysforge.rayslang.def.RayInteger;
 import net.raysforge.rayslang.def.RayString;
 
@@ -37,6 +38,7 @@ public class RayLang {
 	private void initNativeClasses() {
 		new RayInteger().register(this);
 		new RayString().register(this);
+		new RayFrame().register(this);
 	}
 	
 	public static void main(String[] args) throws IOException {
