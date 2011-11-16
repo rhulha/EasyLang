@@ -82,6 +82,28 @@ public class RayMethod {
 
 					variables.put(rv.name, rv);
 
+				} else if (tokenList.equalsPattern("ii=ii(")) {
+					
+					Token varType = tokenList.get(0);
+					Token varName = tokenList.get(1);
+					RayClass varTypeClass = instance.type.rayLang.classes.get("default." + varType);
+					if (varTypeClass == null)
+						RayUtils.runtimeExcp(varType + " not found");
+					
+					RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()));
+					
+					Token instanceType = tokenList.get(4);
+					RayClass instanceTypeClass = instance.type.rayLang.classes.get("default." + instanceType);
+					
+					RayUtils.assert_(instanceTypeClass == varTypeClass); // check for inhertiance ? // TODO: check using equals ?
+					
+					Visibility v = Visibility.protected_;
+					RayVar rayVar = new RayVar(v, varTypeClass, varName.s(), instanceTypeClass.getNewInstance());
+					variables.put(varName.s(), rayVar);
+					
+					RayUtils.assert_(rs.getSourceToken().isClosedParentheses());
+					RayUtils.assert_(rs.getSourceToken().isSemicolon());
+					
 				} else if (tokenList.equalsPattern("i.i(")) {
 					RayLog.trace("message invocation found: " + tokenList);
 
@@ -91,6 +113,9 @@ public class RayMethod {
 					// check parameter
 					if (rayVar == null) {
 						rayVar = instance.variables.get(varName.s()); // TODO: loop over parents ?
+					}
+					if (rayVar == null) {
+						System.out.println("fuuu2");
 					}
 
 					RayMethod method = rayVar.type.getMethod(methodName.s());
