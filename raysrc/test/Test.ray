@@ -4,21 +4,21 @@
 Zahl i;
 Zeichen s;
 
-public void start(Test t)
+public void start()
 {
 
 	Zahl x = 5;
-	x.add!(7);
+	x.plus!(7);
 	x.schreibe();
 	
 	Zahl y = 100;
-	y.print();
-	y.add!(x);
-	y.print();
-	y.add!(8);
-	y.print();
-	y.square!();
-	y.print();
+	y.schreibe();
+	y.plus!(x);
+	y.schreibe();
+	y.plus!(8);
+	y.schreibe();
+	y.quadrat!();
+	y.schreibe();
 
 }
 

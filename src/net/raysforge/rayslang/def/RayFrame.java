@@ -1,6 +1,7 @@
 package net.raysforge.rayslang.def;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.raysforge.easyswing.EasySwing;
 import net.raysforge.rayslang.RayClassInterface;
@@ -11,7 +12,7 @@ public class RayFrame implements RayClassInterface {
 	EasySwing es = new EasySwing("", 800, 600);
 
 	@Override
-	public RayClassInterface getNewInstance() {
+	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 		return new RayFrame();
 	}
 

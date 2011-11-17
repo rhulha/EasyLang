@@ -4,32 +4,23 @@ import java.util.List;
 
 import net.raysforge.rayslang.RayClassInterface;
 
-public class RayFloat implements RayClassInterface {
+public class RayFile implements RayClassInterface {
 	
-	protected double floatValue;
-	
-	public RayFloat() {
-	}
-	
-	public RayFloat(double floatValue) {
-		this.floatValue = floatValue;
-	}
+	String name;
 
 	@Override
 	public String getName() {
-		return "Flieﬂ";
+		return "Datei";
 	}
 
 	@Override
 	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
-		// TODO Auto-generated method stub
-		return null;
+			return null;
 	}
 
 	@Override
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
-		return new RayFloat();
+		return new RayFile();
 	}
-	
 
 }

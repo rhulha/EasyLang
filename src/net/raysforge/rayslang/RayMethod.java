@@ -33,7 +33,7 @@ public class RayMethod {
 		rm.returnType = returnType;
 
 		RaySource parameter = rs.getInnerText('(', ')');
-		RayLog.trace("parameter " + parameter);
+		RayLog.trace("parameter: " + parameter);
 
 		Token token = rs.getSourceToken();
 		if (!token.isOpenBrace())
@@ -71,7 +71,7 @@ public class RayMethod {
 					if (value.isDigit()) {
 						ri = new RayInteger(Long.parseLong(value.s()));
 					} else if (value.isQuote()) {
-						ri = new RayString(value.s().substring(1, value.length() - 2));
+						ri = new RayString(value.s().substring(1, value.length() - 1)); // TODO: extract to method
 					}
 					RayVar rv = new RayVar(Visibility.private_, mytypeName, myname);
 					rv.setValue(ri);
@@ -92,12 +92,14 @@ public class RayMethod {
 					
 					RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
 					
+					RaySource parameter2 = rs.getInnerText('(', ')');
+					
 					Visibility v = Visibility.protected_;
 					RayVar rayVar = new RayVar(v, varType, varName);
-					rayVar.setValue(instanceTypeClass.getNewInstance());
+					rayVar.setValue(instanceTypeClass.getNewInstance( tokenListToParams( variables, parameter2.getSourceTokenUntil())));
 					variables.put(varName, rayVar);
 					
-					RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
+					//RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
 					RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
 					
 				} else if (tokenList.equalsPattern("i.i(")) {
@@ -115,26 +117,11 @@ public class RayMethod {
 					}
 
 					RaySource paramSrc = rs.getInnerText('(', ')');
-					TokenList paramTokenList = paramSrc.getSourceTokenUntil();
 					RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
 
-					List<RayClassInterface> myparams = RayUtils.newArrayList();
-					for (int i = 0; i < paramTokenList.size(); i++) {
-						if (paramTokenList.get(i).isQuote()) {
-							RayLog.warn("unsupported");
-						} else if (paramTokenList.get(i).isDigit()) {
-							String v = paramTokenList.get(i).s();
-							RayClassInterface ri = new RayInteger(Long.parseLong(v));
-							myparams.add(ri);
+					TokenList paramTokenList = paramSrc.getSourceTokenUntil();
 
-						} else if (paramTokenList.get(i).isIdentifier()) {
-							RayVar rayVar2 = variables.get(paramTokenList.get(i).s());
-							myparams.add(rayVar2.getValue());
-						} else {
-
-							RayLog.warn("unknown code in line: " + paramTokenList);
-						}
-					}
+					List<RayClassInterface> myparams = tokenListToParams(variables, paramTokenList);
 
 					rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0]));
 
@@ -147,7 +134,30 @@ public class RayMethod {
 		return null;
 	}
 
-	@Override
+	private List<RayClassInterface> tokenListToParams(HashMap<String, RayVar> variables, TokenList paramTokenList) {
+		List<RayClassInterface> myparams = RayUtils.newArrayList();
+		for (int i = 0; i < paramTokenList.size(); i++) {
+			if (paramTokenList.get(i).isQuote()) {
+				String value = paramTokenList.get(i).s();
+				RayClassInterface ri = new RayString(value.substring(1, value.length() - 1));
+				myparams.add(ri);
+			} else if (paramTokenList.get(i).isDigit()) {
+				String v = paramTokenList.get(i).s();
+				RayClassInterface ri = new RayInteger(Long.parseLong(v));
+				myparams.add(ri);
+
+			} else if (paramTokenList.get(i).isIdentifier()) {
+				RayVar rayVar2 = variables.get(paramTokenList.get(i).s());
+				myparams.add(rayVar2.getValue());
+			} else {
+
+				RayLog.warn("unknown code in line: " + paramTokenList);
+			}
+		}
+		return myparams;
+	}
+
+    @Override
 	public String toString() {
 		return /*returnType + " " + */parentClass + "." + name;
 	}

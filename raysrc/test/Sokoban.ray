@@ -7,5 +7,9 @@ publik nichts start()
 	fenster.setzeBreite(800);
 	fenster.setzeHöhe(600);
 	fenster.zeigeAn();
+	
+	DateiLeser dl = neu DateiLeser("level01.sokoban");
+	dl.leseZeile().schreibe();
+	
 }
 

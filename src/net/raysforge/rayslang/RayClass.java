@@ -2,6 +2,7 @@ package net.raysforge.rayslang;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class RayClass implements RayClassInterface {
@@ -60,7 +61,7 @@ public class RayClass implements RayClassInterface {
 
 				Visibility v = Visibility.protected_;
 				RayVar rayVar = new RayVar(v, varType.s(), varName.s());
-				rayVar.setValue( instanceTypeClass.getNewInstance());
+				rayVar.setValue( instanceTypeClass.getNewInstance(null));
 				rc.variables.put(varName.s(), rayVar);
 
 				RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
@@ -97,7 +98,7 @@ public class RayClass implements RayClassInterface {
 		return rc;
 	}
 
-	public RayClassInterface getNewInstance() {
+	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 
 		RayClass ri = new RayClass(rayLang, name);
 		ri.methods = methods;
@@ -105,7 +106,7 @@ public class RayClass implements RayClassInterface {
 		for (String key : variables.keySet()) {
 			RayVar rayVar = this.variables.get(key);
 			RayVar rayVar2 = rayVar.copy();
-			rayVar2.setValue( rayLang.getClass( rayVar.getType()).getNewInstance());
+			rayVar2.setValue( rayLang.getClass( rayVar.getType()).getNewInstance(null));
 			ri.variables.put(key, rayVar2);
 		}
 		return ri;

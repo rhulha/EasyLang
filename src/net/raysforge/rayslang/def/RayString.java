@@ -1,5 +1,7 @@
 package net.raysforge.rayslang.def;
 
+import java.util.List;
+
 import net.raysforge.rayslang.RayClassInterface;
 
 public class RayString implements RayClassInterface {
@@ -13,7 +15,7 @@ public class RayString implements RayClassInterface {
 		stringValue = s;
 	}
 
-	public RayClassInterface getNewInstance() {
+	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 		return new RayString();
 	}
 
@@ -32,7 +34,7 @@ public class RayString implements RayClassInterface {
 
 	@Override
 	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
-		if (methodName.equals("print") && (parameter.length == 0)) {
+		if (methodName.equals("schreibe") && (parameter.length == 0)) {
 			System.err.println(stringValue);
 		}
 		return null;

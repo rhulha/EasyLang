@@ -1,6 +1,7 @@
 package net.raysforge.rayslang.def;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLog;
@@ -17,7 +18,7 @@ public class RayInteger implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface getNewInstance() {
+	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 		return new RayInteger();
 	}
 
@@ -26,21 +27,21 @@ public class RayInteger implements RayClassInterface {
 
 		RayLog.debug(methodName + " " + Arrays.asList(parameter) + " on " + this);
 
-		if (methodName.equals("add!") && (parameter.length == 1)) {
+		if (methodName.equals("plus!") && (parameter.length == 1)) {
 			RayClassInterface p0 = parameter[0];
 			RayInteger p0int = (RayInteger) p0;
 
 			setIntValue(getIntValue() + p0int.getIntValue());
-		} else if (methodName.equals("add") && (parameter.length == 1)) {
+		} else if (methodName.equals("plus") && (parameter.length == 1)) {
 			RayClassInterface p0 = parameter[0];
 			RayInteger p0int = (RayInteger) p0;
 
 			return new RayInteger(getIntValue() + p0int.getIntValue());
 
-		} else if (methodName.equals("square!") && (parameter.length == 0)) {
+		} else if (methodName.equals("quadrat!") && (parameter.length == 0)) {
 			setIntValue(getIntValue() * getIntValue());
 
-		} else if (methodName.equals("print") && (parameter.length == 0)) {
+		} else if (methodName.equals("schreibe") && (parameter.length == 0)) {
 			System.out.println( getIntValue());
 
 		} else {

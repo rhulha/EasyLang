@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import net.raysforge.rayslang.def.RayFileReader;
 import net.raysforge.rayslang.def.RayFrame;
 import net.raysforge.rayslang.def.RayInteger;
 import net.raysforge.rayslang.def.RayString;
@@ -39,14 +40,15 @@ public class RayLang {
 		registerClasses( new RayInteger());
 		registerClasses( new RayString());
 		registerClasses( new RayFrame());
+		registerClasses( new RayFileReader());
 	}
 	
 	public static void main(String[] args) throws IOException {
 		
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
-		RayClassInterface rc = rayLang.getClass("Test");
-		RayClassInterface ri = rc.getNewInstance();
+		RayClassInterface rc = rayLang.getClass("Sokoban");
+		RayClassInterface ri = rc.getNewInstance(null);
 		ri.invoke( "start");
 	}
 
