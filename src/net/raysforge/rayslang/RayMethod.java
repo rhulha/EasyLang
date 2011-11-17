@@ -81,22 +81,14 @@ public class RayMethod {
 					
 					String varType = tokenList.get(0).s();
 					String varName = tokenList.get(1).s();
-					RayClassInterface varTypeClass = rayClass.rayLang.getClass( varType);
-					if (varTypeClass == null)
-						RayUtils.runtimeExcp(varType + " not found");
-					
 					RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()), tokenList.get(3).s() + " != " + KeyWord.NEW.getLocalText());
-					
 					String instanceType = tokenList.get(4).s();
-					RayClassInterface instanceTypeClass = rayClass.rayLang.getClass( instanceType);
-					
-					RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
-					
+
 					RaySource parameter2 = rs.getInnerText('(', ')');
+					List<RayClassInterface> params = tokenListToParams( variables, parameter2.getSourceTokenUntil());
+
+					RayVar rayVar = makeARayVar(rayClass, varType, varName, instanceType, params);
 					
-					Visibility v = Visibility.protected_;
-					RayVar rayVar = new RayVar(v, varType, varName);
-					rayVar.setValue(instanceTypeClass.getNewInstance( tokenListToParams( variables, parameter2.getSourceTokenUntil())));
 					variables.put(varName, rayVar);
 					
 					//RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
@@ -125,6 +117,7 @@ public class RayMethod {
 
 					rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0]));
 
+				} else if (tokenList.equalsPattern("ii=i.i(")) {
 				} else {
 					RayLog.warn("unknown code in line: " + tokenList);
 				}
@@ -132,6 +125,22 @@ public class RayMethod {
 			}
 		}
 		return null;
+	}
+
+	private RayVar makeARayVar(RayClass rayClass, String varType, String varName, String instanceType, List<RayClassInterface> params) {
+		RayClassInterface varTypeClass = rayClass.rayLang.getClass( varType);
+		if (varTypeClass == null)
+			RayUtils.runtimeExcp(varType + " not found");
+		
+		RayClassInterface instanceTypeClass = rayClass.rayLang.getClass( instanceType);
+		
+		RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
+		
+		
+		Visibility v = Visibility.protected_;
+		RayVar rayVar = new RayVar(v, varType, varName);
+		rayVar.setValue(instanceTypeClass.getNewInstance(params));
+		return rayVar;
 	}
 
 	private List<RayClassInterface> tokenListToParams(HashMap<String, RayVar> variables, TokenList paramTokenList) {

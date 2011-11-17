@@ -42,7 +42,7 @@ public class RayString implements RayClassInterface {
 	
 	@Override
 	public String toString() {
-		return "RayString( "+stringValue+ " )";
+		return stringValue;
 	}
 
 }

@@ -9,7 +9,8 @@ publik nichts start()
 	fenster.zeigeAn();
 	
 	DateiLeser dl = neu DateiLeser("level01.sokoban");
-	dl.leseZeile().schreibe();
+	Zeichen zeile = dl.leseZeile();
+	zeile.schreibe();
 	
 }
 
