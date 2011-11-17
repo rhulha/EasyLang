@@ -7,3 +7,10 @@
 						RayInteger ri = (RayInteger) mytype.nativeClass;
 						ri.setStringValue(value.s().substring(1,value.length()-2)); // remove quotes
 					}
+---
+
+					RayMethod method = rayVar.getType().getMethod(methodName.s());
+					if (method == null) {
+						RayLog.warn("methodName.s() " + rayVar.getInstance() + " " + methodName.s());
+						RayUtils.runtimeExcp("fuu");
+					}

@@ -1,17 +1,17 @@
 
 # test comment
 
-Integer i;
-String s;
+Zahl i;
+Zeichen s;
 
 public void start(Test t)
 {
 
-	Integer x = 5;
+	Zahl x = 5;
 	x.add!(7);
-	x.print();
+	x.schreibe();
 	
-	Integer y = 100;
+	Zahl y = 100;
 	y.print();
 	y.add!(x);
 	y.print();

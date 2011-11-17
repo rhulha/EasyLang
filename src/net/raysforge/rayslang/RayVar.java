@@ -3,16 +3,15 @@ package net.raysforge.rayslang;
 public class RayVar {
 
 	protected Visibility visibility;
-	protected RayClass type;
 	protected String name;
-	private RayInstance instance;
+	private RayClassInterface value;
+	private final String type;
 
-	public RayVar(Visibility visibility, RayClass type, String name, RayInstance instance) {
+	public RayVar(Visibility visibility, String type, String name) {
 		super();
 		this.visibility = visibility;
 		this.type = type;
 		this.name = name;
-		this.instance = instance;
 	}
 
 	public Visibility getVisibility() {
@@ -21,22 +20,6 @@ public class RayVar {
 
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
-	}
-
-	public RayClass getType() {
-		return type;
-	}
-
-	public void setType(RayClass type) {
-		this.type = type;
-	}
-
-	public RayInstance getInstance() {
-		return instance;
-	}
-
-	public void setInstance(RayInstance instance) {
-		this.instance = instance;
 	}
 
 	public String getName() {
@@ -49,7 +32,24 @@ public class RayVar {
 
 	@Override
 	public String toString() {
-		return "RayVar [visibility=" + visibility + ", type=" + type + ", name=" + name + ", instance=" + instance + "]";
+		return "RayVar [visibility=" + visibility + ", name=" + name + ", instance=" + value + "]";
+	}
+
+	public RayClassInterface getValue() {
+		return value;
+	}
+
+	public void setValue(RayClassInterface value) {
+		RayUtils.assert_(value.getName().equals(type), value.getName() + " != " + type);
+		this.value = value;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public RayVar copy() {
+		return new RayVar(visibility, type, name);
 	}
 
 	

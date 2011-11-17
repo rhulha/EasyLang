@@ -34,9 +34,9 @@ public class RayUtils {
 		return new HashMap<K,V>();
 	}
 
-	public static void assert_(boolean b) {
+	public static void assert_(boolean b, String msg) {
 		if (!b)
-			throw new RuntimeException();
+			throw new RuntimeException(msg);
 	}
 
 	public static void runtimeExcp(String s) {
@@ -44,7 +44,7 @@ public class RayUtils {
 	}
 
 	public static void assertNotNull(Object o) {
-		assert_(o!=null);
+		assert_(o!=null, "object is null");
 	}
 
 	/*

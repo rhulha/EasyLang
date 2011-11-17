@@ -2,13 +2,10 @@ package net.raysforge.rayslang.def;
 
 import java.util.Arrays;
 
-import net.raysforge.rayslang.RayClass;
-import net.raysforge.rayslang.RayInstance;
-import net.raysforge.rayslang.RayLang;
+import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLog;
-import net.raysforge.rayslang.RayMethod;
 
-public class RayInteger extends RayFloat implements NativeClass {
+public class RayInteger implements RayClassInterface {
 
 	private long intValue;
 
@@ -20,51 +17,38 @@ public class RayInteger extends RayFloat implements NativeClass {
 	}
 
 	@Override
-	public void register(RayLang rayLang) {
-
-		RayClass rc = new RayClass(rayLang, "Integer");
-		rc.nativeClass = this;
-
-		new RayMethod(rc, "add!", true);
-		new RayMethod(rc, "add", true);
-		new RayMethod(rc, "square!", true);
-		new RayMethod(rc, "print", true);
-	}
-
-	@Override
-	public NativeClass getNewInstance() {
+	public RayClassInterface getNewInstance() {
 		return new RayInteger();
 	}
 
 	@Override
-	public RayInstance invoke(NativeClass nc, String methodName, RayInstance... parameter) {
-		RayInteger rint = (RayInteger) nc;
+	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
 
-		RayLog.debug(methodName + " " + Arrays.asList(parameter) + " on " + nc);
+		RayLog.debug(methodName + " " + Arrays.asList(parameter) + " on " + this);
 
 		if (methodName.equals("add!") && (parameter.length == 1)) {
-			RayInstance p0 = parameter[0];
-			RayInteger p0int = (RayInteger) p0.nativeClass;
+			RayClassInterface p0 = parameter[0];
+			RayInteger p0int = (RayInteger) p0;
 
-			rint.setIntValue(rint.getIntValue() + p0int.getIntValue());
+			setIntValue(getIntValue() + p0int.getIntValue());
 		} else if (methodName.equals("add") && (parameter.length == 1)) {
-			RayInstance p0 = parameter[0];
-			RayInteger p0int = (RayInteger) p0.nativeClass;
+			RayClassInterface p0 = parameter[0];
+			RayInteger p0int = (RayInteger) p0;
 
-			return new RayInstance(new RayInteger(rint.getIntValue() + p0int.getIntValue()));
+			return new RayInteger(getIntValue() + p0int.getIntValue());
 
 		} else if (methodName.equals("square!") && (parameter.length == 0)) {
-			rint.setIntValue(rint.getIntValue() * rint.getIntValue());
+			setIntValue(getIntValue() * getIntValue());
 
 		} else if (methodName.equals("print") && (parameter.length == 0)) {
-			System.out.println( rint.getIntValue());
+			System.out.println( getIntValue());
 
 		} else {
-			return super.invoke(nc, methodName, parameter);
+			return new RayString(""+intValue).invoke( methodName, parameter);
 		}
 		return null;
 	}
-
+	
 	public long getIntValue() {
 		return intValue;
 	}
@@ -77,6 +61,11 @@ public class RayInteger extends RayFloat implements NativeClass {
 	@Override
 	public String toString() {
 		return "RayInteger( "+intValue+ " )";
+	}
+
+	@Override
+	public String getName() {
+		return "Zahl";
 	}
 
 }

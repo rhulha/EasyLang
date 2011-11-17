@@ -1,28 +1,33 @@
 package net.raysforge.rayslang.def;
 
-import net.raysforge.rayslang.RayInstance;
-import net.raysforge.rayslang.RayLang;
+import net.raysforge.rayslang.RayClassInterface;
 
-public class RayFloat extends RayString implements NativeClass {
+public class RayFloat implements RayClassInterface {
 	
-	private double floatValue;
+	protected double floatValue;
 	
-	@Override
-	public void register(RayLang rayLang) {
-		// TODO Auto-generated method stub
-		
+	public RayFloat() {
+	}
+	
+	public RayFloat(double floatValue) {
+		this.floatValue = floatValue;
 	}
 
 	@Override
-	public RayInstance invoke( NativeClass nc, String methodName, RayInstance... params) {
+	public String getName() {
+		return "Flieﬂ";
+	}
+
+	@Override
+	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public NativeClass getNewInstance() {
-		// TODO Auto-generated method stub
-		return null;
+	public RayClassInterface getNewInstance() {
+		return new RayFloat();
 	}
+	
 
 }

@@ -4,23 +4,19 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 
-import net.raysforge.rayslang.def.NativeClass;
-
-public class RayClass {
+public class RayClass implements RayClassInterface {
 
 	protected String name;
-	String package_ = "default";
 	RayLang rayLang;
-	public NativeClass nativeClass;
 
-	HashMap<String, RayVar> fields = new HashMap<String, RayVar>();
+	HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
 	public RayClass(RayLang rayLang, String name) {
 		this.name = name;
 		this.rayLang = rayLang;
-		rayLang.classes.put(getFullName(), this);
+		rayLang.registerClasses(this);
 	}
 
 	public static RayClass parse(RayLang rayLang, String name, File file) {
@@ -37,60 +33,61 @@ public class RayClass {
 				break;
 
 			if (tokenList.equalsPattern("ii;")) {
-				Token typeStr = tokenList.get(0);
-				Token varName = tokenList.get(1);
-				RayClass type = rayLang.classes.get("default." + typeStr);
+				String typeStr = tokenList.get(0).s();
+				String varName = tokenList.get(1).s();
+				RayClassInterface type = rayLang.getClass(typeStr);
 				if (type == null)
 					RayUtils.runtimeExcp(typeStr + " not found");
 
 				Visibility v = Visibility.protected_;
-				rc.fields.put(varName.s(), new RayVar(v, type, varName.s(), null));
+				rc.variables.put(varName, new RayVar(v, typeStr, varName));
 				RayLog.trace("var: " + type + " - " + varName);
 
 			} else if (tokenList.equalsPattern("ii=ii(")) {
 
 				Token varType = tokenList.get(0);
 				Token varName = tokenList.get(1);
-				RayClass varTypeClass = rayLang.classes.get("default." + varType);
+				RayClassInterface varTypeClass = rayLang.getClass(varType.s());
 				if (varTypeClass == null)
 					RayUtils.runtimeExcp(varType + " not found");
-				
-				RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()));
-				
+
+				RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()), tokenList.get(3).s() + " != " + KeyWord.NEW.getLocalText());
+
 				Token instanceType = tokenList.get(4);
-				RayClass instanceTypeClass = rayLang.classes.get("default." + instanceType);
-				
-				RayUtils.assert_(instanceTypeClass == varTypeClass); // check for inhertiance ? // TODO: check using equals ?
-				
+				RayClassInterface instanceTypeClass = rayLang.getClass(instanceType.s());
+
+				RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
+
 				Visibility v = Visibility.protected_;
-				RayVar rayVar = new RayVar(v, varTypeClass, varName.s(), instanceTypeClass.getNewInstance());
-				rc.fields.put(varName.s(), rayVar);
-				
-				RayUtils.assert_(rs.getSourceToken().isClosedParentheses());
-				RayUtils.assert_(rs.getSourceToken().isSemicolon());
-				
+				RayVar rayVar = new RayVar(v, varType.s(), varName.s());
+				rayVar.setValue( instanceTypeClass.getNewInstance());
+				rc.variables.put(varName.s(), rayVar);
+
+				RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
+				RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
+
 			} else if (tokenList.equalsPattern("iii;")) {
 
-				Token typeStr = tokenList.get(1);
-				Token varName = tokenList.get(2);
-				RayClass type = rayLang.classes.get("default." + typeStr);
+				String typeStr = tokenList.get(1).s();
+				String varName = tokenList.get(2).s();
+				RayClassInterface type = rayLang.getClass(typeStr);
 				if (type == null)
 					RayUtils.runtimeExcp(typeStr + " not found");
 
 				Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
-				rc.fields.put(varName.s(), new RayVar(v, type, varName.s(), null));
+				rc.variables.put(varName, new RayVar(v, typeStr, varName));
 				RayLog.trace("var: " + type + " - " + varName);
 			} else if (tokenList.equalsPattern("iii(")) {
 
 				// Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
-				Token typeStr = tokenList.get(1);
-				Token methodName = tokenList.get(2);
+				String typeStr = tokenList.get(1).s();
+				String methodName = tokenList.get(2).s();
 				//Token visStr = tokenList.pollLast();
-				RayClass type = rayLang.classes.get("default." + typeStr);
+				//RayClassInterface type = rayLang.getClass(typeStr.s());
 
 				RayLog.trace("methodName: " + rc.name + "." + methodName);
-				RayMethod.parse(rc, type, methodName.s(), rs);
-				
+				RayMethod.parse(rc, typeStr, methodName, rs);
+
 			} else {
 				RayLog.warn("hm: " + tokenList);
 			}
@@ -100,37 +97,38 @@ public class RayClass {
 		return rc;
 	}
 
-	public RayInstance getNewInstance() {
+	public RayClassInterface getNewInstance() {
 
-		if (nativeClass != null) {
-			return new RayInstance(nativeClass.getNewInstance());
-		} else {
-			RayInstance ri = new RayInstance(this);
+		RayClass ri = new RayClass(rayLang, name);
+		ri.methods = methods;
 
-			Set<String> keySet = fields.keySet();
-			for (String key : keySet) {
-				RayVar rayVar = this.fields.get(key);
-				ri.variables.put(key, new RayVar(rayVar.visibility, this, rayVar.name, rayVar.type.getNewInstance()));
-			}
-			return ri;
+		for (String key : variables.keySet()) {
+			RayVar rayVar = this.variables.get(key);
+			RayVar rayVar2 = rayVar.copy();
+			rayVar2.setValue( rayLang.getClass( rayVar.getType()).getNewInstance());
+			ri.variables.put(key, rayVar2);
 		}
-	}
-
-	public String getFullName() {
-		return package_ + "." + name;
+		return ri;
 	}
 
 	@Override
 	public String toString() {
-		return getFullName();
+		return getName();
 	}
 
 	public RayMethod getMethod(String name) {
 		return methods.get(name);
 	}
 
-	public boolean isNative() {
-		return nativeClass != null;
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public RayClassInterface invoke(String methodName, RayClassInterface... params) {
+		RayMethod method = getMethod(methodName);
+		return method.invoke(this, params);
 	}
 
 	/*
