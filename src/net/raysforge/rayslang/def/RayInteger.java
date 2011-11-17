@@ -45,6 +45,7 @@ public class RayInteger implements RayClassInterface {
 			System.out.println( getIntValue());
 
 		} else {
+			System.out.println("OMG");
 			return new RayString(""+intValue).invoke( methodName, parameter);
 		}
 		return null;

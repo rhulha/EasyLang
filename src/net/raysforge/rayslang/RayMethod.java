@@ -99,25 +99,44 @@ public class RayMethod {
 
 					String varName = tokenList.get(0).s();
 					String methodName = tokenList.get(2).s();
+					RaySource paramSrc = rs.getInnerText('(', ')');
+					RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
+					TokenList paramTokenList = paramSrc.getSourceTokenUntil();
+					List<RayClassInterface> myparams = tokenListToParams(variables, paramTokenList);
+
 					RayVar rayVar = variables.get(varName);
 					// check parameter
 					if (rayVar == null) {
 						rayVar = rayClass.variables.get(varName); // TODO: loop over parents ?
 					}
 					if (rayVar == null) {
-						System.out.println("fuuu2");
+						System.out.println("variable not found: " + varName);
 					}
-
-					RaySource paramSrc = rs.getInnerText('(', ')');
-					RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
-
-					TokenList paramTokenList = paramSrc.getSourceTokenUntil();
-
-					List<RayClassInterface> myparams = tokenListToParams(variables, paramTokenList);
 
 					rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0]));
 
 				} else if (tokenList.equalsPattern("ii=i.i(")) {
+					String newVarType = tokenList.get(0).s();
+					String newVarName = tokenList.get(1).s();
+					String existingVarName = tokenList.get(3).s();
+					String methodName = tokenList.get(5).s();
+					RaySource paramSrc = rs.getInnerText('(', ')');
+					RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
+					TokenList paramTokenList = paramSrc.getSourceTokenUntil();
+					List<RayClassInterface> myparams = tokenListToParams(variables, paramTokenList);
+
+					RayVar rayVar = variables.get(existingVarName);
+					// check parameter
+					if (rayVar == null) {
+						rayVar = rayClass.variables.get(existingVarName); // TODO: loop over parents ?
+					}
+					if (rayVar == null) {
+						System.out.println("variable not found: " + existingVarName);
+					}
+					
+					RayVar rv = new RayVar(Visibility.private_, newVarType, newVarName);
+					rv.setValue(rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0])));
+					variables.put(rv.name, rv);
 				} else {
 					RayLog.warn("unknown code in line: " + tokenList);
 				}
