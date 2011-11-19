@@ -53,6 +53,14 @@ public class TokenList {
 					if( ! token.isOpenParentheses() )
 						return false;
 					break;
+				case '[':
+					if( ! token.isOpenBracket() )
+						return false;
+					break;
+				case ']':
+					if( ! token.isClosedBracket() )
+						return false;
+					break;
 
 				default:
 					RayUtils.runtimeExcp("unknown pattern element");

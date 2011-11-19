@@ -75,4 +75,8 @@ public class Token {
 		return ')' == token.charAt(0);
 	}
 
+	public boolean isClosedBracket() {
+		return ']' == token.charAt(0);
+	}
+
 }

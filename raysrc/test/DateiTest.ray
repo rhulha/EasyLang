@@ -1,0 +1,11 @@
+
+
+publik nichts start()
+{
+	
+	DateiLeser dl = neu DateiLeser("level01.sokoban");
+	dl.fürJedeZeile{
+		Zeichen zeile -> zeile.schreibe();
+	}
+	
+}

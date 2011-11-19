@@ -52,7 +52,7 @@ public class RayClass implements RayClassInterface {
 				if (varTypeClass == null)
 					RayUtils.runtimeExcp(varType + " not found");
 
-				RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()), tokenList.get(3).s() + " != " + KeyWord.NEW.getLocalText());
+				RayUtils.assert_(tokenList.get(3).equals(KeyWords.NEW), tokenList.get(3).s() + " != " + KeyWords.NEW);
 
 				Token instanceType = tokenList.get(4);
 				RayClassInterface instanceTypeClass = rayLang.getClass(instanceType.s());

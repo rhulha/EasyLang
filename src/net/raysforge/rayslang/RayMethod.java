@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.raysforge.rayslang.def.RayArray;
 import net.raysforge.rayslang.def.RayInteger;
 import net.raysforge.rayslang.def.RayString;
 
@@ -81,7 +82,7 @@ public class RayMethod {
 					
 					String varType = tokenList.get(0).s();
 					String varName = tokenList.get(1).s();
-					RayUtils.assert_(tokenList.get(3).equals(KeyWord.NEW.getLocalText()), tokenList.get(3).s() + " != " + KeyWord.NEW.getLocalText());
+					RayUtils.assert_(tokenList.get(3).equals(KeyWords.NEW), tokenList.get(3).s() + " != " + KeyWords.NEW);
 					String instanceType = tokenList.get(4).s();
 
 					RaySource parameter2 = rs.getInnerText('(', ')');
@@ -115,6 +116,18 @@ public class RayMethod {
 
 					rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0]));
 
+				} else if (tokenList.equalsPattern("i[]i=ii[];")) {
+					String newVarType = tokenList.get(0).s();
+					String newVarName = tokenList.get(3).s();
+					RayUtils.assert_(tokenList.get(5).equals(KeyWords.NEW), tokenList.get(5).s() + " != " + KeyWords.NEW);
+					String instanceType = tokenList.get(6).s();
+					
+					RayArray ra = new RayArray(instanceType+"[]");
+
+					RayVar rayVar = new RayVar(Visibility.protected_, newVarType+"[]", newVarName);
+					rayVar.setValue(ra);
+					
+					variables.put(newVarName, rayVar);
 				} else if (tokenList.equalsPattern("ii=i.i(")) {
 					String newVarType = tokenList.get(0).s();
 					String newVarName = tokenList.get(1).s();

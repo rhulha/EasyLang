@@ -1,0 +1,13 @@
+
+
+public void start()
+{
+
+	Zahl[] x = neu Zahl[];
+	
+	x.add(7);
+	
+	x.schreibe();
+	
+
+}

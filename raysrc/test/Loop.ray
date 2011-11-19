@@ -1,0 +1,15 @@
+
+
+
+public void start()
+{
+
+	Zahl x = 7;
+	
+	x.times { 
+	  "Hello".print();
+	}
+	
+
+}
+
