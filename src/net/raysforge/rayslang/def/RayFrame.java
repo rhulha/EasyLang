@@ -5,7 +5,9 @@ import java.util.List;
 
 import net.raysforge.easyswing.EasySwing;
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLambda;
 import net.raysforge.rayslang.RayLog;
+import net.raysforge.rayslang.RaySource;
 
 public class RayFrame implements RayClassInterface {
 
@@ -40,6 +42,12 @@ public class RayFrame implements RayClassInterface {
 	@Override
 	public String getName() {
 		return "Fenster";
+	}
+
+	@Override
+	public RayClassInterface invoke(String methodName, RayLambda closure) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

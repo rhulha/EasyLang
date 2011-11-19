@@ -24,7 +24,7 @@ public class RaySource {
 	}
 
 	public void eatSpacesAndReturns() {
-		while (pos < src.length && (isDivider(src[pos])))
+		while ( (pos < src.length) && (isDivider(src[pos])))
 			pos++;
 	}
 
@@ -150,6 +150,17 @@ public class RaySource {
 	@Override
 	public String toString() {
 		return new String(src, pos, src.length-pos);
+	}
+	
+	public static void main(String[] args) {
+		RaySource rs = new RaySource("{as{d as}d\n}\r\n".toCharArray());
+		System.out.println(rs.getSourceToken());
+		System.out.println(rs.getSourceToken());
+		System.out.println(rs.getSourceToken());
+		rs.getInnerText('{', '}');
+		System.out.println();
+		rs.eatSpacesAndReturns();
+		System.out.println(rs);
 	}
 
 }

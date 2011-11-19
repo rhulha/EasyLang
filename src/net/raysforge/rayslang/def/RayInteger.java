@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLambda;
 import net.raysforge.rayslang.RayLog;
+import net.raysforge.rayslang.RaySource;
 
 public class RayInteger implements RayClassInterface {
 
@@ -68,6 +70,12 @@ public class RayInteger implements RayClassInterface {
 	@Override
 	public String getName() {
 		return "Zahl";
+	}
+
+	@Override
+	public RayClassInterface invoke(String methodName, RayLambda closure) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

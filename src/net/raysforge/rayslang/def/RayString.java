@@ -3,6 +3,8 @@ package net.raysforge.rayslang.def;
 import java.util.List;
 
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLambda;
+import net.raysforge.rayslang.RaySource;
 
 public class RayString implements RayClassInterface {
 
@@ -52,6 +54,12 @@ public class RayString implements RayClassInterface {
 	@Override
 	public String toString() {
 		return stringValue;
+	}
+
+	@Override
+	public RayClassInterface invoke(String methodName, RayLambda closure) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

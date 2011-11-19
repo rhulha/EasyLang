@@ -3,6 +3,8 @@ package net.raysforge.rayslang.def;
 import java.util.List;
 
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLambda;
+import net.raysforge.rayslang.RaySource;
 
 public class RayFloat implements RayClassInterface {
 	
@@ -29,6 +31,12 @@ public class RayFloat implements RayClassInterface {
 	@Override
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 		return new RayFloat();
+	}
+
+	@Override
+	public RayClassInterface invoke(String methodName, RayLambda closure) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

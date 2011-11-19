@@ -132,6 +132,12 @@ public class RayClass implements RayClassInterface {
 		return method.invoke(this, params);
 	}
 
+	@Override
+	public RayClassInterface invoke(String methodName, RayLambda closure) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*
 	public RayClass invokeNative(RayClass rc, String methodName, RayClass ... parameter) {
 		if( methodName.equals("print") && (parameter.length == 0) )

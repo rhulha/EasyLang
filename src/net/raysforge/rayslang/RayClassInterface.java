@@ -7,6 +7,7 @@ public interface RayClassInterface {
 
 	public String getName();
 	public RayClassInterface invoke( String methodName, RayClassInterface... parameter);
+	public RayClassInterface invoke( String methodName, RayLambda closure);
 	public RayClassInterface getNewInstance( List<RayClassInterface> parameter);
 
 }
