@@ -77,7 +77,7 @@ public class RayMethod {
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
 		for( RayVar parameterRayVar	: parameterList)
 		{
-			RayVar rayVarForVariables = new RayVar(parameterRayVar.getVisibility(), parameterRayVar.getType(), parameterRayVar.getName());
+			RayVar rayVarForVariables = parameterRayVar.copy();
 			rayVarForVariables.setValue(parameter[0]);
 			variables.put(parameterRayVar.getName(), rayVarForVariables);
 		}
@@ -220,7 +220,7 @@ public class RayMethod {
 		return rayVar;
 	}
 
-	private List<RayClassInterface> tokenListToParams(HashMap<String, RayVar> variables, TokenList paramTokenList) {
+	protected static List<RayClassInterface> tokenListToParams(HashMap<String, RayVar> variables, TokenList paramTokenList) {
 		List<RayClassInterface> myparams = RayUtils.newArrayList();
 		for (int i = 0; i < paramTokenList.size(); i++) {
 			if (paramTokenList.get(i).isQuote()) {

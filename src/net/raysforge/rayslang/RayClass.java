@@ -58,12 +58,15 @@ public class RayClass implements RayClassInterface {
 
 				RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
 
+				RaySource paramSrc = rs.getInnerText('(', ')');
+				TokenList paramTokenList = paramSrc.getSourceTokenUntil();
+				List<RayClassInterface> myparams = RayMethod.tokenListToParams(rc.variables, paramTokenList);
+				
 				Visibility v = Visibility.protected_;
 				RayVar rayVar = new RayVar(v, varType.s(), varName.s());
-				rayVar.setValue( instanceTypeClass.getNewInstance(null));
+				rayVar.setValue( instanceTypeClass.getNewInstance(myparams));
 				rc.variables.put(varName.s(), rayVar);
 
-				RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
 				RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
 
 			} else if (tokenList.equalsPattern("iii;")) {

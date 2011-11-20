@@ -7,5 +7,6 @@ publik nichts start()
 	dl.fürJedeZeile{
 		Zeichen zeile -> zeile.schreibe();
 	}
+	dl.ende();
 	
 }
