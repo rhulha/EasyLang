@@ -14,7 +14,7 @@ public class RayMethod {
 
 	protected RayClass parentClass;
 
-	List<RayVar> parameter = new ArrayList<RayVar>();
+	List<RayVar> parameterList = new ArrayList<RayVar>();
 	
 	HashMap<String, RayVar> closureVariables;
 	
@@ -39,11 +39,15 @@ public class RayMethod {
 		if( rm.code.contains("->") )
 		{
 			TokenList parameterList = rm.code.getSourceTokenUntil("->");
+			rm.code.removeCodeBeforePosAndResetPos();
 			parameterList.pollLast(); // remove closure sign
-			System.out.println("pl: " + parameterList);
-			System.out.println("code: " + rm.code);
+			if( parameterList.size() >= 2)
+			{
+				rm.parameterList.add(new RayVar(Visibility.local_, parameterList.get(0).s(), parameterList.get(1).s()));
+				// TODO: loop over more parameter
+			}
+			System.out.println("rm.code: " + rm.code);
 		}
-		
 		return rm;
 	}
 	
@@ -70,11 +74,15 @@ public class RayMethod {
 
 		RayLog.debug("RayMethod.invoke instance: " + name + " " + instance);
 
-		//System.out.println(name + " " + instance);
-
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
+		for( RayVar parameterRayVar	: parameterList)
+		{
+			RayVar rayVarForVariables = new RayVar(parameterRayVar.getVisibility(), parameterRayVar.getType(), parameterRayVar.getName());
+			rayVarForVariables.setValue(parameter[0]);
+			variables.put(parameterRayVar.getName(), rayVarForVariables);
+		}
 
-		RaySource rs = new RaySource(code.src.clone());
+		RaySource rs = new RaySource(code.src.clone()); // TODO: there may not be a need to copy the code, only a local pos could be enough.
 		while (true) {
 			TokenList tokenList = rs.getSourceTokenUntil(";", "(", "{");
 			if (tokenList.isEmpty())
@@ -95,7 +103,7 @@ public class RayMethod {
 					}
 					RayVar rv = new RayVar(Visibility.private_, mytypeName, myname);
 					rv.setValue(ri);
-					variables.put(rv.name, rv);
+					variables.put(rv.getName(), rv);
 
 				} else if (tokenList.equalsPattern("ii=ii(")) {
 					
@@ -186,7 +194,7 @@ public class RayMethod {
 					
 					RayVar rv = new RayVar(Visibility.private_, newVarType, newVarName);
 					rv.setValue(rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0])));
-					variables.put(rv.name, rv);
+					variables.put(rv.getName(), rv);
 				} else {
 					RayLog.warn("unknown code in line: " + tokenList);
 				}
@@ -246,6 +254,10 @@ public class RayMethod {
     
     public RaySource getCode() {
 		return code;
+	}
+    
+    public List<RayVar> getParameterList() {
+		return parameterList;
 	}
 
 }

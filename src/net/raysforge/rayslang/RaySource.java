@@ -1,5 +1,6 @@
 package net.raysforge.rayslang;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class RaySource {
@@ -191,6 +192,11 @@ public class RaySource {
 			}
 		}
 		return -1;
+	}
+
+	public void removeCodeBeforePosAndResetPos() {
+		src = Arrays.copyOfRange(src, pos, src.length);
+		pos=0;
 	}
 
 }

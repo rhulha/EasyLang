@@ -2,8 +2,8 @@ package net.raysforge.rayslang;
 
 public class RayVar {
 
-	protected Visibility visibility;
-	protected String name;
+	private Visibility visibility;
+	private String name;
 	private RayClassInterface value;
 	private final String type;
 

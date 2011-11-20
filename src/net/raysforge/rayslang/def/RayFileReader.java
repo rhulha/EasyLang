@@ -62,7 +62,6 @@ public class RayFileReader implements RayClassInterface {
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {
-					System.out.println(closure.getCode());
 					closure.invoke(closure.getParentClass(), new RayString(line));
 				}
 			} catch (IOException e) {
