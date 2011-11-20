@@ -3,11 +3,9 @@ package net.raysforge.rayslang.def;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import net.raysforge.rayslang.RayClassInterface;
-import net.raysforge.rayslang.RayLambda;
-import net.raysforge.rayslang.RaySource;
+import net.raysforge.rayslang.RayMethod;
 
 public class RayArray implements RayClassInterface {
 
@@ -77,7 +75,7 @@ public class RayArray implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayLambda closure) {
+	public RayClassInterface invoke(String methodName, RayMethod closure) {
 		// TODO Auto-generated method stub
 		return null;
 	}

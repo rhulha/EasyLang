@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
-import net.raysforge.rayslang.RayLambda;
+import net.raysforge.rayslang.RayMethod;
 
 public class RayString implements RayClassInterface {
 
@@ -57,7 +57,7 @@ public class RayString implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayLambda closure) {
+	public RayClassInterface invoke(String methodName, RayMethod closure) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -15,7 +15,9 @@ public class RayMethod {
 	protected RayClass parentClass;
 
 	List<RayVar> parameter = new ArrayList<RayVar>();
-
+	
+	HashMap<String, RayVar> closureVariables;
+	
 	String returnType;
 
 	RaySource code;
@@ -25,9 +27,26 @@ public class RayMethod {
 		this.name = name;
 		this.parentClass = parentClass;
 
-		parentClass.methods.put(name, this);
+		if( ! name.equals("#") )
+			parentClass.methods.put(name, this);
 	}
 
+	public static RayMethod parseClosure(RayClass parentClass, HashMap<String, RayVar> closureVariables, RaySource rs) {
+		RayMethod rm = new RayMethod(parentClass, "#");
+		rm.returnType = KeyWords.VOID;
+
+		rm.code = rs.getInnerText('{', '}');
+		if( rm.code.contains("->") )
+		{
+			TokenList parameterList = rm.code.getSourceTokenUntil("->");
+			parameterList.pollLast(); // remove closure sign
+			System.out.println("pl: " + parameterList);
+			System.out.println("code: " + rm.code);
+		}
+		
+		return rm;
+	}
+	
 	public static RayMethod parse(RayClass parentClass, String returnType, String name, RaySource rs) {
 		
 		RayMethod rm = new RayMethod(parentClass, name);
@@ -133,7 +152,6 @@ public class RayMethod {
 					String varName = tokenList.get(0).s();
 					String methodName = tokenList.get(2).s();
 					
-					RaySource closure = rs.getInnerText('{', '}');
 					RayVar rayVar = variables.get(varName);
 					// check parameter
 					if (rayVar == null) {
@@ -143,13 +161,11 @@ public class RayMethod {
 						System.out.println("variable not found: " + varName);
 					}
 
-					RayLambda rl = new RayLambda(parentClass, variables, closure);
-					rayVar.getValue().invoke(methodName, rl);
+					RayMethod rm = RayMethod.parseClosure( parentClass, variables, rs);
+					rayVar.getValue().invoke(methodName, rm);
 
-					
-					
-					System.out.println(tokenList);
 				} else if (tokenList.equalsPattern("ii=i.i(")) {
+				
 					String newVarType = tokenList.get(0).s();
 					String newVarName = tokenList.get(1).s();
 					String existingVarName = tokenList.get(3).s();
@@ -222,6 +238,14 @@ public class RayMethod {
     @Override
 	public String toString() {
 		return /*returnType + " " + */parentClass + "." + name;
+	}
+    
+    public RayClass getParentClass() {
+		return parentClass;
+	}
+    
+    public RaySource getCode() {
+		return code;
 	}
 
 }

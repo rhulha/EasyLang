@@ -8,8 +8,7 @@ import java.util.List;
 
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
-import net.raysforge.rayslang.RayLambda;
-import net.raysforge.rayslang.RaySource;
+import net.raysforge.rayslang.RayMethod;
 import net.raysforge.rayslang.RayUtils;
 
 public class RayFileReader implements RayClassInterface {
@@ -57,12 +56,19 @@ public class RayFileReader implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayLambda closure) {
-		
+	public RayClassInterface invoke(String methodName, RayMethod closure) {
+
 		if (methodName.equals("fürJedeZeile")) {
-			closure.invoke(this);
+			String line;
+			try {
+				while ((line = br.readLine()) != null) {
+					System.out.println(closure.getCode());
+					closure.invoke(closure.getParentClass(), new RayString(line));
+				}
+			} catch (IOException e) {
+				RayUtils.runtimeExcp(e);
+			}
 		}
 		return null;
 	}
-
 }

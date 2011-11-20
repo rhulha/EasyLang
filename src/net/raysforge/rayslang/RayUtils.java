@@ -43,6 +43,10 @@ public class RayUtils {
 		throw new RuntimeException(s);
 	}
 
+	public static void runtimeExcp(Throwable t) {
+		throw new RuntimeException(t);
+	}
+
 	public static void assertNotNull(Object o) {
 		assert_(o!=null, "object is null");
 	}

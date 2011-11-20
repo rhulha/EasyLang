@@ -3,7 +3,6 @@ package net.raysforge.rayslang;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class RayClass implements RayClassInterface {
 
@@ -133,7 +132,7 @@ public class RayClass implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayLambda closure) {
+	public RayClassInterface invoke(String methodName, RayMethod closure) {
 		// TODO Auto-generated method stub
 		return null;
 	}

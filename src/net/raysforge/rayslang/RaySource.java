@@ -19,12 +19,17 @@ public class RaySource {
 		return isLetterOrDigit() || src[pos] == '!';
 	}
 
+	// capture closure sign "->" or minus number "-42"
+	public boolean isLetterOrDigitOrBangOrMinusOrGreaterThan() {
+		return isLetterOrDigit() || (src[pos] == '!') || (src[pos] == '-') || (src[pos] == '>');
+	}
+
 	public boolean more() {
 		return pos < src.length;
 	}
 
 	public void eatSpacesAndReturns() {
-		while ( (pos < src.length) && (isDivider(src[pos])))
+		while ((more()) && (isDivider(src[pos])))
 			pos++;
 	}
 
@@ -67,15 +72,14 @@ public class RaySource {
 			code.append(c); // TODO: optimize
 			pos++;
 		}
-		return new RaySource( code.toString().toCharArray());
+		return new RaySource(code.toString().toCharArray());
 	}
 
 	public Token getSourceToken() {
 		return getSourceToken(false);
 	}
-	
-	public TokenList getSourceTokenUntil(String ... any)
-	{
+
+	public TokenList getSourceTokenUntil(String... any) {
 		LinkedList<Token> queue = new LinkedList<Token>();
 
 		while (true) {
@@ -83,14 +87,13 @@ public class RaySource {
 			if (token == null || token.length() == 0)
 				break;
 			queue.add(token);
-			for( String s : any)
-			{
+			for (String s : any) {
 				if (token.equals(s)) {
-					return new TokenList( queue);
+					return new TokenList(queue);
 				}
 			}
 		}
-		return new TokenList( queue);
+		return new TokenList(queue);
 	}
 
 	public Token getSourceToken(boolean peak) {
@@ -100,41 +103,42 @@ public class RaySource {
 		if (!more()) {
 			return null;
 		}
-		if (isLetterOrDigitOrBang()) // ! like ruby
+		if (isLetterOrDigitOrBangOrMinusOrGreaterThan()) // ! like ruby and -> for closures
 		{
-			while (more() && isLetterOrDigitOrBang())
+			while (more() && isLetterOrDigitOrBangOrMinusOrGreaterThan())
 				pos++;
 		} else if (src[pos] == '#') // kommentare ignorieren
 		{
-			while (pos < src.length && src[pos] != '\n')
+			while (more() && src[pos] != '\n')
 				pos++;
 			return getSourceToken(peak);
 		} else if (src[pos] == '"') {
 			pos++;
-			while (pos < src.length && src[pos] != '"')
+			while (more() && src[pos] != '"')
 				pos++;
 			if (pos >= src.length)
 				throw new RuntimeException("Unclosed String");
 			pos++;
 		} else if (src[pos] == '\'') {
 			pos++;
-			while (pos < src.length && src[pos] != '\'')
+			while (more() && src[pos] != '\'')
 				pos++;
-			if (src[pos] != '\'')
+			if (pos >= src.length)
 				throw new RuntimeException("Unclosed String");
 			pos++;
 		} else
 			pos++;
+		Token token = new Token(new String(src, start, pos - start));
 		if (peak == true) {
 			pos = start;
 		}
-		return new Token( new String(src, start, pos - start));
+		return token;
 	}
 
 	public String getToken() {
 		eatSpacesAndReturns();
 		int a = pos;
-		while (pos < src.length) {
+		while (more()) {
 			if (isDivider())
 				break;
 			pos++;
@@ -143,24 +147,50 @@ public class RaySource {
 	}
 
 	public void eatSpaces() {
-		while (pos < src.length && (src[pos] == ' ' || src[pos] == '\t'))
+		while (more() && (src[pos] == ' ' || src[pos] == '\t'))
 			pos++;
 	}
-	
+
 	@Override
 	public String toString() {
-		return new String(src, pos, src.length-pos);
+		return new String(src, pos, src.length - pos);
 	}
-	
-	public static void main(String[] args) {
-		RaySource rs = new RaySource("{as{d as}d\n}\r\n".toCharArray());
-		System.out.println(rs.getSourceToken());
-		System.out.println(rs.getSourceToken());
-		System.out.println(rs.getSourceToken());
-		rs.getInnerText('{', '}');
-		System.out.println();
-		rs.eatSpacesAndReturns();
-		System.out.println(rs);
+
+	public boolean contains(String string) {
+		return indexOf(string) != -1;
+	}
+
+	public int indexOf(String string) {
+		int sourceOffset = pos;
+		int fromIndex = 0;
+		int max = src.length;
+		char[] source = src;
+		char[] target = string.toCharArray();
+		char first = target[0];
+		int targetCount = target.length;
+		int targetOffset = 0;
+
+		for (int i = sourceOffset + fromIndex; i <= max; i++) {
+			/* Look for first character. */
+			if (source[i] != first) {
+				while (++i <= max && source[i] != first)
+					;
+			}
+
+			/* Found first character, now look at the rest of v2 */
+			if (i <= max) {
+				int j = i + 1;
+				int end = j + targetCount - 1;
+				for (int k = targetOffset + 1; j < end && source[j] == target[k]; j++, k++)
+					;
+
+				if (j == end) {
+					/* Found whole string. */
+					return i - sourceOffset;
+				}
+			}
+		}
+		return -1;
 	}
 
 }
