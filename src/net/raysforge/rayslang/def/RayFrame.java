@@ -11,18 +11,14 @@ import net.raysforge.rayslang.RayMethod;
 
 public class RayFrame implements RayClassInterface {
 
-	EasySwing es;
+	EasySwing es = new EasySwing("", 800, 600);
 	
 	public RayFrame() {
 	}
 	
-	public RayFrame(String title) {
-		es = new EasySwing(title, 800, 600);
-	}
-
 	@Override
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
-		return new RayFrame(parameter.get(0).toString());
+		return new RayFrame(); // parameter.get(0).toString()
 	}
 
 	@Override

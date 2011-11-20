@@ -46,7 +46,6 @@ public class RayMethod {
 				rm.parameterList.add(new RayVar(Visibility.local_, parameterList.get(0).s(), parameterList.get(1).s()));
 				// TODO: loop over more parameter
 			}
-			System.out.println("rm.code: " + rm.code);
 		}
 		return rm;
 	}

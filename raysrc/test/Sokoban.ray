@@ -1,9 +1,10 @@
 
 
-Fenster fenster = neu Fenster("Sokoban");
+Fenster fenster = neu Fenster();
 
 publik nichts start()
 {
+	fenster.setzeTitel("Sokoban");
 	fenster.setzeBreite(800);
 	fenster.setzeHöhe(600);
 	#fenster.zeigeAn();
@@ -15,7 +16,15 @@ publik nichts start()
 	
 	DateiLeser dl = neu DateiLeser("level01.sokoban");
 	dl.fürJedeZeile{
-		Zeichen zeile -> zeile.schreibe();
+		Zeichen zeile -> 
+		String[] parts = line.spalte(":");
+		level[parts[0]] = parts[1];
+		parts[1].equals("Player"){
+			String[] coords = parts[0].spalte("-");
+			spielerX = coords[0].toZahl();
+			spielerY = coords[1].toZahl();
+		}
+		
 	}
 	dl.ende();
 	

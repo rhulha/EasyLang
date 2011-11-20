@@ -39,7 +39,7 @@ public class RayString implements RayClassInterface {
 		if (methodName.equals("schreibe") && (parameter.length == 0)) {
 			System.err.println(stringValue);
 		}
-		if (methodName.equals("split") && (parameter.length == 1)) {
+		if (methodName.equals("spalte") && (parameter.length == 1)) {
 			RayClassInterface p0 = parameter[0];
 			String[] split = stringValue.split(p0.toString());
 			RayArray ra = new RayArray(getName());
