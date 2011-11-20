@@ -2,9 +2,9 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
+import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLambda;
-import net.raysforge.rayslang.RaySource;
 
 public class RayFile implements RayClassInterface {
 	
@@ -12,7 +12,7 @@ public class RayFile implements RayClassInterface {
 
 	@Override
 	public String getName() {
-		return "Datei";
+		return KeyWords.CLASS_FILE;
 	}
 
 	@Override

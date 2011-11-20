@@ -2,9 +2,9 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
+import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLambda;
-import net.raysforge.rayslang.RaySource;
 
 public class RayString implements RayClassInterface {
 
@@ -31,7 +31,7 @@ public class RayString implements RayClassInterface {
 
 	@Override
 	public String getName() {
-		return "Zeichen";
+		return KeyWords.CLASS_STRING;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class RayString implements RayClassInterface {
 		if (methodName.equals("split") && (parameter.length == 1)) {
 			RayClassInterface p0 = parameter[0];
 			String[] split = stringValue.split(p0.toString());
-			RayArray ra = new RayArray("Zeichen");
+			RayArray ra = new RayArray(getName());
 			for (String string : split) {
 				ra.list.add(new RayString(string));
 			}

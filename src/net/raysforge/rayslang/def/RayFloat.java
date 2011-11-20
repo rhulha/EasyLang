@@ -2,9 +2,9 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
+import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLambda;
-import net.raysforge.rayslang.RaySource;
 
 public class RayFloat implements RayClassInterface {
 	
@@ -19,7 +19,7 @@ public class RayFloat implements RayClassInterface {
 
 	@Override
 	public String getName() {
-		return "Flieﬂ";
+		return KeyWords.CLASS_FLOAT;
 	}
 
 	@Override

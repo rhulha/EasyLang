@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.raysforge.easyswing.EasySwing;
+import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLambda;
 import net.raysforge.rayslang.RayLog;
@@ -41,7 +42,7 @@ public class RayFrame implements RayClassInterface {
 
 	@Override
 	public String getName() {
-		return "Fenster";
+		return KeyWords.CLASS_FRAME;
 	}
 
 	@Override

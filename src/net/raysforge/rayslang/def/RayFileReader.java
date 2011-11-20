@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLambda;
 import net.raysforge.rayslang.RaySource;
@@ -29,7 +30,7 @@ public class RayFileReader implements RayClassInterface {
 
 	@Override
 	public String getName() {
-		return "DateiLeser";
+		return KeyWords.CLASS_FILE_READER;
 	}
 
 	@Override
