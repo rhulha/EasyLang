@@ -87,7 +87,7 @@ public class RayMethod {
 			if (tokenList.isEmpty())
 				break;
 			else {
-				if (tokenList.equalsPattern("ii=v;")) {
+				if (tokenList.startsWithPattern("ii=v;")) {
 					RayLog.trace("variable decl. and assignment found: " + tokenList);
 
 					String mytypeName = tokenList.get(0).s();
@@ -104,7 +104,7 @@ public class RayMethod {
 					rv.setValue(ri);
 					variables.put(rv.getName(), rv);
 
-				} else if (tokenList.equalsPattern("ii=ii(")) {
+				} else if (tokenList.startsWithPattern("ii=ii(")) {
 					
 					String varType = tokenList.get(0).s();
 					String varName = tokenList.get(1).s();
@@ -121,7 +121,7 @@ public class RayMethod {
 					//RayUtils.assert_(rs.getSourceToken().isClosedParentheses(), " missing: )");
 					RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
 					
-				} else if (tokenList.equalsPattern("i.i(")) {
+				} else if (tokenList.startsWithPattern("i.i(")) {
 					RayLog.trace("message invocation found: " + tokenList);
 
 					String varName = tokenList.get(0).s();
@@ -142,7 +142,7 @@ public class RayMethod {
 
 					rayVar.getValue().invoke(methodName, null, myparams.toArray(new RayClassInterface[0]));
 
-				} else if (tokenList.equalsPattern("i[]i=ii[];")) {
+				} else if (tokenList.startsWithPattern("i[]i=ii[];")) {
 					String newVarType = tokenList.get(0).s();
 					String newVarName = tokenList.get(3).s();
 					RayUtils.assert_(tokenList.get(5).equals(KeyWords.NEW), tokenList.get(5).s() + " != " + KeyWords.NEW);
@@ -154,7 +154,7 @@ public class RayMethod {
 					rayVar.setValue(ra);
 					
 					variables.put(newVarName, rayVar);
-				} else if (tokenList.equalsPattern("i.i{")) {
+				} else if (tokenList.startsWithPattern("i.i{")) {
 					
 					String varName = tokenList.get(0).s();
 					String methodName = tokenList.get(2).s();
@@ -171,7 +171,7 @@ public class RayMethod {
 					RayMethod rm = RayMethod.parseClosure( parentClass, variables, rs);
 					rayVar.getValue().invoke(methodName, rm);
 
-				} else if (tokenList.equalsPattern("ii=i.i(")) {
+				} else if (tokenList.startsWithPattern("ii=i.i(")) {
 				
 					String newVarType = tokenList.get(0).s();
 					String newVarName = tokenList.get(1).s();

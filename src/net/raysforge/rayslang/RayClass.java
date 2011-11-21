@@ -32,7 +32,7 @@ public class RayClass implements RayClassInterface {
 			if (tokenList.size() == 0)
 				break;
 
-			if (tokenList.equalsPattern("ii;")) {
+			if (tokenList.startsWithPattern("ii;")) {
 				String typeStr = tokenList.get(0).s();
 				String varName = tokenList.get(1).s();
 				RayClassInterface type = rayLang.getClass(typeStr);
@@ -43,7 +43,7 @@ public class RayClass implements RayClassInterface {
 				rc.variables.put(varName, new RayVar(v, typeStr, varName));
 				RayLog.trace("var: " + type + " - " + varName);
 
-			} else if (tokenList.equalsPattern("ii=ii(")) {
+			} else if (tokenList.startsWithPattern("ii=ii(")) {
 
 				Token varType = tokenList.get(0);
 				Token varName = tokenList.get(1);
@@ -69,7 +69,7 @@ public class RayClass implements RayClassInterface {
 
 				RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
 
-			} else if (tokenList.equalsPattern("iii;")) {
+			} else if (tokenList.startsWithPattern("iii;")) {
 
 				String typeStr = tokenList.get(1).s();
 				String varName = tokenList.get(2).s();
@@ -80,7 +80,7 @@ public class RayClass implements RayClassInterface {
 				Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
 				rc.variables.put(varName, new RayVar(v, typeStr, varName));
 				RayLog.trace("var: " + type + " - " + varName);
-			} else if (tokenList.equalsPattern("iii(")) {
+			} else if (tokenList.startsWithPattern("iii(")) {
 
 				// Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
 				String typeStr = tokenList.get(1).s();

@@ -21,7 +21,7 @@ public class TokenList {
 	
 	// e.g.: "ii=v;" => identifier, identifier, equals sign, value, semicolon.
 	
-	public boolean equalsPattern(String string) {
+	public boolean startsWithPattern(String string) {
 		
 		char[] charArray = string.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
@@ -99,7 +99,7 @@ public class TokenList {
 		RaySource rs = new RaySource("x.add!(7);".toCharArray());
 		TokenList tl = rs.getSourceTokenUntil(";", "(");
 		RayLog.info(tl);
-		boolean ep = tl.equalsPattern("i.i(");
+		boolean ep = tl.startsWithPattern("i.i(");
 		RayLog.info(ep);
 	}
 }
