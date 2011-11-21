@@ -3,7 +3,7 @@
 public void start()
 {
 
-	Zahl[] x = neue Zahl[];
+	Zahl[] x = neu Zahl[];
 	
 	x.add(7);
 	

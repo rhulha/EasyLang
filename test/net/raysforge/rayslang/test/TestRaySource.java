@@ -2,17 +2,14 @@ package net.raysforge.rayslang.test;
 
 import net.raysforge.rayslang.RaySource;
 import net.raysforge.rayslang.Token;
-import net.raysforge.rayslang.TokenList;
 
 public class TestRaySource {
 	
-	public static void main0(String[] args) {
-		RaySource rs = new RaySource("->".toCharArray());
-		boolean b = rs.isLetterOrDigitOrBangOrMinusOrGreaterThan();
-		System.out.println(b);
-	}
-	
 	public static void main(String[] args) {
+		RaySource rs = new RaySource("Zahl[] za = neu Zahl[];".toCharArray());
+	}
+
+	public static void main0(String[] args) {
 		RaySource rs = new RaySource("{ \n Zahl !zahl! -> zahl.print()    \n}".toCharArray());
 		
 		System.out.println( rs.contains("->"));
@@ -26,9 +23,6 @@ public class TestRaySource {
 		}
 			System.out.println();
 
-		TokenList parameterList = rs.getSourceTokenUntil("->");
-		System.out.println("pl: " + parameterList);
-		System.out.println("code: " + rs);
 		
 	}
 

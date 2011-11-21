@@ -20,21 +20,22 @@ public class RayClass implements RayClassInterface {
 	}
 
 	public static RayClass parse(RayLang rayLang, String name, File file) {
-		return parse(rayLang, name, new RaySource(FileUtils.readCompleteFile(file)));
+		return parse(rayLang, name, RayUtils.convertSourceToTokenList(file));
 	}
 
-	public static RayClass parse(RayLang rayLang, String name, RaySource rs) {
+	public static RayClass parse(RayLang rayLang, String name, TokenList tokenList) {
 		RayClass rc = new RayClass(rayLang, name);
 
 		while (true) {
-			TokenList tokenList = rs.getSourceTokenUntil(";", "(");
 
-			if (tokenList.size() == 0)
+			if (tokenList.remaining() == 0)
 				break;
 
 			if (tokenList.startsWithPattern("ii;")) {
-				String typeStr = tokenList.get(0).s();
-				String varName = tokenList.get(1).s();
+				String typeStr = tokenList.popString();
+				String varName = tokenList.popString();
+				tokenList.remove(";");
+
 				RayClassInterface type = rayLang.getClass(typeStr);
 				if (type == null)
 					RayUtils.runtimeExcp(typeStr + " not found");
@@ -45,51 +46,54 @@ public class RayClass implements RayClassInterface {
 
 			} else if (tokenList.startsWithPattern("ii=ii(")) {
 
-				Token varType = tokenList.get(0);
-				Token varName = tokenList.get(1);
-				RayClassInterface varTypeClass = rayLang.getClass(varType.s());
+				String varType = tokenList.popString();
+				String varName = tokenList.popString();
+				tokenList.remove("=");
+				tokenList.remove(KeyWords.NEW);
+				String instanceType = tokenList.popString();
+				
+				RayClassInterface varTypeClass = rayLang.getClass(varType);
 				if (varTypeClass == null)
 					RayUtils.runtimeExcp(varType + " not found");
 
-				RayUtils.assert_(tokenList.get(3).equals(KeyWords.NEW), tokenList.get(3).s() + " != " + KeyWords.NEW);
-
-				Token instanceType = tokenList.get(4);
-				RayClassInterface instanceTypeClass = rayLang.getClass(instanceType.s());
+				RayClassInterface instanceTypeClass = rayLang.getClass(instanceType);
 
 				RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
 
-				RaySource paramSrc = rs.getInnerText('(', ')');
-				TokenList paramTokenList = paramSrc.getSourceTokenUntil();
-				List<RayClassInterface> myparams = RayMethod.tokenListToParams(rc.variables, paramTokenList);
+				tokenList.remove("(");
+				TokenList paramTokenList = tokenList.getInnerList('(', ')');
+				List<RayClassInterface> myparams = RayMethod.evaluateParams(rc.variables, paramTokenList);
 				
 				Visibility v = Visibility.protected_;
-				RayVar rayVar = new RayVar(v, varType.s(), varName.s());
+				RayVar rayVar = new RayVar(v, varType, varName);
 				rayVar.setValue( instanceTypeClass.getNewInstance(myparams));
-				rc.variables.put(varName.s(), rayVar);
+				rc.variables.put(varName, rayVar);
 
-				RayUtils.assert_(rs.getSourceToken().isSemicolon(), " missing: ;");
+				tokenList.remove(";");
 
 			} else if (tokenList.startsWithPattern("iii;")) {
 
-				String typeStr = tokenList.get(1).s();
-				String varName = tokenList.get(2).s();
+				String visibility = tokenList.popString();
+				String typeStr = tokenList.popString();
+				String varName = tokenList.popString();
 				RayClassInterface type = rayLang.getClass(typeStr);
 				if (type == null)
 					RayUtils.runtimeExcp(typeStr + " not found");
 
-				Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
+				Visibility v = Visibility.valueOf(visibility + "_");
 				rc.variables.put(varName, new RayVar(v, typeStr, varName));
 				RayLog.trace("var: " + type + " - " + varName);
 			} else if (tokenList.startsWithPattern("iii(")) {
+				/* this is a method declaration */
 
-				// Visibility v = Visibility.valueOf(tokenList.get(0) + "_");
-				String typeStr = tokenList.get(1).s();
-				String methodName = tokenList.get(2).s();
-				//Token visStr = tokenList.pollLast();
-				//RayClassInterface type = rayLang.getClass(typeStr.s());
+				String visibility = tokenList.popString();
+				visibility.hashCode();
+				String typeStr = tokenList.popString();
+				String methodName = tokenList.popString();
+				tokenList.remove("(");
 
 				RayLog.trace("methodName: " + rc.name + "." + methodName);
-				RayMethod.parse(rc, typeStr, methodName, rs);
+				RayMethod.parse(rc, typeStr, methodName, tokenList);
 
 			} else {
 				RayLog.warn("hm: " + tokenList);

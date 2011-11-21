@@ -1,7 +1,6 @@
 package net.raysforge.rayslang;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public class RaySource {
 
@@ -12,6 +11,18 @@ public class RaySource {
 		this.src = src;
 	}
 
+	private boolean isLetter() {
+		return  Character.isLetter(src[pos]) ;
+	}
+
+	private boolean isDigit() {
+		return  Character.isDigit(src[pos]) ;
+	}
+
+	private boolean isDigitOrMinus() {
+		return  isDigit() || src[pos] == '-';
+	}
+
 	public boolean isLetterOrDigit() {
 		return Character.isLetterOrDigit(src[pos]);
 	}
@@ -20,9 +31,8 @@ public class RaySource {
 		return isLetterOrDigit() || src[pos] == '!';
 	}
 
-	// capture closure sign "->" or minus number "-42"
-	public boolean isLetterOrDigitOrBangOrMinusOrGreaterThan() {
-		return isLetterOrDigit() || (src[pos] == '!') || (src[pos] == '-') || (src[pos] == '>');
+	public boolean isLetterOrDigitOrBangOrBracket() {
+		return isLetterOrDigit() || (src[pos] == '!') || (src[pos] == '[') || (src[pos] == ']');
 	}
 
 	public boolean more() {
@@ -56,7 +66,7 @@ public class RaySource {
 				return null;
 			}
 			char c = src[pos];
-			if (c == open) {
+			if (c == open) { // TODO: what about open and close inside strings ?
 				brace_counter++;
 				// code.appendInPlace(parse(rs, hook).src);
 				// code.appendInPlace(close);
@@ -80,23 +90,6 @@ public class RaySource {
 		return getSourceToken(false);
 	}
 
-	public TokenList getSourceTokenUntil(String... any) {
-		LinkedList<Token> queue = new LinkedList<Token>();
-
-		while (true) {
-			Token token = getSourceToken();
-			if (token == null || token.length() == 0)
-				break;
-			queue.add(token);
-			for (String s : any) {
-				if (token.equals(s)) {
-					return new TokenList(queue);
-				}
-			}
-		}
-		return new TokenList(queue);
-	}
-
 	public Token getSourceToken(boolean peak) {
 		eatSpacesAndReturns();
 		int start = pos;
@@ -104,9 +97,22 @@ public class RaySource {
 		if (!more()) {
 			return null;
 		}
-		if (isLetterOrDigitOrBangOrMinusOrGreaterThan()) // ! like ruby and -> for closures
+
+		if (isDigitOrMinus()) // number with possible minus sign
+    	{
+			pos++;
+			if( more() && isDigit())
+			{
+				while (more() && isDigit())
+					pos++;
+			}
+			else if( more() && src[pos] == '>') // "->" for closures
+			{
+				pos++;
+			}
+    	} else if (isLetter())
 		{
-			while (more() && isLetterOrDigitOrBangOrMinusOrGreaterThan())
+			while (more() && isLetterOrDigitOrBangOrBracket()) // ending! like ruby
 				pos++;
 		} else if (src[pos] == '#') // kommentare ignorieren
 		{
@@ -199,4 +205,8 @@ public class RaySource {
 		pos=0;
 	}
 
+	public RaySource copyAtPos() {
+		return new RaySource(Arrays.copyOfRange(src, pos, src.length));
+	}
+	
 }
