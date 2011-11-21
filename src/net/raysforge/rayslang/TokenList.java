@@ -128,7 +128,7 @@ public class TokenList {
 				}
 			}
 		}
-		return new TokenList(tokens, pos, position - 1);
+		return subListUsingOnlyOffset( pos, position - 1);
 	}
 
 	public void remove(String string) {
@@ -163,14 +163,15 @@ public class TokenList {
 			if (t.equals(string))
 				break;
 		}
-		return new TokenList(tokens, pos, includeFinalToken ? position : position - 1);
+		return subListUsingOnlyOffset( pos, includeFinalToken ? position : position - 1);
 	}
 
-	public void removeCodeBeforePosAndResetPos() {
-		offset = position;
+	public void hideCodeBeforePosAndResetPos() {
+		offset = offset + position;
 		position = 0;
 	}
 
+	// Beware: position is 0 after copy.
 	public TokenList copy() {
 		return new TokenList(tokens, offset, limit);
 
@@ -179,6 +180,14 @@ public class TokenList {
 	public Token getLast() {
 		return get(remaining()-1);
 
+	}
+
+	public TokenList subListUsingOnlyOffset(int from, int to) {
+		return new TokenList(tokens, offset+from, offset+to);
+	}
+
+	public TokenList subList(int from, int to) {
+		return new TokenList(tokens, offset+position+from, offset+position+to);
 	}
 
 }

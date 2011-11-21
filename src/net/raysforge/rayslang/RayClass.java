@@ -42,7 +42,7 @@ public class RayClass implements RayClassInterface {
 
 				Visibility v = Visibility.protected_;
 				rc.variables.put(varName, new RayVar(v, typeStr, varName));
-				RayLog.trace("var: " + type + " - " + varName);
+				RayLog.trace.log("var: " + type + " - " + varName);
 
 			} else if (tokenList.startsWithPattern("ii=ii(")) {
 
@@ -76,13 +76,15 @@ public class RayClass implements RayClassInterface {
 				String visibility = tokenList.popString();
 				String typeStr = tokenList.popString();
 				String varName = tokenList.popString();
+				tokenList.remove(";");
+
 				RayClassInterface type = rayLang.getClass(typeStr);
 				if (type == null)
 					RayUtils.runtimeExcp(typeStr + " not found");
 
 				Visibility v = Visibility.valueOf(visibility + "_");
 				rc.variables.put(varName, new RayVar(v, typeStr, varName));
-				RayLog.trace("var: " + type + " - " + varName);
+				RayLog.trace.log("var: " + type + " - " + varName);
 			} else if (tokenList.startsWithPattern("iii(")) {
 				/* this is a method declaration */
 
@@ -92,11 +94,11 @@ public class RayClass implements RayClassInterface {
 				String methodName = tokenList.popString();
 				tokenList.remove("(");
 
-				RayLog.trace("methodName: " + rc.name + "." + methodName);
+				RayLog.trace.log("methodName: " + rc.name + "." + methodName);
 				RayMethod.parse(rc, typeStr, methodName, tokenList);
 
 			} else {
-				RayLog.warn("hm: " + tokenList);
+				RayLog.warn.log("hm: " + tokenList);
 			}
 			//RayLog.log("XX" + token + "YY");
 		}

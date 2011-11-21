@@ -1,34 +1,14 @@
 package net.raysforge.rayslang;
 
-public class RayLog {
+public enum RayLog {
 	
-	enum Level { error, warn, info, debug, trace };
+	error, warn, info, debug, trace;
 	
-	static Level level = Level.info;
+	static RayLog level = RayLog.info;
 	
-	public static void warn( Object s)
-	{
-		if( level.ordinal() >= Level.warn.ordinal())
-			System.out.println(s);
+	public void log(Object s) {
+		if( level.ordinal() >= ordinal())
+			System.out.println(name() + ": " + s);
 	}
 	
-	public static void info( Object s)
-	{
-		if( level.ordinal() >= Level.info.ordinal())
-			System.out.println(s);
-	}
-
-	public static void debug( Object s)
-	{
-		if( level.ordinal() >= Level.debug.ordinal())
-			System.out.println(s);
-	}
-	
-	public static void trace( Object s)
-	{
-		if( level.ordinal() >= Level.trace.ordinal())
-			System.out.println(s);
-	}
-	
-
 }

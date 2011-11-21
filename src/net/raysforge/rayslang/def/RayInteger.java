@@ -27,7 +27,7 @@ public class RayInteger implements RayClassInterface {
 	@Override
 	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
 
-		RayLog.debug(methodName + " " + Arrays.asList(parameter) + " on " + this);
+		RayLog.debug.log(getName()+"."+methodName + " " + Arrays.asList(parameter) + " on " + this);
 
 		if (methodName.equals("plus!") && (parameter.length == 1)) {
 			RayClassInterface p0 = parameter[0];
@@ -58,13 +58,13 @@ public class RayInteger implements RayClassInterface {
 	}
 
 	public void setIntValue(long intValue) {
-		RayLog.debug( "setIntValue: " + intValue);
+		RayLog.debug.log( getName()+".setIntValue: " + intValue);
 		this.intValue = intValue;
 	}
 	
 	@Override
 	public String toString() {
-		return "RayInteger( "+intValue+ " )";
+		return getName()+"( " +intValue+ " )";
 	}
 
 	@Override
