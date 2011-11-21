@@ -129,15 +129,9 @@ public class RayClass implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayClassInterface... params) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... params) {
 		RayMethod method = getMethod(methodName);
 		return method.invoke(this, params);
-	}
-
-	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*

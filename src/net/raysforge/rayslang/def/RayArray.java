@@ -24,7 +24,7 @@ public class RayArray implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
 		if (methodName.equals("get") && parameter.length == 1) {
 			RayClassInterface p0 = parameter[0];
 			if (p0 instanceof RayInteger) {
@@ -74,10 +74,5 @@ public class RayArray implements RayClassInterface {
 		return new RayArray(parameter.get(0).toString());
 	}
 
-	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

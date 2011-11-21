@@ -140,7 +140,7 @@ public class RayMethod {
 						System.out.println("variable not found: " + varName);
 					}
 
-					rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0]));
+					rayVar.getValue().invoke(methodName, null, myparams.toArray(new RayClassInterface[0]));
 
 				} else if (tokenList.equalsPattern("i[]i=ii[];")) {
 					String newVarType = tokenList.get(0).s();
@@ -192,7 +192,7 @@ public class RayMethod {
 					}
 					
 					RayVar rv = new RayVar(Visibility.private_, newVarType, newVarName);
-					rv.setValue(rayVar.getValue().invoke(methodName, myparams.toArray(new RayClassInterface[0])));
+					rv.setValue(rayVar.getValue().invoke(methodName, null, myparams.toArray(new RayClassInterface[0])));
 					variables.put(rv.getName(), rv);
 				} else {
 					RayLog.warn("unknown code in line: " + tokenList);

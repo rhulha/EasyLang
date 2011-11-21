@@ -7,7 +7,7 @@ public void start()
 	
 	x.add(7);
 	
-	x.schreibe();
+	x[0].schreibe();
 	
 
 }

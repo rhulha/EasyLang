@@ -1,0 +1,13 @@
+
+
+
+publik nichts start()
+{
+
+
+	String[] level = neu String[];
+	level["hallo"] = "welt";
+	level["hallo"].schreibe();
+
+
+}

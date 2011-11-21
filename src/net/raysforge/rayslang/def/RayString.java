@@ -35,7 +35,7 @@ public class RayString implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
 		if (methodName.equals("schreibe") && (parameter.length == 0)) {
 			System.err.println(stringValue);
 		}
@@ -54,12 +54,6 @@ public class RayString implements RayClassInterface {
 	@Override
 	public String toString() {
 		return stringValue;
-	}
-
-	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

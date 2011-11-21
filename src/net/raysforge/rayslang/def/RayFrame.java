@@ -22,7 +22,7 @@ public class RayFrame implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke( String methodName, RayClassInterface... parameter) {
+	public RayClassInterface invoke( String methodName, RayMethod closure, RayClassInterface... parameter) {
 
 		RayLog.debug(methodName + " " + Arrays.asList(parameter) + " on " + this);
 
@@ -45,12 +45,6 @@ public class RayFrame implements RayClassInterface {
 	@Override
 	public String getName() {
 		return KeyWords.CLASS_FRAME;
-	}
-
-	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

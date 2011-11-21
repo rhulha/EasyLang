@@ -33,7 +33,7 @@ public class RayFileReader implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayClassInterface... parameter) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
 		if (methodName.equals("leseZeile")) {
 			try {
 				return new RayString(br.readLine());
@@ -46,19 +46,7 @@ public class RayFileReader implements RayClassInterface {
 			} catch (IOException e) {
 				RayUtils.runtimeExcp(e.getMessage());
 			}
-		}
-		return null;
-	}
-
-	@Override
-	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
-		return new RayFileReader(parameter.get(0).toString());
-	}
-
-	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure) {
-
-		if (methodName.equals("fürJedeZeile")) {
+		} else if (methodName.equals("fürJedeZeile")) {
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {
@@ -68,6 +56,13 @@ public class RayFileReader implements RayClassInterface {
 				RayUtils.runtimeExcp(e);
 			}
 		}
+
 		return null;
 	}
+
+	@Override
+	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
+		return new RayFileReader(parameter.get(0).toString());
+	}
+
 }
