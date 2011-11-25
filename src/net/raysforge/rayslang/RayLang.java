@@ -47,7 +47,7 @@ public class RayLang {
 		
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
-		RayClassInterface rc = rayLang.getClass("TestEvalExpr");
+		RayClassInterface rc = rayLang.getClass("DateiTest");
 		RayClassInterface ri = rc.getNewInstance(null);
 		ri.invoke( "start", null, null);
 	}

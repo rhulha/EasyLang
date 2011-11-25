@@ -6,7 +6,7 @@ import net.raysforge.rayslang.Token;
 public class TestRaySource {
 	
 	public static void main(String[] args) {
-		RaySource rs = new RaySource("Zahl[] za = neu Zahl[];".toCharArray());
+		new RaySource("Zahl[] za = neu Zahl[];".toCharArray());
 	}
 
 	public static void main0(String[] args) {

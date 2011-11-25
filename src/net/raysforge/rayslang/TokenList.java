@@ -193,4 +193,10 @@ public class TokenList {
 		return new TokenList(tokens, offset+position+from, offset+position+to);
 	}
 
+	/* very bad idea due to offset !!!
+	public void push(Token token) {
+		tokens.add(0, token);
+	}
+	 */
+
 }

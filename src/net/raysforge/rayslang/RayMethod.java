@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.raysforge.rayslang.def.RayArray;
-
 public class RayMethod {
 
 	protected String name;
@@ -88,81 +86,31 @@ public class RayMethod {
 			if (tokenList.isEmpty())
 				break;
 			else {
-				if (tokenList.get(0).equals('$')) {
-					tokenList.remove("$");
 
-					RayLog.info.log("RayMethod: " + "variable decl. and assignment found: " + tokenList.getSubList(0, 3));
-					//String mytypeName = tokenList.pop().s();
-					//String myname = tokenList.pop().s();
-					//tokenList.pop(); // '='
-					evaluateExpression( parentClass, variables, tokenList);
+				String varTypeName = null;
+				String varName = null;
+
+				if (tokenList.startsWithPattern("ii=")) {
+					varTypeName = tokenList.popString();
+					varName = tokenList.popString();
+					tokenList.remove("=");
 
 				}
-
-				if (tokenList.startsWithPattern("ii=v;")) {
-
-					String mytypeName = tokenList.popString();
-					String myname = tokenList.popString();
-					tokenList.remove("=");
-					RayClassInterface eval = evaluateExpression(rayClass, variables, tokenList);
+				RayClassInterface eval = evaluateExpression(rayClass, variables, tokenList);
+				// closure don't have an ending semicolon, so we only remove it otherwise.
+				if( !tokenList.get(-1).equals("}"))
 					tokenList.remove(";");
+
+
+				if (varName != null) {
 					//RayClassInterface mytype = rayClass.rayLang.getClass( mytypeName);
-					RayVar rv = new RayVar(Visibility.private_, mytypeName, myname);
+					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
 					rv.setValue(eval);
 					variables.put(rv.getName(), rv);
-
-				} else if (tokenList.startsWithPattern("ii=ii(")) {
-					//variable decl. and new assignment
-
-					String varType = tokenList.popString();
-					String varName = tokenList.popString();
-					tokenList.remove("=");
-					tokenList.remove(KeyWords.NEW);
-					String instanceType = tokenList.popString();
-					tokenList.remove("(");
-
-					TokenList parameter2 = tokenList.getSubList('(', ')');
-					List<RayClassInterface> params = evaluateParams( parentClass, variables, parameter2);
-
-					RayVar rayVar = makeARayVar(rayClass, varType, varName, instanceType, params);
-
-					variables.put(varName, rayVar);
-
-					tokenList.remove(";");
-
-				} else if (tokenList.startsWithPattern("i.i(")) {
-					// method invocation
-					RayLog.debug.log("RayMethod: method invocation found: " + tokenList.getSubList(0, 6));
-					
-					evaluateExpression(rayClass, variables, tokenList);
-					tokenList.remove(";");
-					
-					/*
-					String varName = tokenList.popString();
-					tokenList.remove(".");
-					String methodName = tokenList.popString();
-					tokenList.remove("(");
-
-					TokenList paramTokenList = tokenList.getSubList('(', ')');
-					RayLog.debug.log("RayMethod: " + paramTokenList);
-
-					tokenList.remove(";");
-					List<RayClassInterface> myparams = evaluateParams( parentClass, variables, paramTokenList);
-
-					RayVar rayVar = variables.get(varName);
-					// check parameter
-					if (rayVar == null) {
-						rayVar = rayClass.variables.get(varName); // TODO: loop over parents ?
-					}
-					if (rayVar == null) {
-						RayLog.error.log("RayMethod: " + "variable not found: " + varName);
-					}
-
-					rayVar.getValue().invoke(methodName, null, myparams);
-					*/
-					
-
-				} else if (tokenList.startsWithPattern("ii=ii;")) {
+				}
+				
+				/*
+				if (tokenList.startsWithPattern("ii=ii;")) {
 					// Arrays 
 					String newVarType = tokenList.popString();
 					String newVarName = tokenList.popString();
@@ -177,69 +125,15 @@ public class RayMethod {
 					rayVar.setValue(ra);
 
 					variables.put(newVarName, rayVar);
-				} else if (tokenList.startsWithPattern("i.i{")) {
-					// closure found
-
-					String varName = tokenList.popString();
-					tokenList.remove(".");
-					String methodName = tokenList.popString();
-					tokenList.remove("{");
-
-					RayVar rayVar = variables.get(varName);
-					// check parameter
-					if (rayVar == null) {
-						rayVar = rayClass.variables.get(varName); // TODO: loop over parents ?
-					}
-					if (rayVar == null) {
-						RayLog.error.log("RayMethod: " + "variable not found: " + varName);
-					}
-
-					RayMethod rm = RayMethod.parseClosure(parentClass, variables, tokenList);
-					rayVar.getValue().invoke(methodName, rm, null);
-
-				} else if (tokenList.startsWithPattern("ii=i.i(")) {
-
-					String newVarType = tokenList.popString();
-					String newVarName = tokenList.popString();
-					tokenList.remove("=");
-					
-					/*
-					String existingVarName = tokenList.popString();
-					tokenList.remove(".");
-					String methodName = tokenList.popString();
-					tokenList.remove("(");
-					TokenList paramTokenList = tokenList.getSubList('(', ')');
-					tokenList.remove(";");
-					List<RayClassInterface> myparams = evaluateParams( parentClass, variables, paramTokenList);
-
-					RayVar rayVar = variables.get(existingVarName);
-					// check parameter
-					if (rayVar == null) {
-						rayVar = rayClass.variables.get(existingVarName); // TODO: loop over parents ?
-					}
-					if (rayVar == null) {
-						RayLog.error.log("RayMethod: " + "variable not found: " + existingVarName);
-					}
-					RayVar rv = new RayVar(Visibility.private_, newVarType, newVarName);
-					rv.setValue(rayVar.getValue().invoke(methodName, null, myparams));
-					variables.put(rv.getName(), rv);
-					*/
-
-					RayVar rv = new RayVar(Visibility.private_, newVarType, newVarName);
-					rv.setValue(evaluateExpression(rayClass, variables, tokenList));
-					variables.put(rv.getName(), rv);
-					tokenList.remove(";");
-				} else {
-					RayLog.warn.log("RayMethod: " + "unknown code in line: " + tokenList);
-					System.exit(0);
 				}
+				*/
 
 			}
 		}
 		return null;
 	}
 
-	private RayVar makeARayVar(RayClass rayClass, String varType, String varName, String instanceType, List<RayClassInterface> params) {
+	protected RayVar makeARayVar(RayClass rayClass, String varType, String varName, String instanceType, List<RayClassInterface> params) {
 		RayClassInterface varTypeClass = rayClass.rayLang.getClass(varType);
 		if (varTypeClass == null)
 			RayUtils.runtimeExcp(varType + " not found");
@@ -254,18 +148,35 @@ public class RayMethod {
 		return rayVar;
 	}
 
-	private static RayClassInterface evaluateExpression( RayClass parentClass, HashMap<String, RayVar> variables, TokenList tokenList) {
+	private static RayClassInterface evaluateExpression(RayClass parentClass, HashMap<String, RayVar> variables, TokenList tokenList) {
 
 		RayLog.trace.log("ee: " + tokenList);
-		
+
 		RayClassInterface value;
 
 		if (tokenList.startsWithPattern("i")) {
+
 			String varName = tokenList.popString();
-			RayVar rayVar = variables.get(varName);
-			if (rayVar == null)
-				RayUtils.runtimeExcp("unknown var: " + varName);
-			value = rayVar.getValue();
+
+			if (varName.equals(KeyWords.NEW)) {
+				if (!tokenList.startsWithPattern("i"))
+					RayUtils.runtimeExcp("unknown token after " + KeyWords.NEW + ": " + tokenList.get(0));
+				String instanceType = tokenList.popString();
+				tokenList.remove("(");
+				TokenList parameter2 = tokenList.getSubList('(', ')');
+				List<RayClassInterface> params = evaluateParams(parentClass, variables, parameter2);
+				value = parentClass.rayLang.getClass(instanceType).getNewInstance(params);
+			} else {
+				RayVar rayVar = variables.get(varName);
+				if (rayVar == null) {
+					rayVar = parentClass.variables.get(varName); // TODO: loop over parents ?
+				}
+				if (rayVar == null) {
+					RayLog.error.log("RayMethod: " + "variable not found: " + varName);
+					RayUtils.runtimeExcp("unknown var: " + varName);
+				}
+				value = rayVar.getValue();
+			}
 		} else if (tokenList.startsWithPattern("v")) {
 			value = tokenList.pop().getValue();
 		} else {
@@ -280,27 +191,26 @@ public class RayMethod {
 			if (tokenList.startsWithPattern("(")) {
 				tokenList.remove("(");
 				TokenList parameter = tokenList.getSubList('(', ')');
-				evaluatedParams = evaluateParams( parentClass, variables, parameter);
+				evaluatedParams = evaluateParams(parentClass, variables, parameter);
 			}
 			RayMethod rm = null;
 			if (tokenList.startsWithPattern("{")) {
 				tokenList.remove("{");
-				rm = RayMethod.parseClosure( parentClass, variables, tokenList);
+				rm = RayMethod.parseClosure(parentClass, variables, tokenList);
 			}
 			value = value.invoke(methodName, rm, evaluatedParams); // this was the last line that I changed before it all worked magically !!! woot !
 		}
-		
 		return value;
 	}
 
-	protected static List<RayClassInterface> evaluateParams( RayClass parentClass, HashMap<String, RayVar> variables, TokenList paramTokenList) {
+	protected static List<RayClassInterface> evaluateParams(RayClass parentClass, HashMap<String, RayVar> variables, TokenList paramTokenList) {
 		List<RayClassInterface> evaluatedParams = RayUtils.newArrayList();
 
 		RayLog.trace.log("ep: " + paramTokenList);
-		
+
 		while (paramTokenList.remaining() > 0) {
-			
-			RayClassInterface evaluatedExpr = evaluateExpression( parentClass, variables, paramTokenList);
+
+			RayClassInterface evaluatedExpr = evaluateExpression(parentClass, variables, paramTokenList);
 			evaluatedParams.add(evaluatedExpr);
 			if (paramTokenList.hasMore())
 				paramTokenList.remove(",");

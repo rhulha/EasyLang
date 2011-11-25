@@ -37,7 +37,7 @@ public class RayString implements RayClassInterface {
 	@Override
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("schreibe") && (parameter.size() == 0)) {
-			System.err.println(stringValue);
+			System.out.println(stringValue);
 		}
 		if (methodName.equals("spalte") && (parameter.size() == 1)) {
 			RayClassInterface p0 = parameter.get(0);
