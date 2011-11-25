@@ -61,8 +61,8 @@ public class RayClass implements RayClassInterface {
 				RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
 
 				tokenList.remove("(");
-				TokenList paramTokenList = tokenList.getInnerList('(', ')');
-				List<RayClassInterface> myparams = RayMethod.evaluateParams(rc.variables, paramTokenList);
+				TokenList paramTokenList = tokenList.getSubList('(', ')');
+				List<RayClassInterface> myparams = RayMethod.evaluateParams( rc, rc.variables, paramTokenList);
 				
 				Visibility v = Visibility.protected_;
 				RayVar rayVar = new RayVar(v, varType, varName);
@@ -135,9 +135,9 @@ public class RayClass implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... params) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		RayMethod method = getMethod(methodName);
-		return method.invoke(this, params);
+		return method.invoke(this, parameter);
 	}
 
 	/*

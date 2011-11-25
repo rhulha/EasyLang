@@ -36,6 +36,9 @@ public class TokenList {
 	// e.g.: "ii=v;" => identifier, identifier, equals sign, value, semicolon.
 
 	public boolean startsWithPattern(String string) {
+		
+		if( isEmpty())
+			return false;
 
 		char[] charArray = string.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
@@ -108,29 +111,6 @@ public class TokenList {
 		return tokens.subList((offset + position), limit).toString();
 	}
 
-	// this method exptects that the FIRST open char IS ALREADY REMOVED !!!
-	// this method does NOT return the last matching char.
-	public TokenList getInnerList(char open, char close) {
-		int pos = position;
-
-		int brace_counter = 0;
-		while (hasMore()) {
-			Token t = pop();
-			if (t == null)
-				RayUtils.runtimeExcp("unexpected end of tokens");
-			if (t.equals(open)) {
-				brace_counter++;
-			} else if (t.equals(close)) {
-				if (brace_counter > 0) {
-					brace_counter--;
-				} else {
-					break;
-				}
-			}
-		}
-		return subListUsingOnlyOffset( pos, position - 1);
-	}
-
 	public void remove(String string) {
 		if (!get(0).equals(string))
 			RayUtils.runtimeExcp(get(0) + " != " + string);
@@ -163,7 +143,7 @@ public class TokenList {
 			if (t.equals(string))
 				break;
 		}
-		return subListUsingOnlyOffset( pos, includeFinalToken ? position : position - 1);
+		return getSubListUsingOnlyOffset( pos, includeFinalToken ? position : position - 1);
 	}
 
 	public void hideCodeBeforePosAndResetPos() {
@@ -182,11 +162,34 @@ public class TokenList {
 
 	}
 
-	public TokenList subListUsingOnlyOffset(int from, int to) {
+	// this method exptects that the FIRST open char IS ALREADY REMOVED !!!
+	// this method does NOT return the last matching char.
+	public TokenList getSubList(char open, char close) {
+		int pos = position;
+
+		int brace_counter = 0;
+		while (hasMore()) {
+			Token t = pop();
+			if (t == null)
+				RayUtils.runtimeExcp("unexpected end of tokens");
+			if (t.equals(open)) {
+				brace_counter++;
+			} else if (t.equals(close)) {
+				if (brace_counter > 0) {
+					brace_counter--;
+				} else {
+					break;
+				}
+			}
+		}
+		return getSubListUsingOnlyOffset( pos, position - 1);
+	}
+
+	public TokenList getSubListUsingOnlyOffset(int from, int to) {
 		return new TokenList(tokens, offset+from, offset+to);
 	}
 
-	public TokenList subList(int from, int to) {
+	public TokenList getSubList(int from, int to) {
 		return new TokenList(tokens, offset+position+from, offset+position+to);
 	}
 

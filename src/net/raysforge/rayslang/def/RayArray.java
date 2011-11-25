@@ -24,9 +24,9 @@ public class RayArray implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
-		if (methodName.equals("get") && parameter.length == 1) {
-			RayClassInterface p0 = parameter[0];
+	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
+		if (methodName.equals("get") && parameter.size() == 1) {
+			RayClassInterface p0 = parameter.get(0);
 			if (p0 instanceof RayInteger) {
 				RayInteger ri = (RayInteger) p0;
 				return list.get((int) ri.getIntValue());
@@ -35,9 +35,9 @@ public class RayArray implements RayClassInterface {
 				return map.get(rs.getStringValue());
 			}
 
-		} else if (methodName.equals("put") && parameter.length == 2) {
-			RayClassInterface p0 = parameter[0];
-			RayClassInterface p1 = parameter[1];
+		} else if (methodName.equals("put") && parameter.size() == 2) {
+			RayClassInterface p0 = parameter.get(0);
+			RayClassInterface p1 = parameter.get(1);
 
 			if (p0 instanceof RayInteger) {
 				RayInteger ri = (RayInteger) p0;
@@ -46,7 +46,7 @@ public class RayArray implements RayClassInterface {
 				RayString rs = (RayString) p0;
 				map.put(rs.getStringValue(), p1);
 			}
-		} else if (methodName.equals("schreibe") && parameter.length == 0) {
+		} else if (methodName.equals("schreibe") && parameter.size() == 0) {
 			for (String key : map.keySet()) {
 				System.out.println(key + ": " + map.get(key));
 			}
@@ -54,8 +54,8 @@ public class RayArray implements RayClassInterface {
 				System.out.println(rci);
 			}
 			System.out.println();
-		} else if (methodName.equals("add") && parameter.length == 1) {
-			RayClassInterface p0 = parameter[0];
+		} else if (methodName.equals("add") && parameter.size() == 1) {
+			RayClassInterface p0 = parameter.get(0);
 
 			if ((p0.getName()+"[]").equals(type) ) {
 				list.add( p0);

@@ -23,7 +23,7 @@ public class RayFloat implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		// TODO Auto-generated method stub
 		return null;
 	}

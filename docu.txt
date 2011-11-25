@@ -1,0 +1,30 @@
+
+The first thing you need is a tokenizer.
+I suggest creating a class that takes a whole file
+and reads it into a char array.
+That class also contains a int position.
+
+That class contains a method called getNextSourceToken or so
+that returns object of type Token.
+
+Token is a class that simply encapuslates a String and
+contains some useful info messaages about the token.
+
+Then you create a class called TokenList. That class
+contains a List of Token, a position, an offset and a limit.
+
+This is useful so you don't have to create sub char arrays for different parts
+of the source code.
+
+Then you create a utility function somewhere that turns a file into a TokenList.
+
+Next you create an interface containg 3 methods:
+String getName();
+RayClassInterface invoke( String methodName, RayMethod closure, List<RayClassInterface> parameter);
+RayClassInterface getNewInstance( List<RayClassInterface> parameter);
+
+Then you create a new class called RayClass and RayString and RayInteger.
+
+Let all 3 implement the interface.
+
+RayString and RayInteger are your first native classes.

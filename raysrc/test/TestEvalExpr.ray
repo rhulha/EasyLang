@@ -1,0 +1,15 @@
+
+public void start()
+{
+
+	Zahl x = 5;
+	x.plus!(7);
+	x.schreibe();
+	
+	Zahl y = 100;
+	y.schreibe();
+	x.plus(8).schreibe();
+	y.plus!(x.plus(8)).schreibe();
+
+}
+

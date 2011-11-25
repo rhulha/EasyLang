@@ -16,7 +16,7 @@ public class RayFile implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 			return null;
 	}
 

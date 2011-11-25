@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayMethod;
@@ -33,7 +34,7 @@ public class RayFileReader implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, RayClassInterface... parameter) {
+	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("leseZeile")) {
 			try {
 				return new RayString(br.readLine());
@@ -50,7 +51,9 @@ public class RayFileReader implements RayClassInterface {
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {
-					closure.invoke(closure.getParentClass(), new RayString(line));
+					List<RayClassInterface> p = Lists.newArrayList();
+					p.add(new RayString(line));
+					closure.invoke(closure.getParentClass(), p );
 				}
 			} catch (IOException e) {
 				RayUtils.runtimeExcp(e);

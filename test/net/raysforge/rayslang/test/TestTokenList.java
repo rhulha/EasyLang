@@ -11,7 +11,7 @@ public class TestTokenList {
 		TokenList tl = RayUtils.convertSourceToTokenList(rs);
 		System.out.println("original: " + tl);
 		tl.remove("{");
-		TokenList innerList = tl.getInnerList('{', '}');
+		TokenList innerList = tl.getSubList('{', '}');
 		System.out.println("innerList: " + innerList);
 		
 		if (innerList.contains("->")) {
@@ -45,7 +45,7 @@ public class TestTokenList {
 		test1.pop();
 		test1.pop();
 		test1.pop();
-		TokenList innerList = test1.getInnerList('{', '}');
+		TokenList innerList = test1.getSubList('{', '}');
 		System.out.println(innerList);
 		
 		RayUtils.assert_(innerList.hasMore());

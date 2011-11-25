@@ -1,6 +1,5 @@
 package net.raysforge.rayslang.def;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.raysforge.easyswing.EasySwing;
@@ -22,21 +21,21 @@ public class RayFrame implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke( String methodName, RayMethod closure, RayClassInterface... parameter) {
+	public RayClassInterface invoke( String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 
-		RayLog.debug.log(methodName + " " + Arrays.asList(parameter) + " on " + this);
+		RayLog.debug.log(methodName + " " + parameter + " on " + this);
 
-		if (methodName.equals("setzeTitel") && (parameter.length == 1)) {
+		if (methodName.equals("setzeTitel") && (parameter.size() == 1)) {
 			this.es.getFrame().setTitle(parameter.toString());
-		} else if (methodName.equals("setzeBreite") && (parameter.length == 1)) {
-			RayInteger p0 = (RayInteger) parameter[0];
+		} else if (methodName.equals("setzeBreite") && (parameter.size() == 1)) {
+			RayInteger p0 = (RayInteger) parameter.get(0);
 			int height = es.getFrame().getHeight();
 			this.es.getFrame().setSize((int) p0.getIntValue(), height);
-		} else if (methodName.equals("setzeBreite") && (parameter.length == 1)) {
-			RayInteger p0 = (RayInteger) parameter[0];
+		} else if (methodName.equals("setzeBreite") && (parameter.size() == 1)) {
+			RayInteger p0 = (RayInteger) parameter.get(0);
 			int width = es.getFrame().getWidth();
 			this.es.getFrame().setSize(width, (int) p0.getIntValue());
-		} else if (methodName.equals("zeigeAn") && (parameter.length == 0)) {
+		} else if (methodName.equals("zeigeAn") && (parameter.size() == 0)) {
 			this.es.show();
 		}
 		return null;
