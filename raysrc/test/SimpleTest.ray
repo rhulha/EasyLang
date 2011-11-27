@@ -1,8 +1,15 @@
 
 public void start()
 {
+
+	32.schreibe();
+	
+	"Lena".schreibe();
+
 	Zahl x = 5;
 	x.plus!(7);
+	x.schreibe();
+	x=7;
 	x.schreibe();
 }
 

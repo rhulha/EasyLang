@@ -1,0 +1,25 @@
+
+
+Zahl positionX;
+Zahl positionY;
+
+publik nichts norden()
+{
+   positionY.plus!(1);
+}
+
+publik nichts süden()
+{
+   positionY.minus!(1);
+}
+
+publik nichts links()
+{
+   positionX.minus!(1);
+}
+
+publik nichts rechts()
+{
+   positionX.plus!(1);
+}
+

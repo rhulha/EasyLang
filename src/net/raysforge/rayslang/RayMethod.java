@@ -70,7 +70,8 @@ public class RayMethod {
 
 		RayClass rayClass = (RayClass) instance;
 
-		RayLog.debug.log("RayMethod.invoke instance: " + name + " " + instance);
+		if (RayLog.level == RayLog.trace)
+			RayLog.trace.log("RayMethod.invoke instance: " + name + " " + instance + " - " + parameterList + " - " + code);
 
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
 		for (RayVar parameterRayVar : parameterList) {
@@ -90,25 +91,33 @@ public class RayMethod {
 				String varTypeName = null;
 				String varName = null;
 
+				if (tokenList.startsWithPattern("ii;")) {
+					continue;
+				}
 				if (tokenList.startsWithPattern("ii=")) {
 					varTypeName = tokenList.popString();
 					varName = tokenList.popString();
 					tokenList.remove("=");
-
+				} else if (tokenList.startsWithPattern("i=")) {
+					varName = tokenList.popString();
+					tokenList.remove("=");
 				}
+
 				RayClassInterface eval = evaluateExpression(rayClass, variables, tokenList);
 				// closure don't have an ending semicolon, so we only remove it otherwise.
-				if( !tokenList.get(-1).equals("}"))
+				if (!tokenList.get(-1).equals("}"))
 					tokenList.remove(";");
 
-
-				if (varName != null) {
+				if (varTypeName != null) {
 					//RayClassInterface mytype = rayClass.rayLang.getClass( mytypeName);
 					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
 					rv.setValue(eval);
 					variables.put(rv.getName(), rv);
+				} else if (varName != null) {
+					RayVar rayVar = mustGetVariable( parentClass, variables, varName);
+					rayVar.setValue(eval);
 				}
-				
+
 				/*
 				if (tokenList.startsWithPattern("ii=ii;")) {
 					// Arrays 
@@ -167,14 +176,7 @@ public class RayMethod {
 				List<RayClassInterface> params = evaluateParams(parentClass, variables, parameter2);
 				value = parentClass.rayLang.getClass(instanceType).getNewInstance(params);
 			} else {
-				RayVar rayVar = variables.get(varName);
-				if (rayVar == null) {
-					rayVar = parentClass.variables.get(varName); // TODO: loop over parents ?
-				}
-				if (rayVar == null) {
-					RayLog.error.log("RayMethod: " + "variable not found: " + varName);
-					RayUtils.runtimeExcp("unknown var: " + varName);
-				}
+				RayVar rayVar = mustGetVariable( parentClass, variables, varName);
 				value = rayVar.getValue();
 			}
 		} else if (tokenList.startsWithPattern("v")) {
@@ -201,6 +203,18 @@ public class RayMethod {
 			value = value.invoke(methodName, rm, evaluatedParams); // this was the last line that I changed before it all worked magically !!! woot !
 		}
 		return value;
+	}
+
+	private static RayVar mustGetVariable( RayClass parentClass, HashMap<String, RayVar> variables, String varName) {
+		RayVar rayVar = variables.get(varName);
+		if (rayVar == null) {
+			rayVar = parentClass.variables.get(varName); // TODO: loop over parents ?
+		}
+		if (rayVar == null) {
+			RayLog.error.log("RayMethod: " + "variable not found: " + varName);
+			RayUtils.runtimeExcp("unknown var: " + varName);
+		}
+		return rayVar;
 	}
 
 	protected static List<RayClassInterface> evaluateParams(RayClass parentClass, HashMap<String, RayVar> variables, TokenList paramTokenList) {

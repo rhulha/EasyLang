@@ -19,6 +19,9 @@ public void start()
 	y.schreibe();
 	y.quadrat!();
 	y.schreibe();
+	
+	i.plus!(3);
+	i.schreibe();
 
 }
 

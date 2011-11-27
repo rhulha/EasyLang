@@ -2,6 +2,7 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
+import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLog;
@@ -41,6 +42,13 @@ public class RayInteger implements RayClassInterface {
 			setIntValue(getIntValue() * getIntValue());
 		} else if (methodName.equals("schreibe") && (parameter.size() == 0)) {
 			System.out.println( getIntValue());
+		} else if (methodName.equals("mal") && closure != null) {
+			List<RayClassInterface> p = Lists.newArrayList();
+			for (int i = 0; i < intValue; i++) {
+				p.clear();
+				p.add(new RayInteger(i));
+				closure.invoke( closure.getParentClass(), p);
+			}
 		} else {
 			System.out.println("OMG");
 			return new RayString(""+intValue).invoke( methodName, null, parameter);

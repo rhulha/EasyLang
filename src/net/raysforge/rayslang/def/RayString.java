@@ -5,6 +5,7 @@ import java.util.List;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayMethod;
+import net.raysforge.rayslang.RayUtils;
 
 public class RayString implements RayClassInterface {
 
@@ -38,8 +39,7 @@ public class RayString implements RayClassInterface {
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("schreibe") && (parameter.size() == 0)) {
 			System.out.println(stringValue);
-		}
-		if (methodName.equals("spalte") && (parameter.size() == 1)) {
+		} else if (methodName.equals("spalte") && (parameter.size() == 1)) {
 			RayClassInterface p0 = parameter.get(0);
 			String[] split = stringValue.split(p0.toString());
 			RayArray ra = new RayArray(getName());
@@ -47,10 +47,12 @@ public class RayString implements RayClassInterface {
 				ra.list.add(new RayString(string));
 			}
 			return ra;
+		} else {
+			RayUtils.runtimeExcp("method not found: " + methodName);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		return stringValue;

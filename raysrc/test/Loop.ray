@@ -1,15 +1,18 @@
 
 
 
-public void start()
+publik nichts start()
 {
 
 	Zahl x = 7;
 	
-	x.times { 
-	  "Hello".print();
+	x.mal { 
+	  "Hello".schreibe();
 	}
 	
+	x.mal { 
+	   Zahl z -> z.schreibe();
+	}
 
 }
 
