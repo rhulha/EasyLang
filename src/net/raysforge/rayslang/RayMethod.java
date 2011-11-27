@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.raysforge.rayslang.def.RayArray;
+
 public class RayMethod {
 
 	protected String name;
@@ -92,6 +94,13 @@ public class RayMethod {
 				String varName = null;
 
 				if (tokenList.startsWithPattern("ii;")) {
+					varTypeName = tokenList.popString();
+					varName = tokenList.popString();
+					tokenList.remove(";");
+					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
+					RayClassInterface instanceTypeClass = rayClass.rayLang.getClass(varTypeName);
+					rv.setValue(instanceTypeClass.getNewInstance(null));
+					variables.put(rv.getName(), rv);
 					continue;
 				}
 				if (tokenList.startsWithPattern("ii=")) {
@@ -114,8 +123,14 @@ public class RayMethod {
 					rv.setValue(eval);
 					variables.put(rv.getName(), rv);
 				} else if (varName != null) {
-					RayVar rayVar = mustGetVariable( parentClass, variables, varName);
-					rayVar.setValue(eval);
+					if (varName.endsWith("]")) {
+						RayArrayExpr rae = mustGetArray(rayClass, variables, varName);
+						// TODO: verify that the value is of the correct type !
+						rae.put(eval);
+					} else {
+						RayVar rayVar = mustGetVariable(parentClass, variables, varName);
+						rayVar.setValue(eval);
+					}
 				}
 
 				/*
@@ -171,13 +186,20 @@ public class RayMethod {
 				if (!tokenList.startsWithPattern("i"))
 					RayUtils.runtimeExcp("unknown token after " + KeyWords.NEW + ": " + tokenList.get(0));
 				String instanceType = tokenList.popString();
-				tokenList.remove("(");
-				TokenList parameter2 = tokenList.getSubList('(', ')');
-				List<RayClassInterface> params = evaluateParams(parentClass, variables, parameter2);
-				value = parentClass.rayLang.getClass(instanceType).getNewInstance(params);
+				if (instanceType.endsWith("[]")) {
+					value = new RayArray(instanceType);
+				} else {
+					tokenList.remove("(");
+					TokenList parameter2 = tokenList.getSubList('(', ')');
+					List<RayClassInterface> params = evaluateParams(parentClass, variables, parameter2);
+					value = parentClass.rayLang.getClass(instanceType).getNewInstance(params);
+				}
 			} else {
-				RayVar rayVar = mustGetVariable( parentClass, variables, varName);
-				value = rayVar.getValue();
+				if (varName.endsWith("]")) {
+					value = mustGetArray(parentClass, variables, varName).get();
+				} else {
+					value = mustGetVariable(parentClass, variables, varName).getValue();
+				}
 			}
 		} else if (tokenList.startsWithPattern("v")) {
 			value = tokenList.pop().getValue();
@@ -205,7 +227,24 @@ public class RayMethod {
 		return value;
 	}
 
-	private static RayVar mustGetVariable( RayClass parentClass, HashMap<String, RayVar> variables, String varName) {
+	private static RayArrayExpr mustGetArray(RayClass parentClass, HashMap<String, RayVar> variables, String varName) {
+
+		int arrayIndex = 0;
+		if (!varName.endsWith("]")) {
+			RayUtils.runtimeExcp(varName + " is not an array.");
+		}
+
+		int openBracketPos = varName.indexOf('[');
+		arrayIndex = Integer.parseInt(varName.substring(openBracketPos + 1, varName.length() - 1));
+		varName = varName.substring(0, openBracketPos);
+
+		RayVar rayVar = mustGetVariable(parentClass, variables, varName);
+
+		RayArray ra = (RayArray) rayVar.getValue();
+		return new RayArrayExpr(ra, arrayIndex);
+	}
+
+	private static RayVar mustGetVariable(RayClass parentClass, HashMap<String, RayVar> variables, String varName) {
 		RayVar rayVar = variables.get(varName);
 		if (rayVar == null) {
 			rayVar = parentClass.variables.get(varName); // TODO: loop over parents ?

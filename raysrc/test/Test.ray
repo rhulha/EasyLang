@@ -11,7 +11,9 @@ public void start()
 	x.plus!(7);
 	x.schreibe();
 	
-	Zahl y = 100;
+	Zahl y;
+	y.schreibe();
+	y = 100;
 	y.schreibe();
 	y.plus!(x);
 	y.schreibe();

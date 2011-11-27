@@ -10,10 +10,10 @@ import net.raysforge.rayslang.RayMethod;
 public class RayArray implements RayClassInterface {
 
 	HashMap<String, RayClassInterface> map = new HashMap<String, RayClassInterface>();
-	List<RayClassInterface> list = new ArrayList<RayClassInterface>();
+	ArrayList<RayClassInterface> list = new ArrayList<RayClassInterface>();
 
 	private final String type;
-	
+
 	public RayArray(String type) {
 		this.type = type;
 	}
@@ -57,9 +57,9 @@ public class RayArray implements RayClassInterface {
 		} else if (methodName.equals("add") && parameter.size() == 1) {
 			RayClassInterface p0 = parameter.get(0);
 
-			if ((p0.getName()+"[]").equals(type) ) {
-				list.add( p0);
-			} else  {
+			if ((p0.getName() + "[]").equals(type)) {
+				list.add(p0);
+			} else {
 				// error.
 			}
 
@@ -69,10 +69,27 @@ public class RayArray implements RayClassInterface {
 		return null;
 	}
 
+	public RayClassInterface get(int i) {
+		return list.get(i);
+	}
+
+	public RayClassInterface get(String key) {
+		return map.get(key);
+	}
+
 	@Override
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 		return new RayArray(parameter.get(0).toString());
 	}
 
+	public RayClassInterface put(String key, RayClassInterface value) {
+		return map.put(key, value);
+	}
+
+	public RayClassInterface put(int index, RayClassInterface value) {
+		while( list.size() <= index)
+			list.add(null); // TODO: is there really no better way to do this ?
+		return list.set(index, value);
+	}
 
 }
