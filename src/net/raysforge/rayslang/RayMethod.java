@@ -44,7 +44,7 @@ public class RayMethod {
 
 		rm.code = tokenList.getSubList('{', '}');
 		if (rm.code.contains("->")) {
-			TokenList parameterList = rm.code.getAndRemoveSourceTokenUntil("->", false);
+			TokenList parameterList = rm.code.getAndRemoveSourceTokenUntil(false, "->");
 			//parameterList.removeLast("->");
 
 			rm.code.hideCodeBeforePosAndResetPos();
@@ -82,7 +82,7 @@ public class RayMethod {
 			variables.put(parameterRayVar.getName(), rayVarForVariables);
 		}
 
-		TokenList tokenList = code.copy();
+		TokenList tokenList = code.copy().resetPosition();
 
 		while (true) {
 
@@ -92,9 +92,15 @@ public class RayMethod {
 
 				String varTypeName = null;
 				String varName = null;
+				RayArrayExpr arrayExpr = null;
 
-				if (tokenList.startsWithPattern("ii;")) {
+				if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
 					varTypeName = tokenList.popString();
+					if (tokenList.startsWithPattern("[]")) {
+						tokenList.remove("[");
+						tokenList.remove("]");
+						varTypeName += "[]";
+					}
 					varName = tokenList.popString();
 					tokenList.remove(";");
 					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
@@ -103,13 +109,29 @@ public class RayMethod {
 					variables.put(rv.getName(), rv);
 					continue;
 				}
-				if (tokenList.startsWithPattern("ii=")) {
+				if (tokenList.startsWithPattern("ii=") || tokenList.startsWithPattern("i[]i=")) {
 					varTypeName = tokenList.popString();
+					if (tokenList.startsWithPattern("[]")) {
+						tokenList.remove("[");
+						tokenList.remove("]");
+						varTypeName += "[]";
+					}
 					varName = tokenList.popString();
 					tokenList.remove("=");
 				} else if (tokenList.startsWithPattern("i=")) {
 					varName = tokenList.popString();
 					tokenList.remove("=");
+				} else {
+					TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil( true, ";", "}", "=");
+
+					if ( preview.getLast().equals("=") && preview.contains("[")  ) {
+						// this means that there is an array expression on the left hand side of an assignement
+						varName = tokenList.popString();
+						tokenList.remove("[");
+						RayClassInterface arrayIndex = evaluateExpression(rayClass, variables, tokenList.getSubList('[', ']'));
+						arrayExpr = mustGetArray(rayClass, variables, varName, arrayIndex);
+						tokenList.remove("=");
+					}
 				}
 
 				RayClassInterface eval = evaluateExpression(rayClass, variables, tokenList);
@@ -123,10 +145,9 @@ public class RayMethod {
 					rv.setValue(eval);
 					variables.put(rv.getName(), rv);
 				} else if (varName != null) {
-					if (varName.endsWith("]")) {
-						RayArrayExpr rae = mustGetArray(rayClass, variables, varName);
+					if (arrayExpr != null) {
 						// TODO: verify that the value is of the correct type !
-						rae.put(eval);
+						arrayExpr.put(eval);
 					} else {
 						RayVar rayVar = mustGetVariable(parentClass, variables, varName);
 						rayVar.setValue(eval);
@@ -172,13 +193,15 @@ public class RayMethod {
 		return rayVar;
 	}
 
-	private static RayClassInterface evaluateExpression(RayClass parentClass, HashMap<String, RayVar> variables, TokenList tokenList) {
+	public static RayClassInterface evaluateExpression(RayClass parentClass, HashMap<String, RayVar> variables, TokenList tokenList) {
 
 		RayLog.trace.log("ee: " + tokenList);
 
 		RayClassInterface value;
 
-		if (tokenList.startsWithPattern("i")) {
+		if (tokenList.startsWithPattern("v")) {
+			value = tokenList.pop().getValue();
+		} else if (tokenList.startsWithPattern("i")) {
 
 			String varName = tokenList.popString();
 
@@ -186,8 +209,10 @@ public class RayMethod {
 				if (!tokenList.startsWithPattern("i"))
 					RayUtils.runtimeExcp("unknown token after " + KeyWords.NEW + ": " + tokenList.get(0));
 				String instanceType = tokenList.popString();
-				if (instanceType.endsWith("[]")) {
-					value = new RayArray(instanceType);
+				if (tokenList.startsWithPattern("[]")) {
+					tokenList.remove("[");
+					tokenList.remove("]");
+					value = new RayArray(instanceType+"[]");
 				} else {
 					tokenList.remove("(");
 					TokenList parameter2 = tokenList.getSubList('(', ')');
@@ -195,14 +220,14 @@ public class RayMethod {
 					value = parentClass.rayLang.getClass(instanceType).getNewInstance(params);
 				}
 			} else {
-				if (varName.endsWith("]")) {
-					value = mustGetArray(parentClass, variables, varName).get();
+				if (tokenList.startsWithPattern("[")) {
+					tokenList.remove("[");
+					RayClassInterface arrayIndex = evaluateExpression(parentClass, variables, tokenList.getSubList('[', ']'));
+					value = mustGetArray(parentClass, variables, varName, arrayIndex).get();
 				} else {
 					value = mustGetVariable(parentClass, variables, varName).getValue();
 				}
 			}
-		} else if (tokenList.startsWithPattern("v")) {
-			value = tokenList.pop().getValue();
 		} else {
 			System.err.println("arg678");
 			value = null;
@@ -227,19 +252,8 @@ public class RayMethod {
 		return value;
 	}
 
-	private static RayArrayExpr mustGetArray(RayClass parentClass, HashMap<String, RayVar> variables, String varName) {
-
-		int arrayIndex = 0;
-		if (!varName.endsWith("]")) {
-			RayUtils.runtimeExcp(varName + " is not an array.");
-		}
-
-		int openBracketPos = varName.indexOf('[');
-		arrayIndex = Integer.parseInt(varName.substring(openBracketPos + 1, varName.length() - 1));
-		varName = varName.substring(0, openBracketPos);
-
+	private static RayArrayExpr mustGetArray(RayClass parentClass, HashMap<String, RayVar> variables, String varName, RayClassInterface arrayIndex) {
 		RayVar rayVar = mustGetVariable(parentClass, variables, varName);
-
 		RayArray ra = (RayArray) rayVar.getValue();
 		return new RayArrayExpr(ra, arrayIndex);
 	}

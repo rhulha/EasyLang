@@ -31,10 +31,6 @@ public class RaySource {
 		return isLetterOrDigit() || src[pos] == '!';
 	}
 
-	public boolean isLetterOrDigitOrBangOrBracket() {
-		return isLetterOrDigit() || (src[pos] == '!') || (src[pos] == '[') || (src[pos] == ']');
-	}
-
 	public boolean more() {
 		return pos < src.length;
 	}
@@ -112,7 +108,7 @@ public class RaySource {
 			}
     	} else if (isLetter())
 		{
-			while (more() && isLetterOrDigitOrBangOrBracket()) // ending! like ruby
+			while (more() && isLetterOrDigitOrBang()) // ending! like ruby
 				pos++;
 		} else if (src[pos] == '#') // kommentare ignorieren
 		{

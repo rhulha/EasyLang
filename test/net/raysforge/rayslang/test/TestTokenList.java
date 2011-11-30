@@ -7,6 +7,12 @@ import net.raysforge.rayslang.TokenList;
 public class TestTokenList {
 	
 	public static void main(String[] args) {
+		RaySource rs = new RaySource("Zahl[] x = neu Zahl[];".toCharArray());
+		TokenList tokenList = RayUtils.convertSourceToTokenList(rs);
+		System.out.println( tokenList.startsWithPattern("i[]i=") );
+	}
+	
+	public static void main1(String[] args) {
 		RaySource rs = new RaySource("{\nZeichen zeile -> zeile.schreibe();\n}".toCharArray());
 		TokenList tl = RayUtils.convertSourceToTokenList(rs);
 		System.out.println("original: " + tl);
@@ -15,7 +21,7 @@ public class TestTokenList {
 		System.out.println("innerList: " + innerList);
 		
 		if (innerList.contains("->")) {
-			TokenList parameterList = innerList.getAndRemoveSourceTokenUntil("->", false);
+			TokenList parameterList = innerList.getAndRemoveSourceTokenUntil( false, "->" );
 			System.out.println("parameterList: " + parameterList);
 
 			System.out.println("innerList.get(0): " + innerList.get(0));
@@ -25,7 +31,7 @@ public class TestTokenList {
 		}
 	}
 
-	public static void main1(String[] args) {
+	public static void main2(String[] args) {
 		RaySource rs = new RaySource("x.add!(7);".toCharArray());
 		TokenList tl = RayUtils.convertSourceToTokenList(rs);
 		System.out.println(tl);
@@ -37,8 +43,8 @@ public class TestTokenList {
 		RaySource rs2 = new RaySource("{as{d -> as}d\n}\r\n".toCharArray());
 		TokenList tl2 = RayUtils.convertSourceToTokenList(rs2);
 
-		System.out.println(  tl2.copy().getAndRemoveSourceTokenUntil("->", true));;
-		System.out.println(  tl2.copy().getAndRemoveSourceTokenUntil("->", false));;
+		System.out.println(  tl2.copy().getAndRemoveSourceTokenUntil( true, "->" ));;
+		System.out.println(  tl2.copy().getAndRemoveSourceTokenUntil( false, "->" ));;
 		
 		TokenList test1 = tl2.copy();
 		

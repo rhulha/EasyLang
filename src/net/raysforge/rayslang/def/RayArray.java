@@ -79,7 +79,7 @@ public class RayArray implements RayClassInterface {
 
 	@Override
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
-		return new RayArray(parameter.get(0).toString());
+		return new RayArray(type); // parameter.get(0).toString()
 	}
 
 	public RayClassInterface put(String key, RayClassInterface value) {

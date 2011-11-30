@@ -17,7 +17,7 @@ publik nichts start()
 	DateiLeser dl = neu DateiLeser("level01.sokoban");
 	dl.fürJedeZeile{
 		Zeichen zeile -> 
-		String[] parts = line.spalte(":");
+		String[] parts = zeile.spalte(":");
 		level[parts[0]] = parts[1];
 		parts[1].equals("Player"){
 			String[] coords = parts[0].spalte("-");

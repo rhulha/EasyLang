@@ -31,60 +31,54 @@ public class RayClass implements RayClassInterface {
 			if (tokenList.remaining() == 0)
 				break;
 
-			if (tokenList.startsWithPattern("ii;")) {
-				String typeStr = tokenList.popString();
-				String varName = tokenList.popString();
-				tokenList.remove(";");
+			if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
+				parseNewVariable(rayLang, Visibility.protected_, rc, tokenList);
+			} else if (tokenList.startsWithPattern("ii=ii(") || tokenList.startsWithPattern("i[]i=ii[]") ) {
 
-				RayClassInterface type = rayLang.getClass(typeStr);
-				if (type == null)
-					RayUtils.runtimeExcp(typeStr + " not found");
-
-				Visibility v = Visibility.protected_;
-				rc.variables.put(varName, new RayVar(v, typeStr, varName));
-				RayLog.trace.log("var: " + type + " - " + varName);
-
-			} else if (tokenList.startsWithPattern("ii=ii(")) {
-
-				String varType = tokenList.popString();
+				String varTypeStr = tokenList.popString();
+				if( tokenList.startsWithPattern("[]"))
+				{
+					tokenList.remove("[");
+					tokenList.remove("]");
+					varTypeStr += "[]";
+				}
 				String varName = tokenList.popString();
 				tokenList.remove("=");
+				RayClassInterface eval = RayMethod.evaluateExpression(rc, rc.variables, tokenList);
+				
+				/*
 				tokenList.remove(KeyWords.NEW);
 				String instanceType = tokenList.popString();
 				
-				RayClassInterface varTypeClass = rayLang.getClass(varType);
+				RayClassInterface varTypeClass = rayLang.getClass(varTypeStr);
 				if (varTypeClass == null)
-					RayUtils.runtimeExcp(varType + " not found");
+					RayUtils.runtimeExcp(varTypeStr + " not found");
 
 				RayClassInterface instanceTypeClass = rayLang.getClass(instanceType);
 
 				RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
-
 				tokenList.remove("(");
-				TokenList paramTokenList = tokenList.getSubList('(', ')');
-				List<RayClassInterface> myparams = RayMethod.evaluateParams( rc, rc.variables, paramTokenList);
+				tokenList.remove(")");
+				*/
+
+				// removed the following code, because currently I don't want to support constructors with parameters. 
+				//TokenList paramTokenList = tokenList.getSubList('(', ')');
+				//List<RayClassInterface> myparams = RayMethod.evaluateParams( rc, rc.variables, paramTokenList);
 				
 				Visibility v = Visibility.protected_;
-				RayVar rayVar = new RayVar(v, varType, varName);
-				rayVar.setValue( instanceTypeClass.getNewInstance(myparams));
+				RayVar rayVar = new RayVar(v, varTypeStr, varName);
+				//rayVar.setValue( instanceTypeClass.getNewInstance(myparams));
+				// rayVar.setValue( instanceTypeClass.getNewInstance(null));
+				rayVar.setValue( eval);
 				rc.variables.put(varName, rayVar);
 
 				tokenList.remove(";");
 
-			} else if (tokenList.startsWithPattern("iii;")) {
+			} else if (tokenList.startsWithPattern("iii;") || tokenList.startsWithPattern("ii[]i;")) {
 
 				String visibility = tokenList.popString();
-				String typeStr = tokenList.popString();
-				String varName = tokenList.popString();
-				tokenList.remove(";");
-
-				RayClassInterface type = rayLang.getClass(typeStr);
-				if (type == null)
-					RayUtils.runtimeExcp(typeStr + " not found");
-
 				Visibility v = Visibility.valueOf(visibility + "_");
-				rc.variables.put(varName, new RayVar(v, typeStr, varName));
-				RayLog.trace.log("var: " + type + " - " + varName);
+				parseNewVariable( rayLang, v, rc, tokenList);
 			} else if (tokenList.startsWithPattern("iii(")) {
 				/* this is a method declaration */
 
@@ -104,6 +98,25 @@ public class RayClass implements RayClassInterface {
 		}
 
 		return rc;
+	}
+
+	private static void parseNewVariable( RayLang rayLang, Visibility v, RayClass rc, TokenList tokenList) {
+		String typeStr = tokenList.popString();
+		if( tokenList.startsWithPattern("[]"))
+		{
+			tokenList.remove("[");
+			tokenList.remove("]");
+			typeStr += "[]";
+		}
+		String varName = tokenList.popString();
+		tokenList.remove(";");
+
+		RayClassInterface type = rayLang.getClass(typeStr);
+		if (type == null)
+			RayUtils.runtimeExcp(typeStr + " not found");
+
+		rc.variables.put(varName, new RayVar(v, typeStr, varName));
+		RayLog.trace.log("var: " + type + " - " + varName);
 	}
 
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {

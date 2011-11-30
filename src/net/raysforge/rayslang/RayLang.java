@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import net.raysforge.rayslang.def.RayArray;
 import net.raysforge.rayslang.def.RayFileReader;
 import net.raysforge.rayslang.def.RayFrame;
 import net.raysforge.rayslang.def.RayInteger;
@@ -47,7 +48,16 @@ public class RayLang {
 		
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
-		RayClassInterface rc = rayLang.getClass("ArrayTest");
+//		runClass(rayLang.getClass("DateiTest"));
+//		runClass(rayLang.getClass("Sokoban"));
+		runClass(rayLang.getClass("Test"));
+		runClass(rayLang.getClass("Loop"));
+		runClass(rayLang.getClass("SimpleTest"));
+		runClass(rayLang.getClass("ArrayTest"));
+		runClass(rayLang.getClass("TestHashMap"));
+	}
+
+	private static void runClass(RayClassInterface rc) {
 		RayClassInterface ri = rc.getNewInstance(null);
 		ri.invoke( "start", null, null);
 	}
@@ -64,10 +74,19 @@ public class RayLang {
 	}
 
 	public RayClassInterface getClass( String fullClassName) {
+		boolean array = false;
+		if( fullClassName.endsWith("[]"))
+		{
+			array = true;
+			fullClassName = fullClassName.substring(0, fullClassName.length()-4);
+		}
 		RayClassInterface rci = classes.get(fullClassName);
 		if( rci == null)
 			System.out.println(fullClassName + " not found.");
-		return rci;
+		if( array)
+			return new RayArray(fullClassName);
+		else
+			return rci;
 	}
 
 	public void registerClasses(RayClassInterface rayClass) {

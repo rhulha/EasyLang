@@ -7,10 +7,12 @@ public void start()
 	
 	x.add(7);
 	
-	x[200] = 17;
+	Zahl y = 200;
+	
+	x[y] = 17;
 	
 	x[0].schreibe();
-	x[200].schreibe();
+	x[y].schreibe();
 	
 
 }

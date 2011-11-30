@@ -5,17 +5,18 @@ import java.util.ArrayList;
 public class TokenList {
 
 	private final ArrayList<Token> tokens;
-	int position = 0;
 	int offset;
+	int position = 0;
 	int limit;
 
 	public TokenList(ArrayList<Token> tokens) {
-		this(tokens, 0, tokens.size());
+		this(tokens, 0, 0, tokens.size());
 	}
 
-	public TokenList(ArrayList<Token> tokens, int offset, int limit) {
+	public TokenList(ArrayList<Token> tokens, int offset, int position, int limit) {
 		this.tokens = tokens;
 		this.offset = offset;
+		this.position = position;
 		this.limit = Math.min(limit, tokens.size());
 	}
 
@@ -113,7 +114,7 @@ public class TokenList {
 
 	public void remove(String string) {
 		if (!get(0).equals(string))
-			RayUtils.runtimeExcp(get(0) + " != " + string);
+			RayUtils.runtimeExcp(get(0) + " != " + string + " (" + this + ")");
 		position++;
 	}
 
@@ -127,21 +128,30 @@ public class TokenList {
 		return pop().s();
 	}
 
-	public boolean contains(String string) {
+	public int indexOf(String string) {
 		for (int i = 0; i < remaining(); i++) {
 			if (get(i).equals(string))
-				return true;
+				return i;
 		}
-		return false;
+		return -1;
+	}
+
+	public boolean contains(String string) {
+		return indexOf(string)>=0;
 	}
 
 	// final token is always removed, it may be returned though.
-	public TokenList getAndRemoveSourceTokenUntil(String string, boolean includeFinalToken) {
+	public TokenList getAndRemoveSourceTokenUntil( boolean includeFinalToken, String ... any) {
 		int pos = position;
+		label:
 		while (hasMore()) {
-			Token t = pop();
-			if (t.equals(string))
-				break;
+			Token token = pop();
+			for( String s : any)
+			{
+				if (token.equals(s)) {
+					break label;
+				}
+			}
 		}
 		return getSubListUsingOnlyOffset( pos, includeFinalToken ? position : position - 1);
 	}
@@ -151,10 +161,13 @@ public class TokenList {
 		position = 0;
 	}
 
-	// Beware: position is 0 after copy.
 	public TokenList copy() {
-		return new TokenList(tokens, offset, limit);
+		return new TokenList(tokens, offset, position, limit);
+	}
 
+	public TokenList resetPosition() {
+		position = 0;
+		return this;
 	}
 
 	public Token getLast() {
@@ -164,6 +177,7 @@ public class TokenList {
 
 	// this method exptects that the FIRST open char IS ALREADY REMOVED !!!
 	// this method does NOT return the last matching char.
+	// Info: the returned tokens sub list IS removed from the containing token list !
 	public TokenList getSubList(char open, char close) {
 		int pos = position;
 
@@ -186,11 +200,11 @@ public class TokenList {
 	}
 
 	public TokenList getSubListUsingOnlyOffset(int from, int to) {
-		return new TokenList(tokens, offset+from, offset+to);
+		return new TokenList(tokens, offset+from, 0, offset+to);
 	}
 
 	public TokenList getSubList(int from, int to) {
-		return new TokenList(tokens, offset+position+from, offset+position+to);
+		return new TokenList(tokens, offset+position+from, 0, offset+position+to);
 	}
 
 	/* very bad idea due to offset !!!
