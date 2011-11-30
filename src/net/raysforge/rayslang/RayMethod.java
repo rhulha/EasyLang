@@ -41,7 +41,7 @@ public class RayMethod {
 	public static RayMethod parseClosure(RayClass parentClass, HashMap<String, RayVar> closureVariables, TokenList tokenList) {
 		RayMethod rm = new RayMethod(parentClass, "#");
 		rm.returnType = KeyWords.VOID;
-
+		rm.closureVariables = closureVariables;
 		rm.code = tokenList.getSubList('{', '}');
 		if (rm.code.contains("->")) {
 			TokenList parameterList = rm.code.getAndRemoveSourceTokenUntil(false, "->");
@@ -76,6 +76,10 @@ public class RayMethod {
 			RayLog.trace.log("RayMethod.invoke instance: " + name + " " + instance + " - " + parameterList + " - " + code);
 
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
+		if( closureVariables != null)
+			for (RayVar closureRayVar : closureVariables.values()) {
+				variables.put(closureRayVar.getName(), closureRayVar);
+			}
 		for (RayVar parameterRayVar : parameterList) {
 			RayVar rayVarForVariables = parameterRayVar.copy();
 			rayVarForVariables.setValue(parameter.get(0));
@@ -122,10 +126,12 @@ public class RayMethod {
 					varName = tokenList.popString();
 					tokenList.remove("=");
 				} else {
-					TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil( true, ";", "}", "=");
+					// this next line tries to find out if the next tokens are an array expression on the left hand side of an assignment.
+					// it is broken at least for when a closure is used in an expression to generate the array index.
+					TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil( true, ";", "{", "=");
 
 					if ( preview.getLast().equals("=") && preview.contains("[")  ) {
-						// this means that there is an array expression on the left hand side of an assignement
+						// this means that there is an array expression on the left hand side of an assignment
 						varName = tokenList.popString();
 						tokenList.remove("[");
 						RayClassInterface arrayIndex = evaluateExpression(rayClass, variables, tokenList.getSubList('[', ']'));

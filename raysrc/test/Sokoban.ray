@@ -9,7 +9,7 @@ publik nichts start()
 	fenster.setzeHöhe(600);
 	#fenster.zeigeAn();
 	
-	String[] level = neu String[];
+	Zeichen[] level = neu Zeichen[];
 	Zahl feldGröße = 40;
 	Zahl spielerX = 0;
 	Zahl spielerY = 0;
@@ -17,12 +17,12 @@ publik nichts start()
 	DateiLeser dl = neu DateiLeser("level01.sokoban");
 	dl.fürJedeZeile{
 		Zeichen zeile -> 
-		String[] parts = zeile.spalte(":");
+		Zeichen[] parts = zeile.spalte(":");
 		level[parts[0]] = parts[1];
-		parts[1].equals("Player"){
-			String[] coords = parts[0].spalte("-");
-			spielerX = coords[0].toZahl();
-			spielerY = coords[1].toZahl();
+		parts[1].istGleich("Player"){
+			Zeichen[] coords = parts[0].spalte("-");
+			spielerX = coords[0].alsZahl();
+			spielerY = coords[1].alsZahl();
 		}
 		
 	}

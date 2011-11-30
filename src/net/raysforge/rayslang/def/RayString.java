@@ -2,6 +2,7 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
+import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayMethod;
@@ -42,11 +43,20 @@ public class RayString implements RayClassInterface {
 		} else if (methodName.equals("spalte") && (parameter.size() == 1)) {
 			RayClassInterface p0 = parameter.get(0);
 			String[] split = stringValue.split(p0.toString());
-			RayArray ra = new RayArray(getName());
+			RayArray ra = new RayArray(getName()+"[]");
 			for (String string : split) {
 				ra.list.add(new RayString(string));
 			}
 			return ra;
+		} else if (methodName.equals("alsZahl") ) {
+			return new RayInteger(Long.parseLong(stringValue));
+		} else if (methodName.equals("istGleich") && closure != null) {
+			RayClassInterface p0 = parameter.get(0);
+			if( stringValue.equals(p0.toString()))
+			{
+				List<RayClassInterface> p = Lists.newArrayList();
+				closure.invoke( closure.getParentClass(), p);
+			}
 		} else {
 			RayUtils.runtimeExcp("method not found: " + methodName);
 		}

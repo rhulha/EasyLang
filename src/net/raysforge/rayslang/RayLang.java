@@ -49,12 +49,12 @@ public class RayLang {
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
 //		runClass(rayLang.getClass("DateiTest"));
-//		runClass(rayLang.getClass("Sokoban"));
-		runClass(rayLang.getClass("Test"));
-		runClass(rayLang.getClass("Loop"));
-		runClass(rayLang.getClass("SimpleTest"));
-		runClass(rayLang.getClass("ArrayTest"));
-		runClass(rayLang.getClass("TestHashMap"));
+		runClass(rayLang.getClass("Sokoban"));
+//		runClass(rayLang.getClass("Test"));
+//		runClass(rayLang.getClass("Loop"));
+//		runClass(rayLang.getClass("SimpleTest"));
+//		runClass(rayLang.getClass("ArrayTest"));
+//		runClass(rayLang.getClass("TestHashMap"));
 	}
 
 	private static void runClass(RayClassInterface rc) {
