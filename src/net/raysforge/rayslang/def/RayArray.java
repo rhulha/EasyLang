@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayMethod;
 
@@ -63,6 +64,14 @@ public class RayArray implements RayClassInterface {
 				// error.
 			}
 
+		} else if (methodName.equals("fürJedenSchlüssel") && closure != null) {
+			List<RayClassInterface> p = Lists.newArrayList();
+			for( String key : map.keySet())
+			{
+				p.clear();
+				p.add(new RayString(key));
+				closure.invoke( closure.getParentClass(), p);
+			}
 		} else {
 			// error.
 		}

@@ -7,12 +7,17 @@ publik nichts start()
 	fenster.setzeTitel("Sokoban");
 	fenster.setzeBreite(800);
 	fenster.setzeHöhe(600);
-	#fenster.zeigeAn();
 	
+	Zeichen[] farben = neu Zeichen[];
 	Zeichen[] level = neu Zeichen[];
 	Zahl feldGröße = 40;
 	Zahl spielerX = 0;
 	Zahl spielerY = 0;
+	
+	farben["Wand"] = "0x000000";
+	farben["Ziel"] = "0x00ff00";
+	farben["Spieler"] = "0xff0000";
+	farben["Kiste"] = "0x0000ff";
 	
 	DateiLeser dl = neu DateiLeser("level01.sokoban");
 	dl.fürJedeZeile{
@@ -27,6 +32,51 @@ publik nichts start()
 		
 	}
 	dl.ende();
+	
+	spielerX.schreibe();
+	spielerY.schreibe();
+	level.fürJedenSchlüssel{
+	  Zeichen schlüssel ->
+	  level[schlüssel].schreibe();
+	}
+
+	fenster.setzeTastenDruckBehandler{
+	  Zahl taste ->
+	  taste.gleicht(37){
+	    # links
+	  }
+	  taste.gleicht(38){
+	    # hoch
+	  }
+	  taste.gleicht(39){
+	    # rechts
+	  }
+	  taste.gleicht(40){
+	    # runter
+	  }
+	}
+	
+	fenster.male{
+	  Grafik g ->
+		Zahl w = holeBreite().geteiltDurch( feldGröße);
+		Zahl h = holeHöhe().geteiltDurch( feldGröße);
+		w.mal{
+			Zahl x ->
+			h.mal{
+				Zahl y ->
+				level.enthält(x.und("-").und(y)){
+					Zeichen alteFarbe = g.holeFarbe();
+					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
+					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+					g.setzeFarbe( alteFarbe);
+				}
+				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+			}
+		}
+	}
+
+	#fenster.zeigeAn();
+	
 	
 }
 

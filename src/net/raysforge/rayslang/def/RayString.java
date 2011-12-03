@@ -50,7 +50,7 @@ public class RayString implements RayClassInterface {
 			return ra;
 		} else if (methodName.equals("alsZahl") ) {
 			return new RayInteger(Long.parseLong(stringValue));
-		} else if (methodName.equals("istGleich") && closure != null) {
+		} else if ((methodName.equals("istGleich") || methodName.equals("gleicht")) && closure != null && (parameter.size() == 1)) {
 			RayClassInterface p0 = parameter.get(0);
 			if( stringValue.equals(p0.toString()))
 			{

@@ -49,6 +49,14 @@ public class RayInteger implements RayClassInterface {
 				p.add(new RayInteger(i));
 				closure.invoke( closure.getParentClass(), p);
 			}
+		} else if (methodName.equals("gleicht") && (parameter.size() == 1) && closure != null) {
+			RayClassInterface p0 = parameter.get(0);
+			RayInteger p0int = (RayInteger) p0;
+			if( p0int.getIntValue() == getIntValue() )
+			{
+				List<RayClassInterface> p = Lists.newArrayList();
+				closure.invoke( closure.getParentClass(), p);
+			}
 		} else {
 			System.out.println("OMG");
 			return new RayString(""+intValue).invoke( methodName, null, parameter);

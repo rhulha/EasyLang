@@ -47,7 +47,7 @@ public class RayFileReader implements RayClassInterface {
 			} catch (IOException e) {
 				RayUtils.runtimeExcp(e.getMessage());
 			}
-		} else if (methodName.equals("fürJedeZeile")) {
+		} else if (methodName.equals("fürJedeZeile") && closure != null) {
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {

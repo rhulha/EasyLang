@@ -26,7 +26,7 @@ public class RayFrame implements RayClassInterface {
 		RayLog.debug.log(methodName + " " + parameter + " on " + this);
 
 		if (methodName.equals("setzeTitel") && (parameter.size() == 1)) {
-			this.es.getFrame().setTitle(parameter.toString());
+			this.es.getFrame().setTitle(parameter.get(0).toString());
 		} else if (methodName.equals("setzeBreite") && (parameter.size() == 1)) {
 			RayInteger p0 = (RayInteger) parameter.get(0);
 			int height = es.getFrame().getHeight();
