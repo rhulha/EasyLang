@@ -1,0 +1,21 @@
+
+
+
+Fenster fenster = neu Fenster();
+
+publik nichts start()
+{
+	fenster.setzeTitel("Sokoban");
+	fenster.setzeBreite(800);
+	fenster.setzeHöhe(600);
+
+	fenster.male{
+		Grafik g ->
+		g.setzeFarbe("0xff0000");
+		g.fülleRechteck( 10, 10, 40, 40);  
+	}
+
+	fenster.zeigeAn();
+
+}
+

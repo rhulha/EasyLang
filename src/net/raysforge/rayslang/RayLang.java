@@ -7,6 +7,7 @@ import java.util.HashMap;
 import net.raysforge.rayslang.def.RayArray;
 import net.raysforge.rayslang.def.RayFileReader;
 import net.raysforge.rayslang.def.RayFrame;
+import net.raysforge.rayslang.def.RayGraphics;
 import net.raysforge.rayslang.def.RayInteger;
 import net.raysforge.rayslang.def.RayString;
 
@@ -42,6 +43,7 @@ public class RayLang {
 		registerClasses( new RayString());
 		registerClasses( new RayFrame());
 		registerClasses( new RayFileReader());
+		registerClasses( new RayGraphics());
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -49,9 +51,10 @@ public class RayLang {
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
 //		runClass(rayLang.getClass("DateiTest"));
-		runClass(rayLang.getClass("Sokoban"));
-//		runClass(rayLang.getClass("Test"));
+//		runClass(rayLang.getClass("Sokoban"));
+		runClass(rayLang.getClass("Test"));
 //		runClass(rayLang.getClass("Loop"));
+		runClass(rayLang.getClass("TestGrafik"));
 //		runClass(rayLang.getClass("SimpleTest"));
 //		runClass(rayLang.getClass("ArrayTest"));
 //		runClass(rayLang.getClass("TestHashMap"));

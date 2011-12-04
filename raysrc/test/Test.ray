@@ -24,6 +24,9 @@ public void start()
 	
 	i.plus!(3);
 	i.schreibe();
+	
+	Zahl a = 333;
+	a.geteiltDurch(111).schreibe();
 
 }
 

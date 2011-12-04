@@ -43,7 +43,8 @@ public class RayMethod {
 		rm.returnType = KeyWords.VOID;
 		rm.closureVariables = closureVariables;
 		rm.code = tokenList.getSubList('{', '}');
-		if (rm.code.contains("->")) {
+		TokenList test = rm.code.copy().getAndRemoveSourceTokenUntil( true, ";", "{", "=");
+		if (test.contains("->")) {
 			TokenList parameterList = rm.code.getAndRemoveSourceTokenUntil(false, "->");
 			//parameterList.removeLast("->");
 

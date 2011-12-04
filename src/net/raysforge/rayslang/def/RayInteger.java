@@ -26,22 +26,37 @@ public class RayInteger implements RayClassInterface {
 
 	@Override
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
-
+		
+		int pc = 0;
+		if( parameter != null)
+			pc = parameter.size();
+		
+		RayInteger p0int = null;
+		if( pc >= 1 && parameter.get(0) instanceof RayInteger)
+			p0int = (RayInteger) parameter.get(0);
+		
 		RayLog.debug.log(getName()+"."+methodName + " " + parameter + " on " + this);
 
-		if (methodName.equals("plus!") && (parameter.size() == 1)) {
-			RayClassInterface p0 = parameter.get(0);
-			RayInteger p0int = (RayInteger) p0;
-
-			setIntValue(getIntValue() + p0int.getIntValue());
-		} else if (methodName.equals("plus") && (parameter.size() == 1)) {
-			RayClassInterface p0 = parameter.get(0);
-			RayInteger p0int = (RayInteger) p0;
-			return new RayInteger(getIntValue() + p0int.getIntValue());
-		} else if (methodName.equals("quadrat!") && (parameter.size() == 0)) {
-			setIntValue(getIntValue() * getIntValue());
-		} else if (methodName.equals("schreibe") && (parameter.size() == 0)) {
-			System.out.println( getIntValue());
+		if (methodName.equals("plus!") && p0int != null) {
+			setIntValue(intValue + p0int.getIntValue());
+		} else if (methodName.equals("plus") && p0int != null) {
+			return new RayInteger(intValue + p0int.getIntValue());
+		} else if (methodName.equals("minus!") && p0int != null) {
+			setIntValue(intValue - p0int.getIntValue());
+		} else if (methodName.equals("minus") && p0int != null) {
+			return new RayInteger(intValue - p0int.getIntValue());
+		} else if (methodName.equals("quadrat!") && (pc == 0)) {
+			setIntValue(intValue * intValue);
+		} else if (methodName.equals("schreibe") && (pc == 0)) {
+			System.out.println( intValue);
+		} else if (methodName.equals("mal!") && closure == null && p0int != null) {
+			setIntValue(intValue * p0int.getIntValue());
+		} else if (methodName.equals("mal") && closure == null && p0int != null) {
+			return new RayInteger(intValue * p0int.getIntValue());
+		} else if (methodName.equals("geteiltDurch!") && closure == null && p0int != null) {
+			setIntValue(intValue / p0int.getIntValue());
+		} else if (methodName.equals("geteiltDurch") && closure == null && p0int != null) {
+			return new RayInteger(intValue / p0int.getIntValue());
 		} else if (methodName.equals("mal") && closure != null) {
 			List<RayClassInterface> p = Lists.newArrayList();
 			for (int i = 0; i < intValue; i++) {
@@ -49,10 +64,8 @@ public class RayInteger implements RayClassInterface {
 				p.add(new RayInteger(i));
 				closure.invoke( closure.getParentClass(), p);
 			}
-		} else if (methodName.equals("gleicht") && (parameter.size() == 1) && closure != null) {
-			RayClassInterface p0 = parameter.get(0);
-			RayInteger p0int = (RayInteger) p0;
-			if( p0int.getIntValue() == getIntValue() )
+		} else if (methodName.equals("gleicht") && p0int != null && closure != null) {
+			if( p0int.getIntValue() == intValue )
 			{
 				List<RayClassInterface> p = Lists.newArrayList();
 				closure.invoke( closure.getParentClass(), p);
