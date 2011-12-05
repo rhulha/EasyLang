@@ -149,6 +149,8 @@ public class RayMethod {
 				if (varTypeName != null) {
 					//RayClassInterface mytype = rayClass.rayLang.getClass( mytypeName);
 					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
+					if( eval == null)
+						System.out.println("null value");
 					rv.setValue(eval);
 					variables.put(rv.getName(), rv);
 				} else if (varName != null) {

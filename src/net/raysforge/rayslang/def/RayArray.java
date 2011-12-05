@@ -36,10 +36,22 @@ public class RayArray implements RayClassInterface {
 				return map.get(rs.getStringValue());
 			}
 
+		} else if (methodName.equals("entferne") && parameter.size() == 1 && closure == null) {
+			RayClassInterface p0 = parameter.get(0);
+			if (p0 instanceof RayString) {
+				map.remove(p0.toString());
+			}
 		} else if (methodName.equals("enthältSchlüssel") && parameter.size() == 1 && closure != null) {
 			RayClassInterface p0 = parameter.get(0);
 			if (p0 instanceof RayString) {
-				if( map.containsKey(p0.toString())){
+				if (map.containsKey(p0.toString())) {
+					closure.invoke(closure.getParentClass(), null);
+				}
+			}
+		} else if (methodName.equals("enthältSchlüsselNicht") && parameter.size() == 1 && closure != null) {
+			RayClassInterface p0 = parameter.get(0);
+			if (p0 instanceof RayString) {
+				if (!map.containsKey(p0.toString())) {
 					closure.invoke(closure.getParentClass(), null);
 				}
 			}
@@ -69,15 +81,15 @@ public class RayArray implements RayClassInterface {
 				list.add(p0);
 			} else {
 				// error.
+				System.out.println("error");
 			}
 
 		} else if (methodName.equals("fürJedenSchlüssel") && closure != null) {
 			List<RayClassInterface> p = Lists.newArrayList();
-			for( String key : map.keySet())
-			{
+			for (String key : map.keySet()) {
 				p.clear();
 				p.add(new RayString(key));
-				closure.invoke( closure.getParentClass(), p);
+				closure.invoke(closure.getParentClass(), p);
 			}
 		} else {
 			System.out.println("method not found: " + methodName);
@@ -103,7 +115,7 @@ public class RayArray implements RayClassInterface {
 	}
 
 	public RayClassInterface put(int index, RayClassInterface value) {
-		while( list.size() <= index)
+		while (list.size() <= index)
 			list.add(null); // TODO: is there really no better way to do this ?
 		return list.set(index, value);
 	}

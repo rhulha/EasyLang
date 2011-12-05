@@ -8,6 +8,8 @@ publik nichts start()
 	String[] level = neu String[];
 	level["hallo"] = "welt";
 	level["hallo"].schreibe();
-
+	
+	Zeichen z = level["hallo"]; 
+	z.schreibe();
 
 }

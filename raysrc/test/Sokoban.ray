@@ -24,7 +24,7 @@ publik nichts start()
 		Zeichen zeile -> 
 		Zeichen[] parts = zeile.spalte(":");
 		level[parts[0]] = parts[1];
-		parts[1].istGleich("Player"){
+		parts[1].istGleich("Spieler"){
 			Zeichen[] coords = parts[0].spalte("-");
 			spielerX = coords[0].alsZahl();
 			spielerY = coords[1].alsZahl();
@@ -35,27 +35,50 @@ publik nichts start()
 	
 	spielerX.schreibe();
 	spielerY.schreibe();
-	level.fürJedenSchlüssel{
-	  Zeichen schlüssel ->
-	  schlüssel.schreibe();
-	  level[schlüssel].schreibe();
-	}
 
 	fenster.setzeTastenDruckBehandler{
 	  Zahl taste ->
+	  Zahl dx = 0;
+	  Zahl dy = 0;
+	  
+	  # links
 	  taste.gleicht(37){
-	    # links
-	    "links".schreibe();
+	  	dx = -1;
 	  }
+	  # hoch
 	  taste.gleicht(38){
-	    # hoch
+	  	dy = -1;
 	  }
+	  # rechts
 	  taste.gleicht(39){
-	    # rechts
+	  	dx = 1;
 	  }
+	  # runter
 	  taste.gleicht(40){
-	    # runter
+	  	dy = 1;
 	  }
+	  
+	  Zeichen zielZeichen = spielerX.plus(dx).und("-").und(spielerY.plus(dy));
+	  level.enthältSchlüssel(zielZeichen){
+		  Zeichen feld = level[zielZeichen];
+		  feld.gleicht("Kiste"){
+		  	Zeichen doppelZielZeichen = spielerX.plus(dx).plus(dx).und("-").und(spielerY.plus(dy).plus(dy));
+		  	level.enthältSchlüsselNicht(doppelZielZeichen){
+		  		level.entferne(zielZeichen);
+		  		level[doppelZielZeichen] = "Kiste";
+		  	}
+		  }
+	  }
+	  
+	  level.enthältSchlüsselNicht(zielZeichen){
+		  level.entferne(spielerX.und("-").und(spielerY));
+		  level[zielZeichen] = "Spieler";
+		  spielerX.plus!(dx);
+		  spielerY.plus!(dy);
+		  fenster.male();
+	  }
+	  
+	  
 	}
 	
 	fenster.male{
@@ -69,6 +92,9 @@ publik nichts start()
 				level.enthältSchlüssel(x.und("-").und(y)){
 					Zeichen alteFarbe = g.holeFarbe();
 					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
+					Zeichen test = g.holeFarbe();
+					test.gleicht("0xff0000"){
+					}
 					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
 					g.setzeFarbe( alteFarbe);
 				}
