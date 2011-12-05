@@ -36,6 +36,13 @@ public class RayArray implements RayClassInterface {
 				return map.get(rs.getStringValue());
 			}
 
+		} else if (methodName.equals("enthältSchlüssel") && parameter.size() == 1 && closure != null) {
+			RayClassInterface p0 = parameter.get(0);
+			if (p0 instanceof RayString) {
+				if( map.containsKey(p0.toString())){
+					closure.invoke(closure.getParentClass(), null);
+				}
+			}
 		} else if (methodName.equals("put") && parameter.size() == 2) {
 			RayClassInterface p0 = parameter.get(0);
 			RayClassInterface p1 = parameter.get(1);
@@ -73,7 +80,7 @@ public class RayArray implements RayClassInterface {
 				closure.invoke( closure.getParentClass(), p);
 			}
 		} else {
-			// error.
+			System.out.println("method not found: " + methodName);
 		}
 		return null;
 	}

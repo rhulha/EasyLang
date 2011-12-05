@@ -115,6 +115,13 @@ public class RaySource {
 			while (more() && src[pos] != '\n')
 				pos++;
 			return getSourceToken(peak);
+		} else if (src[pos] == '/') // kommentare ignorieren
+		{
+			pos++;
+			if( src[pos] == '/')
+				while (more() && src[pos] != '\n')
+					pos++;
+			return getSourceToken(peak);
 		} else if (src[pos] == '"') {
 			pos++;
 			while (more() && src[pos] != '"')

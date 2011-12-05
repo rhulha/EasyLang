@@ -37,6 +37,7 @@ publik nichts start()
 	spielerY.schreibe();
 	level.fürJedenSchlüssel{
 	  Zeichen schlüssel ->
+	  schlüssel.schreibe();
 	  level[schlüssel].schreibe();
 	}
 
@@ -44,6 +45,7 @@ publik nichts start()
 	  Zahl taste ->
 	  taste.gleicht(37){
 	    # links
+	    "links".schreibe();
 	  }
 	  taste.gleicht(38){
 	    # hoch
@@ -58,13 +60,13 @@ publik nichts start()
 	
 	fenster.male{
 	  Grafik g ->
-		Zahl w = holeBreite().geteiltDurch( feldGröße);
-		Zahl h = holeHöhe().geteiltDurch( feldGröße);
+		Zahl w = fenster.holeBreite().geteiltDurch( feldGröße);
+		Zahl h = fenster.holeHöhe().geteiltDurch( feldGröße);
 		w.mal{
 			Zahl x ->
 			h.mal{
 				Zahl y ->
-				level.enthält(x.und("-").und(y)){
+				level.enthältSchlüssel(x.und("-").und(y)){
 					Zeichen alteFarbe = g.holeFarbe();
 					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
 					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
@@ -75,7 +77,7 @@ publik nichts start()
 		}
 	}
 
-	#fenster.zeigeAn();
+	fenster.zeigeAn();
 	
 	
 }

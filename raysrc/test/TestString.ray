@@ -1,0 +1,13 @@
+
+
+
+publik nichts start()
+{
+
+	"Hallo".und(" ").und("Welt!").schreibe();
+	
+	5.schreibe();
+	
+	3.und("3").schreibe();
+
+}

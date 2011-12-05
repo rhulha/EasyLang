@@ -40,6 +40,8 @@ public class RayString implements RayClassInterface {
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("schreibe") && (parameter.size() == 0)) {
 			System.out.println(stringValue);
+		} else if (methodName.equals("und") && parameter.size() == 1) {
+			return new RayString(stringValue+parameter.get(0).toString());
 		} else if (methodName.equals("spalte") && (parameter.size() == 1)) {
 			RayClassInterface p0 = parameter.get(0);
 			String[] split = stringValue.split(p0.toString());

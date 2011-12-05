@@ -3,16 +3,39 @@
 
 Fenster fenster = neu Fenster();
 
+Zahl feldGröße = 40;
+
 publik nichts start()
 {
+	Zahl feldGröße = 40;
+
 	fenster.setzeTitel("Sokoban");
 	fenster.setzeBreite(800);
 	fenster.setzeHöhe(600);
+	
+	Zeichen[] level = neu Zeichen[];
 
 	fenster.male{
 		Grafik g ->
 		g.setzeFarbe("0xff0000");
-		g.fülleRechteck( 10, 10, 40, 40);  
+		g.fülleRechteck( 10, 10, 40, 40);
+	
+		Zahl w = fenster.holeBreite().geteiltDurch( feldGröße);
+		Zahl h = fenster.holeHöhe().geteiltDurch( feldGröße);
+
+		w.mal{
+			Zahl x ->
+			h.mal{
+				Zahl y ->
+				level.enthältSchlüssel(x.und("-").und(y)){
+					Zeichen alteFarbe = g.holeFarbe();
+					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
+					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+					g.setzeFarbe( alteFarbe);
+				}
+				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+			}
+		}				  
 	}
 
 	fenster.zeigeAn();

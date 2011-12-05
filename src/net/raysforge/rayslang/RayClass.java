@@ -33,7 +33,7 @@ public class RayClass implements RayClassInterface {
 
 			if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
 				parseNewVariable(rayLang, Visibility.protected_, rc, tokenList);
-			} else if (tokenList.startsWithPattern("ii=ii(") || tokenList.startsWithPattern("i[]i=ii[]") ) {
+			} else if (tokenList.startsWithPattern("ii=") || tokenList.startsWithPattern("i[]i=") ) {
 
 				String varTypeStr = tokenList.popString();
 				if( tokenList.startsWithPattern("[]"))

@@ -39,6 +39,8 @@ public class RayInteger implements RayClassInterface {
 
 		if (methodName.equals("plus!") && p0int != null) {
 			setIntValue(intValue + p0int.getIntValue());
+		} else if (methodName.equals("und") && parameter.size() == 1) {
+			return new RayString(intValue+parameter.get(0).toString());
 		} else if (methodName.equals("plus") && p0int != null) {
 			return new RayInteger(intValue + p0int.getIntValue());
 		} else if (methodName.equals("minus!") && p0int != null) {
@@ -88,7 +90,7 @@ public class RayInteger implements RayClassInterface {
 	
 	@Override
 	public String toString() {
-		return getName()+"( " +intValue+ " )";
+		return ""+intValue;
 	}
 
 	@Override
