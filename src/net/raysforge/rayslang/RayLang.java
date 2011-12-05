@@ -33,8 +33,11 @@ import net.raysforge.rayslang.def.RayString;
 public class RayLang {
 
 	private HashMap<String, RayClassInterface> classes = new HashMap<String, RayClassInterface>();
+	
+	public static RayLang instance;
 
 	public RayLang() {
+		instance = this;
 		initNativeClasses();
 	}
 	

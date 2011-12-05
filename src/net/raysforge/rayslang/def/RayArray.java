@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RayMethod;
 
 public class RayArray implements RayClassInterface {
@@ -28,13 +29,18 @@ public class RayArray implements RayClassInterface {
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("get") && parameter.size() == 1) {
 			RayClassInterface p0 = parameter.get(0);
+			RayClassInterface value=null;
 			if (p0 instanceof RayInteger) {
 				RayInteger ri = (RayInteger) p0;
-				return list.get((int) ri.getIntValue());
+				value = list.get((int) ri.getIntValue());
 			} else if (p0 instanceof RayString) {
 				RayString rs = (RayString) p0;
-				return map.get(rs.getStringValue());
+				value = map.get(rs.getStringValue());
+			} else {
+				System.out.println("array index must be int or string.");
 			}
+			System.out.println(type.substring(0, type.length()-3));
+			return value != null ? value : RayLang.instance.getClass(type.substring(0, type.length()-3)).getNewInstance(null);
 
 		} else if (methodName.equals("entferne") && parameter.size() == 1 && closure == null) {
 			RayClassInterface p0 = parameter.get(0);
@@ -48,6 +54,9 @@ public class RayArray implements RayClassInterface {
 					closure.invoke(closure.getParentClass(), null);
 				}
 			}
+		} else if (methodName.equals("enthältSchlüsselNicht") && parameter.size() == 1 && closure == null) {
+			RayClassInterface p0 = parameter.get(0);
+			return new RayBoolean(!map.containsKey(p0.toString()));
 		} else if (methodName.equals("enthältSchlüsselNicht") && parameter.size() == 1 && closure != null) {
 			RayClassInterface p0 = parameter.get(0);
 			if (p0 instanceof RayString) {
@@ -98,11 +107,11 @@ public class RayArray implements RayClassInterface {
 	}
 
 	public RayClassInterface get(int i) {
-		return list.get(i);
+		return list.get(i) != null ? list.get(i) : RayLang.instance.getClass(type.substring(0, type.length()-2)).getNewInstance(null);
 	}
 
 	public RayClassInterface get(String key) {
-		return map.get(key);
+		return map.get(key) != null ?  map.get(key) : RayLang.instance.getClass(type.substring(0, type.length()-2)).getNewInstance(null);
 	}
 
 	@Override

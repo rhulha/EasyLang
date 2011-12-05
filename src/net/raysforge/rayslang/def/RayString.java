@@ -52,12 +52,17 @@ public class RayString implements RayClassInterface {
 			return ra;
 		} else if (methodName.equals("alsZahl") ) {
 			return new RayInteger(Long.parseLong(stringValue));
-		} else if ((methodName.equals("istGleich") || methodName.equals("gleicht")) && closure != null && (parameter.size() == 1)) {
+		} else if ((methodName.equals("istGleich") || methodName.equals("gleicht")) && (parameter.size() == 1)) {
 			RayClassInterface p0 = parameter.get(0);
-			if( stringValue.equals(p0.toString()))
+			if( closure != null )
 			{
-				List<RayClassInterface> p = Lists.newArrayList();
-				closure.invoke( closure.getParentClass(), p);
+				if( stringValue.equals(p0.toString()))
+				{
+					List<RayClassInterface> p = Lists.newArrayList();
+					closure.invoke( closure.getParentClass(), p);
+				}
+			} else {
+				return new RayBoolean(stringValue.equals(p0.toString()));
 			}
 		} else {
 			RayUtils.runtimeExcp("method not found: " + methodName);

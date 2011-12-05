@@ -67,10 +67,14 @@ publik nichts start()
 		  		level.entferne(zielZeichen);
 		  		level[doppelZielZeichen] = "Kiste";
 		  	}
+		  	level[doppelZielZeichen].gleicht("Ziel"){
+		  		level.entferne(zielZeichen);
+		  		level[doppelZielZeichen] = "Kiste";
+		  	}
 		  }
 	  }
 	  
-	  level.enthältSchlüsselNicht(zielZeichen){
+	  level.enthältSchlüsselNicht(zielZeichen).oder(level[zielZeichen].gleicht("Ziel")){
 		  level.entferne(spielerX.und("-").und(spielerY));
 		  level[zielZeichen] = "Spieler";
 		  spielerX.plus!(dx);
