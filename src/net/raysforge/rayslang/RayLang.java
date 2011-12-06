@@ -55,6 +55,7 @@ public class RayLang {
 		rayLang.parse(new File("raysrc"));
 //		runClass(rayLang.getClass("TestDatei"));
 		runClass(rayLang.getClass("Sokoban"));
+//		runClass(rayLang.getClass("TestFunction"));
 //		runClass(rayLang.getClass("Test"));
 //		runClass(rayLang.getClass("TestString"));
 //		runClass(rayLang.getClass("Loop"));

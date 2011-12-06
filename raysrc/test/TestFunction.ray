@@ -1,0 +1,15 @@
+
+Zahl feldGröße = 40;
+
+publik nichts start()
+{
+   feldGröße = 2;
+   feldGröße.schreibe();
+   selbst.test();
+}
+
+
+publik nichts test()
+{
+   feldGröße.schreibe();
+}

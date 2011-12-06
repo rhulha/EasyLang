@@ -42,11 +42,16 @@ public class RayArray implements RayClassInterface {
 			System.out.println(type.substring(0, type.length()-3));
 			return value != null ? value : RayLang.instance.getClass(type.substring(0, type.length()-3)).getNewInstance(null);
 
+		} else if (methodName.equals("löschen") && parameter.size() == 0 && closure == null) {
+			map.clear();
+			list.clear();
 		} else if (methodName.equals("entferne") && parameter.size() == 1 && closure == null) {
 			RayClassInterface p0 = parameter.get(0);
 			if (p0 instanceof RayString) {
 				map.remove(p0.toString());
 			}
+		} else if (methodName.equals("anzahlSchlüssel") && parameter.size() == 0 && closure == null) {
+			return new RayInteger(map.size());
 		} else if (methodName.equals("enthältSchlüssel") && parameter.size() == 1 && closure != null) {
 			RayClassInterface p0 = parameter.get(0);
 			if (p0 instanceof RayString) {

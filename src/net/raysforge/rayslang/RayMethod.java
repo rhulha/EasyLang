@@ -10,7 +10,7 @@ public class RayMethod {
 
 	protected String name;
 
-	protected RayClass parentClass;
+	protected RayClass parentClass; // this is not a good variable, it is not really used and not correctly filled.
 
 	List<RayVar> parameterList = new ArrayList<RayVar>();
 
@@ -74,9 +74,11 @@ public class RayMethod {
 		RayClass rayClass = (RayClass) instance;
 
 		if (RayLog.level == RayLog.trace)
-			RayLog.trace.log("RayMethod.invoke instance: " + name + " " + instance + " - " + parameterList + " - " + code);
+			RayLog.info.log("RayMethod.invoke instance: " + name + " " + instance + " - " + parameterList + " - " + code);
 
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
+		if( instance != null)
+			variables.put(KeyWords.THIS, makeARayVar(rayClass, instance.getName(), KeyWords.THIS, instance.getName(), null));
 		if( closureVariables != null)
 			for (RayVar closureRayVar : closureVariables.values()) {
 				variables.put(closureRayVar.getName(), closureRayVar);
@@ -88,103 +90,83 @@ public class RayMethod {
 		}
 
 		TokenList tokenList = code.copy().resetPosition();
-
+		RayClassInterface eval=null;
+		
 		while (true) {
 
 			if (tokenList.isEmpty())
 				break;
-			else {
 
-				String varTypeName = null;
-				String varName = null;
-				RayArrayExpr arrayExpr = null;
+			String varTypeName = null;
+			String varName = null;
+			RayArrayExpr arrayExpr = null;
 
-				if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
-					varTypeName = tokenList.popString();
-					if (tokenList.startsWithPattern("[]")) {
-						tokenList.remove("[");
-						tokenList.remove("]");
-						varTypeName += "[]";
-					}
-					varName = tokenList.popString();
-					tokenList.remove(";");
-					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
-					RayClassInterface instanceTypeClass = rayClass.rayLang.getClass(varTypeName);
-					rv.setValue(instanceTypeClass.getNewInstance(null));
-					variables.put(rv.getName(), rv);
-					continue;
+			if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
+				varTypeName = tokenList.popString();
+				if (tokenList.startsWithPattern("[]")) {
+					tokenList.remove("[");
+					tokenList.remove("]");
+					varTypeName += "[]";
 				}
-				if (tokenList.startsWithPattern("ii=") || tokenList.startsWithPattern("i[]i=")) {
-					varTypeName = tokenList.popString();
-					if (tokenList.startsWithPattern("[]")) {
-						tokenList.remove("[");
-						tokenList.remove("]");
-						varTypeName += "[]";
-					}
-					varName = tokenList.popString();
-					tokenList.remove("=");
-				} else if (tokenList.startsWithPattern("i=")) {
-					varName = tokenList.popString();
-					tokenList.remove("=");
-				} else {
-					// this next line tries to find out if the next tokens are an array expression on the left hand side of an assignment.
-					// it is broken at least for when a closure is used in an expression to generate the array index.
-					TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil( true, ";", "{", "=");
-
-					if ( preview.getLast().equals("=") && preview.contains("[")  ) {
-						// this means that there is an array expression on the left hand side of an assignment
-						varName = tokenList.popString();
-						tokenList.remove("[");
-						RayClassInterface arrayIndex = evaluateExpression(rayClass, variables, tokenList.getSubList('[', ']'));
-						arrayExpr = mustGetArray(rayClass, variables, varName, arrayIndex);
-						tokenList.remove("=");
-					}
-				}
-
-				RayClassInterface eval = evaluateExpression(rayClass, variables, tokenList);
-				// closure don't have an ending semicolon, so we only remove it otherwise.
-				if (!tokenList.get(-1).equals("}"))
-					tokenList.remove(";");
-
-				if (varTypeName != null) {
-					//RayClassInterface mytype = rayClass.rayLang.getClass( mytypeName);
-					RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
-					if( eval == null)
-						System.out.println("null value");
-					rv.setValue(eval);
-					variables.put(rv.getName(), rv);
-				} else if (varName != null) {
-					if (arrayExpr != null) {
-						// TODO: verify that the value is of the correct type !
-						arrayExpr.put(eval);
-					} else {
-						RayVar rayVar = mustGetVariable(parentClass, variables, varName);
-						rayVar.setValue(eval);
-					}
-				}
-
-				/*
-				if (tokenList.startsWithPattern("ii=ii;")) {
-					// Arrays 
-					String newVarType = tokenList.popString();
-					String newVarName = tokenList.popString();
-					tokenList.remove("=");
-					tokenList.remove(KeyWords.NEW);
-					String instanceType = tokenList.popString();
-					tokenList.remove(";");
-
-					RayArray ra = new RayArray(instanceType);
-
-					RayVar rayVar = new RayVar(Visibility.protected_, newVarType, newVarName);
-					rayVar.setValue(ra);
-
-					variables.put(newVarName, rayVar);
-				}
-				*/
-
+				varName = tokenList.popString();
+				tokenList.remove(";");
+				RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
+				RayClassInterface instanceTypeClass = rayClass.rayLang.getClass(varTypeName);
+				rv.setValue(instanceTypeClass.getNewInstance(null));
+				variables.put(rv.getName(), rv);
+				continue;
 			}
-		}
-		return null;
+			if (tokenList.startsWithPattern("ii=") || tokenList.startsWithPattern("i[]i=")) {
+				varTypeName = tokenList.popString();
+				if (tokenList.startsWithPattern("[]")) {
+					tokenList.remove("[");
+					tokenList.remove("]");
+					varTypeName += "[]";
+				}
+				varName = tokenList.popString();
+				tokenList.remove("=");
+			} else if (tokenList.startsWithPattern("i=")) {
+				varName = tokenList.popString();
+				tokenList.remove("=");
+			} else {
+				// this next line tries to find out if the next tokens are an array expression on the left hand side of an assignment.
+				// it is broken at least for when a closure is used in an expression to generate the array index.
+				TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil( true, ";", "{", "=");
+
+				if ( preview.getLast().equals("=") && preview.contains("[")  ) {
+					// this means that there is an array expression on the left hand side of an assignment
+					varName = tokenList.popString();
+					tokenList.remove("[");
+					RayClassInterface arrayIndex = evaluateExpression(rayClass, variables, tokenList.getSubList('[', ']'));
+					arrayExpr = mustGetArray(rayClass, variables, varName, arrayIndex);
+					tokenList.remove("=");
+				}
+			}
+
+			//debugVariables();
+			eval = evaluateExpression(rayClass, variables, tokenList);
+			// closure don't have an ending semicolon, so we only remove it otherwise.
+			if (!tokenList.get(-1).equals("}"))
+				tokenList.remove(";");
+
+			if (varTypeName != null) {
+				//RayClassInterface mytype = rayClass.rayLang.getClass( mytypeName);
+				RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
+				if( eval == null)
+					System.out.println("null value");
+				rv.setValue(eval);
+				variables.put(rv.getName(), rv);
+			} else if (varName != null) {
+				if (arrayExpr != null) {
+					// TODO: verify that the value is of the correct type !
+					arrayExpr.put(eval);
+				} else {
+					RayVar rayVar = mustGetVariable(rayClass, variables, varName);
+					rayVar.setValue(eval);
+				}
+			}
+		} // while
+		return eval;
 	}
 
 	protected RayVar makeARayVar(RayClass rayClass, String varType, String varName, String instanceType, List<RayClassInterface> params) {
@@ -256,7 +238,7 @@ public class RayMethod {
 				tokenList.remove("{");
 				rm = RayMethod.parseClosure(parentClass, variables, tokenList);
 			}
-			value = value.invoke(methodName, rm, evaluatedParams); // this was the last line that I changed before it all worked magically !!! woot !
+			value = value.invoke(methodName, rm, evaluatedParams);
 		}
 		return value;
 	}

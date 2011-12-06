@@ -71,7 +71,6 @@ public class RayClass implements RayClassInterface {
 				// rayVar.setValue( instanceTypeClass.getNewInstance(null));
 				rayVar.setValue( eval);
 				rc.variables.put(varName, rayVar);
-
 				tokenList.remove(";");
 
 			} else if (tokenList.startsWithPattern("iii;") || tokenList.startsWithPattern("ii[]i;")) {
@@ -116,7 +115,7 @@ public class RayClass implements RayClassInterface {
 			RayUtils.runtimeExcp(typeStr + " not found");
 
 		rc.variables.put(varName, new RayVar(v, typeStr, varName));
-		RayLog.trace.log("var: " + type + " - " + varName);
+		RayLog.debug.log("var: " + type.getName() + " - " + varName);
 	}
 
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
@@ -127,7 +126,7 @@ public class RayClass implements RayClassInterface {
 		for (String key : variables.keySet()) {
 			RayVar rayVar = this.variables.get(key);
 			RayVar rayVar2 = rayVar.copy();
-			rayVar2.setValue( rayLang.getClass( rayVar.getType()).getNewInstance(null));
+			rayVar2.setValue( rayVar.getValue() == null ? rayLang.getClass( rayVar.getType()).getNewInstance(null) : rayVar.getValue());
 			ri.variables.put(key, rayVar2);
 		}
 		return ri;

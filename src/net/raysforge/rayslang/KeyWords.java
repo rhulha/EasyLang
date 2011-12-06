@@ -5,6 +5,7 @@ public class KeyWords {
 	public final static String PUBLIC = "publik";
 	public final static String VOID = "nichts";
 	public final static String NEW = "neu";
+	public final static String THIS = "selbst";
 
 	public final static String CLASS_ARRAY = "Array";
 	public final static String CLASS_FILE = "Datei";
