@@ -83,7 +83,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 			Graphics g = (Graphics) pe.getSource();
 			List<RayClassInterface> p = Lists.newArrayList();
 			p.add(new RayGraphics(g));
-			paintClosure.invoke(paintClosure.getParentClass(), p);
+			paintClosure.invoke(p);
 		}
 		return false;
 	}
@@ -98,7 +98,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 		if (keyEventHandler != null) {
 			List<RayClassInterface> p = Lists.newArrayList();
 			p.add(new RayInteger(keyEvent.getKeyCode()));
-			keyEventHandler.invoke(keyEventHandler.getParentClass(), p);
+			keyEventHandler.invoke(p);
 		}
 	}
 

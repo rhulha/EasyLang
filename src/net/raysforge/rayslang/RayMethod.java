@@ -69,16 +69,13 @@ public class RayMethod {
 		return rm;
 	}
 
-	public RayClassInterface invoke(RayClassInterface instance, List<RayClassInterface> parameter) {
-
-		RayClass rayClass = (RayClass) instance;
+	public RayClassInterface invoke(List<RayClassInterface> parameter) {
 
 		if (RayLog.level == RayLog.trace)
-			RayLog.info.log("RayMethod.invoke instance: " + name + " " + instance + " - " + parameterList + " - " + code);
+			RayLog.info.log("RayMethod.invoke instance: " + name + " " + parentClass + " - " + parameterList + " - " + code);
 
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
-		if( instance != null)
-			variables.put(KeyWords.THIS, makeARayVar(rayClass, instance.getName(), KeyWords.THIS, instance.getName(), null));
+		variables.put(KeyWords.THIS, makeARayVar(parentClass, parentClass.getName(), KeyWords.THIS, parentClass.getName(), null));
 		if( closureVariables != null)
 			for (RayVar closureRayVar : closureVariables.values()) {
 				variables.put(closureRayVar.getName(), closureRayVar);
@@ -111,7 +108,7 @@ public class RayMethod {
 				varName = tokenList.popString();
 				tokenList.remove(";");
 				RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
-				RayClassInterface instanceTypeClass = rayClass.rayLang.getClass(varTypeName);
+				RayClassInterface instanceTypeClass = parentClass.rayLang.getClass(varTypeName);
 				rv.setValue(instanceTypeClass.getNewInstance(null));
 				variables.put(rv.getName(), rv);
 				continue;
@@ -137,14 +134,14 @@ public class RayMethod {
 					// this means that there is an array expression on the left hand side of an assignment
 					varName = tokenList.popString();
 					tokenList.remove("[");
-					RayClassInterface arrayIndex = evaluateExpression(rayClass, variables, tokenList.getSubList('[', ']'));
-					arrayExpr = mustGetArray(rayClass, variables, varName, arrayIndex);
+					RayClassInterface arrayIndex = evaluateExpression(parentClass, variables, tokenList.getSubList('[', ']'));
+					arrayExpr = mustGetArray(parentClass, variables, varName, arrayIndex);
 					tokenList.remove("=");
 				}
 			}
 
 			//debugVariables();
-			eval = evaluateExpression(rayClass, variables, tokenList);
+			eval = evaluateExpression(parentClass, variables, tokenList);
 			// closure don't have an ending semicolon, so we only remove it otherwise.
 			if (!tokenList.get(-1).equals("}"))
 				tokenList.remove(";");
@@ -161,7 +158,7 @@ public class RayMethod {
 					// TODO: verify that the value is of the correct type !
 					arrayExpr.put(eval);
 				} else {
-					RayVar rayVar = mustGetVariable(rayClass, variables, varName);
+					RayVar rayVar = mustGetVariable(parentClass, variables, varName);
 					rayVar.setValue(eval);
 				}
 			}
@@ -292,6 +289,14 @@ public class RayMethod {
 
 	public List<RayVar> getParameterList() {
 		return parameterList;
+	}
+
+	public RayMethod copy(RayClass ri) {
+		RayMethod rm = new RayMethod(ri, name);
+		rm.parameterList = parameterList;
+		rm.returnType = returnType;
+		rm.code = code.copy();
+		return null;
 	}
 
 }

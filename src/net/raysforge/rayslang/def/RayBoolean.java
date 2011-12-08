@@ -25,7 +25,7 @@ public class RayBoolean implements RayClassInterface {
 			if (p0 instanceof RayBoolean) {
 				RayBoolean rb = (RayBoolean) p0;
 				if (b || rb.b)
-					closure.invoke(closure.getParentClass(), null);
+					closure.invoke(null);
 
 			}
 		}

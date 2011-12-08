@@ -121,7 +121,11 @@ public class RayClass implements RayClassInterface {
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 
 		RayClass ri = new RayClass(rayLang, name);
-		ri.methods = methods;
+		ri.methods = new HashMap<String, RayMethod>();
+		for( String key : methods.keySet())
+		{
+			methods.get(key).copy(ri);
+		}
 
 		for (String key : variables.keySet()) {
 			RayVar rayVar = this.variables.get(key);
@@ -149,7 +153,7 @@ public class RayClass implements RayClassInterface {
 	@Override
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		RayMethod method = getMethod(methodName);
-		return method.invoke(this, parameter);
+		return method.invoke( parameter);
 	}
 
 	/*

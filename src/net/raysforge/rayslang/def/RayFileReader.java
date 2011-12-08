@@ -53,7 +53,7 @@ public class RayFileReader implements RayClassInterface {
 				while ((line = br.readLine()) != null) {
 					List<RayClassInterface> p = Lists.newArrayList();
 					p.add(new RayString(line));
-					closure.invoke(closure.getParentClass(), p );
+					closure.invoke(p );
 				}
 			} catch (IOException e) {
 				RayUtils.runtimeExcp(e);

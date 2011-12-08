@@ -64,13 +64,13 @@ public class RayInteger implements RayClassInterface {
 			for (int i = 0; i < intValue; i++) {
 				p.clear();
 				p.add(new RayInteger(i));
-				closure.invoke( closure.getParentClass(), p);
+				closure.invoke(p);
 			}
 		} else if (methodName.equals("gleicht") && p0int != null && closure != null) {
 			if( p0int.getIntValue() == intValue )
 			{
 				List<RayClassInterface> p = Lists.newArrayList();
-				closure.invoke( closure.getParentClass(), p);
+				closure.invoke(p);
 			}
 		} else {
 			System.out.println("OMG");

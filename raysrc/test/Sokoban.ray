@@ -20,7 +20,7 @@ publik nichts start()
 	farben["Spieler"] = "0xff0000";
 	farben["Kiste"] = "0x0000ff";
 	
-	DateiLeser dl = neu DateiLeser("level02.sokoban");
+	DateiLeser dl = neu DateiLeser("level00.sokoban");
 	dl.fürJedeZeile{
 		Zeichen zeile -> 
 		Zeichen[] parts = zeile.spalte(":");
@@ -39,6 +39,8 @@ publik nichts start()
 	
 	spielerX.schreibe();
 	spielerY.schreibe();
+	
+	Zahl levelcounter = 0;
 
 	fenster.setzeTastenDruckBehandler{
 	  Zahl taste ->
@@ -97,7 +99,7 @@ publik nichts start()
 	  	"Sieg".schreibe();
 		level.löschen(); 
 		ziele.löschen(); 
-		DateiLeser dl = neu DateiLeser("level01.sokoban");
+		DateiLeser dl = neu DateiLeser("level0".und(levelcounter.plus!(1)).und(".sokoban"));
 		dl.fürJedeZeile{
 			Zeichen zeile ->
 			Zeichen[] parts = zeile.spalte(":");

@@ -6,6 +6,7 @@ publik nichts start()
    feldGröße = 2;
    feldGröße.schreibe();
    selbst.test();
+   feldGröße.schreibe();
 }
 
 

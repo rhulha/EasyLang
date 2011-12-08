@@ -59,7 +59,7 @@ public class RayString implements RayClassInterface {
 				if( stringValue.equals(p0.toString()))
 				{
 					List<RayClassInterface> p = Lists.newArrayList();
-					closure.invoke( closure.getParentClass(), p);
+					closure.invoke(p);
 				}
 			} else {
 				return new RayBoolean(stringValue.equals(p0.toString()));
