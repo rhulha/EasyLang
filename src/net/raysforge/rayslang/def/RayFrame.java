@@ -3,6 +3,8 @@ package net.raysforge.rayslang.def;
 import java.awt.AWTEvent;
 import java.awt.Graphics;
 import java.awt.event.AWTEventListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
+	public RayClassInterface invoke(String methodName, final RayMethod closure, List<RayClassInterface> parameter) {
 
 		RayLog.debug.log(methodName + " " + parameter + " on " + this);
 		
@@ -62,9 +64,18 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 			this.easySwing.getFrame().setSize(width, (int) p0.getIntValue());
 		} else if (methodName.equals("zeigeAn") && (pc == 0)) {
 			this.easySwing.show();
-		} else if (methodName.equals("setzeTastenDruckBehandler") && parameter == null && closure != null) {
+		} else if (methodName.equals("setzeTastenDruckBehandler") && pc == 0 && closure != null) {
 			keyEventHandler = closure;
-		} else if (methodName.equals("male") && parameter == null && closure != null) {
+		} else if (methodName.equals("fügeWerkzeugLeistenPunktHinzu") && pc == 1 && closure != null) {
+			String p0 = parameter.get(0).toString();
+			easySwing.addToolBarItem(p0, p0, new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					closure.invoke(null);
+				}
+			});
+		} else if (methodName.equals("male") && pc == 0 && closure != null) {
 			paintClosure = closure;
 		} else {
 			System.out.println("err");

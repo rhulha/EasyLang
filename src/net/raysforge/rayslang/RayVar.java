@@ -7,11 +7,21 @@ public class RayVar {
 	private RayClassInterface value;
 	private final String type;
 
+	public RayVar(String type, String name, RayClassInterface value) {
+		this(Visibility.local_, type, name, value);
+	}
+
 	public RayVar(Visibility visibility, String type, String name) {
+		this(visibility, type, name, null);
+	}
+
+	public RayVar(Visibility visibility, String type, String name, RayClassInterface value) {
 		super();
 		this.visibility = visibility;
 		this.type = type;
 		this.name = name;
+		if (value != null)
+			setValue(value);
 	}
 
 	public Visibility getVisibility() {
@@ -51,8 +61,5 @@ public class RayVar {
 	public RayVar copy() {
 		return new RayVar(visibility, type, name);
 	}
-
-	
-	
 
 }

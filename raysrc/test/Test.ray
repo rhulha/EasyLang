@@ -1,6 +1,7 @@
 
 # test comment
 
+Probe probe = neu Probe();
 Zahl i;
 Zeichen s;
 
@@ -9,24 +10,23 @@ public void start()
 
 	Zahl x = 5;
 	x.plus!(7);
-	x.schreibe();
+	probe.gleichheit( x, 12);
 	
 	Zahl y;
-	y.schreibe();
 	y = 100;
-	y.schreibe();
+	probe.gleichheit( y, 100);
 	y.plus!(x);
-	y.schreibe();
+	probe.gleichheit( y, 112);
 	y.plus!(8);
-	y.schreibe();
+	probe.gleichheit( y, 120);
 	y.quadrat!();
-	y.schreibe();
+	probe.gleichheit( y, 14400);
 	
 	i.plus!(3);
-	i.schreibe();
+	probe.gleichheit( i, 3);
 	
 	Zahl a = 333;
-	a.geteiltDurch(111).schreibe();
+	probe.gleichheit( a.geteiltDurch(111), 3);
 
 }
 

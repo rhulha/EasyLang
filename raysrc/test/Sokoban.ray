@@ -1,26 +1,19 @@
 
 
 Fenster fenster = neu Fenster();
+Zeichen[] level = neu Zeichen[];
+Zeichen[] ziele = neu Zeichen[];
+Zahl spielerX = 0;
+Zahl spielerY = 0;
+Zahl feldGröße = 40;
+Zahl levelcounter = -1;
 
-publik nichts start()
+publik nichts ladeLevel()
 {
-	fenster.setzeTitel("Sokoban");
-	fenster.setzeBreite(800);
-	fenster.setzeHöhe(600);
-	
-	Zeichen[] farben = neu Zeichen[];
-	Zeichen[] level = neu Zeichen[];
-	Zeichen[] ziele = neu Zeichen[];
-	Zahl feldGröße = 40;
-	Zahl spielerX = 0;
-	Zahl spielerY = 0;
-	
-	farben["Wand"] = "0x000000";
-	farben["Ziel"] = "0x00ff00";
-	farben["Spieler"] = "0xff0000";
-	farben["Kiste"] = "0x0000ff";
-	
-	DateiLeser dl = neu DateiLeser("level00.sokoban");
+	"start lade level".schreibe();
+	level.löschen(); 
+	ziele.löschen(); 
+	DateiLeser dl = neu DateiLeser("level0".und(levelcounter.plus!(1)).und(".sokoban"));
 	dl.fürJedeZeile{
 		Zeichen zeile -> 
 		Zeichen[] parts = zeile.spalte(":");
@@ -36,11 +29,29 @@ publik nichts start()
 		
 	}
 	dl.ende();
+	fenster.male();
+	#spielerX.schreibe();
+	#spielerY.schreibe();
+	"ende lade level".schreibe();
+}
+
+publik nichts start()
+{
+	fenster.setzeTitel("Sokoban");
+	fenster.setzeBreite(800);
+	fenster.setzeHöhe(600);
+	fenster.fügeWerkzeugLeistenPunktHinzu("Neuer Versuch"){
+		levelcounter.minus!(1);
+		selbst.ladeLevel();
+	}
 	
-	spielerX.schreibe();
-	spielerY.schreibe();
+	Zeichen[] farben = neu Zeichen[];
+	farben["Wand"] = "0x000000";
+	farben["Ziel"] = "0x00ff00";
+	farben["Spieler"] = "0xff0000";
+	farben["Kiste"] = "0x0000ff";
 	
-	Zahl levelcounter = 0;
+	selbst.ladeLevel();
 
 	fenster.setzeTastenDruckBehandler{
 	  Zahl taste ->
@@ -97,24 +108,7 @@ publik nichts start()
 	  }
 	  zähler.gleicht(ziele.anzahlSchlüssel()) {
 	  	"Sieg".schreibe();
-		level.löschen(); 
-		ziele.löschen(); 
-		DateiLeser dl = neu DateiLeser("level0".und(levelcounter.plus!(1)).und(".sokoban"));
-		dl.fürJedeZeile{
-			Zeichen zeile ->
-			Zeichen[] parts = zeile.spalte(":");
-			level[parts[0]] = parts[1];
-			parts[1].istGleich("Spieler"){
-				Zeichen[] coords = parts[0].spalte("-");
-				spielerX = coords[0].alsZahl();
-				spielerY = coords[1].alsZahl();
-			}
-			parts[1].istGleich("Ziel"){
-				ziele[parts[0]] = parts[1]; 
-			}
-			
-		}
-		dl.ende();
+	  	selbst.ladeLevel();
 	  }
 	  
 	  
@@ -143,7 +137,4 @@ publik nichts start()
 	}
 
 	fenster.zeigeAn();
-	
-	
 }
-

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import net.raysforge.rayslang.def.RayArray;
+import net.raysforge.rayslang.def.RayAssert;
 import net.raysforge.rayslang.def.RayFileReader;
 import net.raysforge.rayslang.def.RayFrame;
 import net.raysforge.rayslang.def.RayGraphics;
@@ -47,6 +48,7 @@ public class RayLang {
 		registerClasses( new RayFrame());
 		registerClasses( new RayFileReader());
 		registerClasses( new RayGraphics());
+		registerClasses( new RayAssert());
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -54,8 +56,8 @@ public class RayLang {
 		RayLang rayLang = new RayLang();
 		rayLang.parse(new File("raysrc"));
 //		runClass(rayLang.getClass("TestDatei"));
-//		runClass(rayLang.getClass("Sokoban"));
-		runClass(rayLang.getClass("TestFunction"));
+		runClass(rayLang.getClass("Sokoban"));
+//		runClass(rayLang.getClass("TestFunction"));
 //		runClass(rayLang.getClass("Test"));
 //		runClass(rayLang.getClass("TestString"));
 //		runClass(rayLang.getClass("Loop"));
@@ -68,7 +70,6 @@ public class RayLang {
 	private static void runClass(RayClassInterface rc) {
 		RayClassInterface ri = rc.getNewInstance(null);
 		ri.invoke( "start", null, null);
-		
 	}
 
 	private void parse(File dir) {
@@ -78,7 +79,7 @@ public class RayLang {
 			if( file.isDirectory())
 				parse( file);
 			else if( file.getName().endsWith(".ray"))
-				RayClass.parse( this, file.getName().substring(0, file.getName().length()-4), file);
+				RayClass.parse( file.getName().substring(0, file.getName().length()-4), file);
 		}
 	}
 

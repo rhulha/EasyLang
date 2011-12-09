@@ -75,7 +75,7 @@ public class RayMethod {
 			RayLog.info.log("RayMethod.invoke instance: " + name + " " + parentClass + " - " + parameterList + " - " + code);
 
 		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
-		variables.put(KeyWords.THIS, makeARayVar(parentClass, parentClass.getName(), KeyWords.THIS, parentClass.getName(), null));
+		variables.put(KeyWords.THIS, new RayVar( parentClass.getName(), KeyWords.THIS, parentClass));
 		if( closureVariables != null)
 			for (RayVar closureRayVar : closureVariables.values()) {
 				variables.put(closureRayVar.getName(), closureRayVar);
@@ -108,7 +108,7 @@ public class RayMethod {
 				varName = tokenList.popString();
 				tokenList.remove(";");
 				RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
-				RayClassInterface instanceTypeClass = parentClass.rayLang.getClass(varTypeName);
+				RayClassInterface instanceTypeClass = RayLang.instance.getClass(varTypeName);
 				rv.setValue(instanceTypeClass.getNewInstance(null));
 				variables.put(rv.getName(), rv);
 				continue;
@@ -166,21 +166,6 @@ public class RayMethod {
 		return eval;
 	}
 
-	protected RayVar makeARayVar(RayClass rayClass, String varType, String varName, String instanceType, List<RayClassInterface> params) {
-		RayClassInterface varTypeClass = rayClass.rayLang.getClass(varType);
-		if (varTypeClass == null)
-			RayUtils.runtimeExcp(varType + " not found");
-
-		RayClassInterface instanceTypeClass = rayClass.rayLang.getClass(instanceType);
-
-		RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
-
-		Visibility v = Visibility.protected_;
-		RayVar rayVar = new RayVar(v, varType, varName);
-		rayVar.setValue(instanceTypeClass.getNewInstance(params));
-		return rayVar;
-	}
-
 	public static RayClassInterface evaluateExpression(RayClass parentClass, HashMap<String, RayVar> variables, TokenList tokenList) {
 
 		RayLog.trace.log("ee: " + tokenList);
@@ -205,7 +190,7 @@ public class RayMethod {
 					tokenList.remove("(");
 					TokenList parameter2 = tokenList.getSubList('(', ')');
 					List<RayClassInterface> params = evaluateParams(parentClass, variables, parameter2);
-					value = parentClass.rayLang.getClass(instanceType).getNewInstance(params);
+					value = RayLang.instance.getClass(instanceType).getNewInstance(params);
 				}
 			} else {
 				if (tokenList.startsWithPattern("[")) {

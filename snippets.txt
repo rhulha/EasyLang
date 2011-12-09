@@ -98,3 +98,22 @@
 	        return new RayString(src, pp, p);
 	    }
 	    */
+---
+from RayMethod:
+
+	protected RayVar makeARayVar(RayClass rayClass, String varType, String varName, String instanceType, List<RayClassInterface> params) {
+		RayClassInterface varTypeClass = RayLang.instance.getClass(varType);
+		if (varTypeClass == null)
+			RayUtils.runtimeExcp(varType + " not found");
+
+		RayClassInterface instanceTypeClass = RayLang.instance.getClass(instanceType);
+
+		RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
+
+		Visibility v = Visibility.protected_;
+		RayVar rayVar = new RayVar(v, varType, varName);
+		rayVar.setValue(instanceTypeClass.getNewInstance(params));
+		return rayVar;
+	}
+
+

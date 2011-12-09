@@ -7,24 +7,23 @@ import java.util.List;
 public class RayClass implements RayClassInterface {
 
 	protected String name;
-	RayLang rayLang;
 
 	HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
 
 	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
 
-	public RayClass(RayLang rayLang, String name) {
+	public RayClass( String name) {
 		this.name = name;
-		this.rayLang = rayLang;
-		rayLang.registerClasses(this);
+		RayDebug.add(this);
 	}
 
-	public static RayClass parse(RayLang rayLang, String name, File file) {
-		return parse(rayLang, name, RayUtils.convertSourceToTokenList(file));
+	public static RayClass parse( String name, File file) {
+		return parse( name, RayUtils.convertSourceToTokenList(file));
 	}
 
-	public static RayClass parse(RayLang rayLang, String name, TokenList tokenList) {
-		RayClass rc = new RayClass(rayLang, name);
+	public static RayClass parse( String name, TokenList tokenList) {
+		RayClass rc = new RayClass( name);
+		RayLang.instance.registerClasses(rc);
 
 		while (true) {
 
@@ -32,7 +31,7 @@ public class RayClass implements RayClassInterface {
 				break;
 
 			if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
-				parseNewVariable(rayLang, Visibility.protected_, rc, tokenList);
+				parseNewVariable( Visibility.protected_, rc, tokenList);
 			} else if (tokenList.startsWithPattern("ii=") || tokenList.startsWithPattern("i[]i=") ) {
 
 				String varTypeStr = tokenList.popString();
@@ -77,7 +76,7 @@ public class RayClass implements RayClassInterface {
 
 				String visibility = tokenList.popString();
 				Visibility v = Visibility.valueOf(visibility + "_");
-				parseNewVariable( rayLang, v, rc, tokenList);
+				parseNewVariable( v, rc, tokenList);
 			} else if (tokenList.startsWithPattern("iii(")) {
 				/* this is a method declaration */
 
@@ -99,7 +98,7 @@ public class RayClass implements RayClassInterface {
 		return rc;
 	}
 
-	private static void parseNewVariable( RayLang rayLang, Visibility v, RayClass rc, TokenList tokenList) {
+	private static void parseNewVariable(  Visibility v, RayClass rc, TokenList tokenList) {
 		String typeStr = tokenList.popString();
 		if( tokenList.startsWithPattern("[]"))
 		{
@@ -110,7 +109,7 @@ public class RayClass implements RayClassInterface {
 		String varName = tokenList.popString();
 		tokenList.remove(";");
 
-		RayClassInterface type = rayLang.getClass(typeStr);
+		RayClassInterface type = RayLang.instance.getClass(typeStr);
 		if (type == null)
 			RayUtils.runtimeExcp(typeStr + " not found");
 
@@ -120,7 +119,7 @@ public class RayClass implements RayClassInterface {
 
 	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
 
-		RayClass ri = new RayClass(rayLang, name);
+		RayClass ri = new RayClass( name);
 		ri.methods = new HashMap<String, RayMethod>();
 		for( String key : methods.keySet())
 		{
@@ -130,7 +129,7 @@ public class RayClass implements RayClassInterface {
 		for (String key : variables.keySet()) {
 			RayVar rayVar = this.variables.get(key);
 			RayVar rayVar2 = rayVar.copy();
-			rayVar2.setValue( rayVar.getValue() == null ? rayLang.getClass( rayVar.getType()).getNewInstance(null) : rayVar.getValue());
+			rayVar2.setValue( rayVar.getValue() == null ? RayLang.instance.getClass( rayVar.getType()).getNewInstance(null) : rayVar.getValue());
 			ri.variables.put(key, rayVar2);
 		}
 		return ri;
@@ -152,8 +151,28 @@ public class RayClass implements RayClassInterface {
 
 	@Override
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
-		RayMethod method = getMethod(methodName);
-		return method.invoke( parameter);
+		if( methodName.equals("debug"))
+		{
+			System.out.println("debug start.");
+			//Thread.dumpStack();
+			for( RayClass rc : RayDebug.getClasses())
+			{
+				//System.out.println(rc.getName());
+				if( rc.getName().equals("TestFunction"))
+				{
+					System.out.println("debugging: " + rc.getName());
+					for( String k : rc.variables.keySet())
+					{
+						System.out.println(rc.variables.get(k));
+					}
+				}
+			}
+			System.out.println("debug end.");
+			return null;
+		} else {
+			RayMethod method = getMethod(methodName);
+			return method.invoke( parameter);
+		}
 	}
 
 	/*
@@ -167,5 +186,20 @@ public class RayClass implements RayClassInterface {
 		return null;
 	}
 	*/
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof RayClass) {
+			RayClass rc = (RayClass) obj;
+			return rc.getName().equals(getName());
+			
+		}
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
 
 }
