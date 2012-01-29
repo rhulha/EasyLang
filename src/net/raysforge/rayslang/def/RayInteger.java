@@ -5,6 +5,7 @@ import java.util.List;
 import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RayLog;
 import net.raysforge.rayslang.RayMethod;
 
@@ -50,7 +51,7 @@ public class RayInteger implements RayClassInterface {
 		} else if (methodName.equals("quadrat!") && (pc == 0)) {
 			setIntValue(intValue * intValue);
 		} else if (methodName.equals("schreibe") && (pc == 0)) {
-			System.out.println( intValue);
+			RayLang.instance.writeln( intValue);
 		} else if (methodName.equals("mal!") && closure == null && p0int != null) {
 			setIntValue(intValue * p0int.getIntValue());
 		} else if (methodName.equals("mal") && closure == null && p0int != null) {
@@ -73,7 +74,7 @@ public class RayInteger implements RayClassInterface {
 				closure.invoke(p);
 			}
 		} else {
-			System.out.println("OMG");
+			RayLang.instance.writeln("OMG");
 			return new RayString(""+intValue).invoke( methodName, null, parameter);
 		}
 		return this;

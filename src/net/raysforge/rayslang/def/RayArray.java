@@ -37,9 +37,9 @@ public class RayArray implements RayClassInterface {
 				RayString rs = (RayString) p0;
 				value = map.get(rs.getStringValue());
 			} else {
-				System.out.println("array index must be int or string.");
+				RayLang.instance.writeln("array index must be int or string.");
 			}
-			System.out.println(type.substring(0, type.length()-3));
+			RayLang.instance.writeln(type.substring(0, type.length()-3));
 			return value != null ? value : RayLang.instance.getClass(type.substring(0, type.length()-3)).getNewInstance(null);
 
 		} else if (methodName.equals("löschen") && parameter.size() == 0 && closure == null) {
@@ -82,12 +82,12 @@ public class RayArray implements RayClassInterface {
 			}
 		} else if (methodName.equals("schreibe") && parameter.size() == 0) {
 			for (String key : map.keySet()) {
-				System.out.println(key + ": " + map.get(key));
+				RayLang.instance.writeln(key + ": " + map.get(key));
 			}
 			for (RayClassInterface rci : list) {
-				System.out.println(rci);
+				RayLang.instance.writeln(rci);
 			}
-			System.out.println();
+			RayLang.instance.writeln("");
 		} else if (methodName.equals("add") && parameter.size() == 1) {
 			RayClassInterface p0 = parameter.get(0);
 
@@ -95,7 +95,7 @@ public class RayArray implements RayClassInterface {
 				list.add(p0);
 			} else {
 				// error.
-				System.out.println("error");
+				RayLang.instance.writeln("error");
 			}
 
 		} else if (methodName.equals("fürJedenSchlüssel") && closure != null) {
@@ -106,7 +106,7 @@ public class RayArray implements RayClassInterface {
 				closure.invoke(p);
 			}
 		} else {
-			System.out.println("method not found: " + methodName);
+			RayLang.instance.writeln("method not found: " + methodName);
 		}
 		return null;
 	}

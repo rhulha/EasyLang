@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.List;
 
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RayMethod;
 
 public class RayGraphics implements RayClassInterface {
@@ -54,9 +55,9 @@ public class RayGraphics implements RayClassInterface {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(Color.YELLOW);
+		RayLang.instance.writeln(Color.YELLOW);
 		String s = Integer.toHexString(Color.YELLOW.getRGB()&0xffffff);
-		System.out.println(s);
-		System.out.println(Color.decode("0x"+s));
+		RayLang.instance.writeln(s);
+		RayLang.instance.writeln(Color.decode("0x"+s));
 	}
 }

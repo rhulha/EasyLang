@@ -8,7 +8,7 @@ public enum RayLog {
 	
 	public void log(Object s) {
 		if( level.ordinal() >= ordinal())
-			System.out.println(name() + ": " + s);
+			RayLang.instance.writeln(name() + ": " + s);
 	}
 	
 }

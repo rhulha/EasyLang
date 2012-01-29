@@ -5,6 +5,7 @@ import java.util.List;
 import net.raysforge.easyswing.Lists;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RayMethod;
 import net.raysforge.rayslang.RayUtils;
 
@@ -39,7 +40,7 @@ public class RayString implements RayClassInterface {
 	@Override
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("schreibe") && (parameter.size() == 0)) {
-			System.out.println(stringValue);
+			RayLang.instance.writeln(stringValue);
 		} else if (methodName.equals("und") && parameter.size() == 1) {
 			return new RayString(stringValue+parameter.get(0).toString());
 		} else if (methodName.equals("spalte") && (parameter.size() == 1)) {

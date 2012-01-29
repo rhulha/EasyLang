@@ -153,21 +153,21 @@ public class RayClass implements RayClassInterface {
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if( methodName.equals("debug"))
 		{
-			System.out.println("debug start.");
+			RayLang.instance.writeln("debug start.");
 			//Thread.dumpStack();
 			for( RayClass rc : RayDebug.getClasses())
 			{
-				//System.out.println(rc.getName());
+				//RayLang.instance.writeln(rc.getName());
 				if( rc.getName().equals("TestFunction"))
 				{
-					System.out.println("debugging: " + rc.getName());
+					RayLang.instance.writeln("debugging: " + rc.getName());
 					for( String k : rc.variables.keySet())
 					{
-						System.out.println(rc.variables.get(k));
+						RayLang.instance.writeln(rc.variables.get(k));
 					}
 				}
 			}
-			System.out.println("debug end.");
+			RayLang.instance.writeln("debug end.");
 			return null;
 		} else {
 			RayMethod method = getMethod(methodName);

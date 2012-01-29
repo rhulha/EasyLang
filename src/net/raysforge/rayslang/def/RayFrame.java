@@ -15,6 +15,7 @@ import net.raysforge.easyswing.eventpanel.PaintEvent;
 import net.raysforge.easyswing.eventpanel.PaintListener;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
+import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RayLog;
 import net.raysforge.rayslang.RayMethod;
 
@@ -78,7 +79,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 		} else if (methodName.equals("male") && pc == 0 && closure != null) {
 			paintClosure = closure;
 		} else {
-			System.out.println("err");
+			RayLang.instance.writeln("err");
 		}
 		return null;
 	}

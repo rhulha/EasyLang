@@ -32,6 +32,8 @@ import net.raysforge.rayslang.def.RayString;
 
 
 public class RayLang {
+	
+	Output op;
 
 	private HashMap<String, RayClassInterface> classes = new HashMap<String, RayClassInterface>();
 	
@@ -67,12 +69,12 @@ public class RayLang {
 //		runClass(rayLang.getClass("TestHashMap"));
 	}
 
-	private static void runClass(RayClassInterface rc) {
+	public static void runClass(RayClassInterface rc) {
 		RayClassInterface ri = rc.getNewInstance(null);
 		ri.invoke( "start", null, null);
 	}
 
-	private void parse(File dir) {
+	public void parse(File dir) {
 		File[] list = dir.listFiles();
 		for (int i = 0; i < list.length; i++) {
 			File file = list[i];
@@ -92,7 +94,7 @@ public class RayLang {
 		}
 		RayClassInterface rci = classes.get(fullClassName);
 		if( rci == null)
-			System.out.println(fullClassName + " not found.");
+			RayLang.instance.writeln(fullClassName + " not found.");
 		if( array)
 			return new RayArray(fullClassName);
 		else
@@ -102,6 +104,19 @@ public class RayLang {
 	public void registerClasses(RayClassInterface rayClass) {
 		classes.put( rayClass.getName(), rayClass);
 		
+	}
+
+	public void unregisterClasses(String name) {
+		classes.remove(name);
+	}
+
+	public void setOutput( Output op) {
+		this.op = op;
+	}
+	
+	public void writeln( Object o)
+	{
+		op.writeln( o );
 	}
 
 }
