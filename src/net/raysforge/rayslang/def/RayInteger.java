@@ -2,7 +2,7 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
-import net.raysforge.easyswing.Lists;
+import net.raysforge.commons.Generics;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLang;
@@ -61,7 +61,7 @@ public class RayInteger implements RayClassInterface {
 		} else if (methodName.equals("geteiltDurch") && closure == null && p0int != null) {
 			return new RayInteger(intValue / p0int.getIntValue());
 		} else if (methodName.equals("mal") && closure != null) {
-			List<RayClassInterface> p = Lists.newArrayList();
+			List<RayClassInterface> p = Generics.newArrayList();
 			for (int i = 0; i < intValue; i++) {
 				p.clear();
 				p.add(new RayInteger(i));
@@ -70,7 +70,7 @@ public class RayInteger implements RayClassInterface {
 		} else if (methodName.equals("gleicht") && p0int != null && closure != null) {
 			if( p0int.getIntValue() == intValue )
 			{
-				List<RayClassInterface> p = Lists.newArrayList();
+				List<RayClassInterface> p = Generics.newArrayList();
 				closure.invoke(p);
 			}
 		} else {

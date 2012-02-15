@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import net.raysforge.easyswing.Lists;
+import net.raysforge.commons.Generics;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayMethod;
@@ -51,7 +51,7 @@ public class RayFileReader implements RayClassInterface {
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {
-					List<RayClassInterface> p = Lists.newArrayList();
+					List<RayClassInterface> p = Generics.newArrayList();
 					p.add(new RayString(line));
 					closure.invoke(p );
 				}

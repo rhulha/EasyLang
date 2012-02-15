@@ -2,7 +2,7 @@ package net.raysforge.rayslang.def;
 
 import java.util.List;
 
-import net.raysforge.easyswing.Lists;
+import net.raysforge.commons.Generics;
 import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.RayClassInterface;
 import net.raysforge.rayslang.RayLang;
@@ -41,6 +41,7 @@ public class RayString implements RayClassInterface {
 	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
 		if (methodName.equals("schreibe") && (parameter.size() == 0)) {
 			RayLang.instance.writeln(stringValue);
+			
 		} else if (methodName.equals("und") && parameter.size() == 1) {
 			return new RayString(stringValue+parameter.get(0).toString());
 		} else if (methodName.equals("spalte") && (parameter.size() == 1)) {
@@ -59,7 +60,7 @@ public class RayString implements RayClassInterface {
 			{
 				if( stringValue.equals(p0.toString()))
 				{
-					List<RayClassInterface> p = Lists.newArrayList();
+					List<RayClassInterface> p = Generics.newArrayList();
 					closure.invoke(p);
 				}
 			} else {

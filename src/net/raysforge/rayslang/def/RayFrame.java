@@ -8,8 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import net.raysforge.commons.Generics;
 import net.raysforge.easyswing.EasySwing;
-import net.raysforge.easyswing.Lists;
 import net.raysforge.easyswing.eventpanel.EventPanel;
 import net.raysforge.easyswing.eventpanel.PaintEvent;
 import net.raysforge.easyswing.eventpanel.PaintListener;
@@ -93,7 +93,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 	public boolean paint(PaintEvent pe) {
 		if (paintClosure != null) {
 			Graphics g = (Graphics) pe.getSource();
-			List<RayClassInterface> p = Lists.newArrayList();
+			List<RayClassInterface> p = Generics.newArrayList();
 			p.add(new RayGraphics(g));
 			paintClosure.invoke(p);
 		}
@@ -108,7 +108,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 		if (keyEvent.getID() != KeyEvent.KEY_PRESSED)
 			return;
 		if (keyEventHandler != null) {
-			List<RayClassInterface> p = Lists.newArrayList();
+			List<RayClassInterface> p = Generics.newArrayList();
 			p.add(new RayInteger(keyEvent.getKeyCode()));
 			keyEventHandler.invoke(p);
 		}
