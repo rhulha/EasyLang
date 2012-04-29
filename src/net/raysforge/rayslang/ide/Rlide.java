@@ -35,7 +35,6 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 	private static final String NEW_FILE = "newFile";
 
 	private EasySwing es;
-	private EasyTextArea textArea;
 	private EasyTextArea console;
 	private JButton addToolBarItem;
 	private RayLang rayLang;
@@ -67,12 +66,11 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		//easyTree.getJTree().setRootVisible(false);
 		treeAndSplitPane.setLeft(easyTree);
 		treeAndSplitPane.setRight(codeAndConsole.getSplitPane());
-		
+
 		tabbedPane = new JTabbedPane();
-		textArea = new EasyTextArea();
-		
+
 		easyTree.getJTree().addMouseListener(this);
-		
+
 		codeAndConsole.setTop(tabbedPane);
 		codeAndConsole.setBottom(console = new EasyTextArea());
 
@@ -86,8 +84,6 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		addToolBarItem.addActionListener(this);
 		addToolBarItem.setActionCommand("run");
 
-		char[] completeFile = FileUtils.readCompleteFile(new File("raysrc/test/SimpleTest.ray"));
-		textArea.appendString(new String(completeFile));
 	}
 
 	private void traverse(DefaultMutableTreeNode treeNode, File directory) {
@@ -96,11 +92,8 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 			DefaultMutableTreeNode newNode = easyTree.addNode(file.getName(), treeNode);
 			if (file.isDirectory()) {
 				traverse(newNode, file);
-			} else {
-
 			}
 		}
-
 	}
 
 	private void start() {
@@ -108,55 +101,6 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		rayLang.setOutput(this);
 		// rayLang.parse(new File("raysrc"));
 		es.show();
-	}
-
-	public static void main(String[] args) {
-		File userHome = new File(System.getProperty("user.home"));
-		File projectsHome = new File(userHome, "EasyLangProjects");
-		if (projectsHome.exists()) {
-			if (!projectsHome.isDirectory()) {
-				JOptionPane.showMessageDialog(null, "projectsHome is not a directory: " + projectsHome);
-				System.exit(1);
-			}
-		} else {
-			if (!projectsHome.mkdir()) {
-				JOptionPane.showMessageDialog(null, "projectsHome could not be created: " + projectsHome);
-				System.exit(2);
-			}
-		}
-		new Rlide(projectsHome).start();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-		//System.out.println(e.getActionCommand());
-
-		if (e.getActionCommand().equals("run")) {
-			RayLang.instance.unregisterClasses("test");
-			RayClass.parse("test", RayUtils.convertSourceToTokenList(new RaySource(textArea.getTextArea().getText().toCharArray())));
-			RayLang.runClass(rayLang.getClass("test"));
-		} else if (e.getActionCommand().equals(NEW_PROJECT)) {
-
-			if (new File(projectsHome, "New Project").mkdir())
-				easyTree.addNode("New Project");
-			else
-				JOptionPane.showMessageDialog(null, "'New Project' folder could not be created in: " + projectsHome);
-
-		} else if (e.getActionCommand().equals(NEW_FILE)) {
-			if (easyTree.isSelected(1)) {
-				File projectFolder = new File(projectsHome, easyTree.getSelectedNode(1).toString());
-				try {
-					if (new File(projectFolder, "NewFile.easy").createNewFile())
-						easyTree.addNode("NewFile.easy", easyTree.getSelectedNode(1));
-					else
-						JOptionPane.showMessageDialog(null, "'NewFile.easy' could not be created in: " + projectFolder);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
-
 	}
 
 	@Override
@@ -186,33 +130,28 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if( e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1)
-		{
+		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			TreePath selectionPath = easyTree.getSelectionPath();
 			File fileFromTreePath = getFileFromTreePath(selectionPath);
-			if( fileFromTreePath.isFile())
-			{
+			if (fileFromTreePath.isFile()) {
 				int found = -1;
-				for( int i=0; i < tabbedPane.getTabCount(); i++)
-				{
+				for (int i = 0; i < tabbedPane.getTabCount(); i++) {
 					String toolTipText = tabbedPane.getToolTipTextAt(i);
-					if( toolTipText.equals(fileFromTreePath.getPath()))
-					{
+					if (toolTipText.equals(fileFromTreePath.getPath())) {
 						found = i;
 						break;
 					}
 				}
-				if( found >= 0)
+				if (found >= 0)
 					tabbedPane.setSelectedIndex(found);
-				else
-				{
+				else {
 					char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
 					tabbedPane.addTab(fileFromTreePath.getName(), null, new JTextArea(new String(completeFile)), fileFromTreePath.getPath());
-					tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+					tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -229,6 +168,55 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		//System.out.println(e.getActionCommand());
+
+		if (e.getActionCommand().equals("run")) {
+			RayLang.instance.unregisterClasses("test");
+			JTextArea textArea = (JTextArea) tabbedPane.getSelectedComponent();
+			RayClass.parse("test", RayUtils.convertSourceToTokenList(new RaySource(textArea.getText().toCharArray())));
+			RayLang.runClass(rayLang.getClass("test"));
+		} else if (e.getActionCommand().equals(NEW_PROJECT)) {
+
+			if (new File(projectsHome, "New Project").mkdir())
+				easyTree.addNode("New Project");
+			else
+				JOptionPane.showMessageDialog(null, "'New Project' folder could not be created in: " + projectsHome);
+
+		} else if (e.getActionCommand().equals(NEW_FILE)) {
+			if (easyTree.isSelected(1)) {
+				File projectFolder = new File(projectsHome, easyTree.getSelectedNode(1).toString());
+				try {
+					if (new File(projectFolder, "NewFile.easy").createNewFile())
+						easyTree.addNode("NewFile.easy", easyTree.getSelectedNode(1));
+					else
+						JOptionPane.showMessageDialog(null, "'NewFile.easy' could not be created in: " + projectFolder);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		File userHome = new File(System.getProperty("user.home"));
+		File projectsHome = new File(userHome, "EasyLangProjects");
+		if (projectsHome.exists()) {
+			if (!projectsHome.isDirectory()) {
+				JOptionPane.showMessageDialog(null, "projectsHome is not a directory: " + projectsHome);
+				System.exit(1);
+			}
+		} else {
+			if (!projectsHome.mkdir()) {
+				JOptionPane.showMessageDialog(null, "projectsHome could not be created: " + projectsHome);
+				System.exit(2);
+			}
+		}
+		new Rlide(projectsHome).start();
 	}
 
 }
