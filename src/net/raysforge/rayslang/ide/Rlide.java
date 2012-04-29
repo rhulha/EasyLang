@@ -3,8 +3,8 @@ package net.raysforge.rayslang.ide;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -12,8 +12,8 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -29,7 +29,7 @@ import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RaySource;
 import net.raysforge.rayslang.RayUtils;
 
-public class Rlide implements ActionListener, Output, ValueForPathChangedListener {
+public class Rlide implements ActionListener, Output, ValueForPathChangedListener, MouseListener {
 
 	private static final String NEW_PROJECT = "newProject";
 	private static final String NEW_FILE = "newFile";
@@ -41,6 +41,7 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 	private RayLang rayLang;
 	private EasyTree easyTree;
 	private final File projectsHome;
+	private JTabbedPane tabbedPane;
 
 	public Rlide(File projectsHome) {
 
@@ -66,7 +67,13 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		//easyTree.getJTree().setRootVisible(false);
 		treeAndSplitPane.setLeft(easyTree);
 		treeAndSplitPane.setRight(codeAndConsole.getSplitPane());
-		codeAndConsole.setTop(textArea = new EasyTextArea());
+		
+		tabbedPane = new JTabbedPane();
+		textArea = new EasyTextArea();
+		
+		easyTree.getJTree().addMouseListener(this);
+		
+		codeAndConsole.setTop(tabbedPane);
 		codeAndConsole.setBottom(console = new EasyTextArea());
 
 		es.getContentPane().add(treeAndSplitPane.getSplitPane(), BorderLayout.CENTER);
@@ -175,6 +182,53 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 			file = new File(file, object.toString());
 		}
 		return file;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if( e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1)
+		{
+			TreePath selectionPath = easyTree.getSelectionPath();
+			File fileFromTreePath = getFileFromTreePath(selectionPath);
+			if( fileFromTreePath.isFile())
+			{
+				int found = -1;
+				for( int i=0; i < tabbedPane.getTabCount(); i++)
+				{
+					String toolTipText = tabbedPane.getToolTipTextAt(i);
+					if( toolTipText.equals(fileFromTreePath.getPath()))
+					{
+						found = i;
+						break;
+					}
+				}
+				if( found >= 0)
+					tabbedPane.setSelectedIndex(found);
+				else
+				{
+					char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
+					tabbedPane.addTab(fileFromTreePath.getName(), null, new JTextArea(new String(completeFile)), fileFromTreePath.getPath());
+					tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 	}
 
 }
