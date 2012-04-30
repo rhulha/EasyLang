@@ -17,10 +17,10 @@ import net.raysforge.rayslang.Output;
 
 public class EventDelegator implements ActionListener, Output, ValueForPathChangedListener, MouseListener, DocumentListener, WindowListener {
 
-	private final Rlide rlide;
+	private final EasyIDE easyIDE;
 
-	public EventDelegator(Rlide rlide) {
-		this.rlide = rlide;
+	public EventDelegator(EasyIDE easyIDE) {
+		this.easyIDE = easyIDE;
 	}
 
 	@Override
@@ -37,14 +37,14 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 
 	@Override
 	public void windowClosing(WindowEvent we) {
-		if (rlide.checkIfAnyTabIsModified()) {
-			int result = JOptionPane.showConfirmDialog(rlide.getJFrame(), "You have unsaved changes. Do you really want to exit ?");
+		if (easyIDE.checkIfAnyTabIsModified()) {
+			int result = JOptionPane.showConfirmDialog(easyIDE.getJFrame(), "You have unsaved changes. Do you really want to exit ?");
 			if (result == JOptionPane.YES_OPTION)
 			{
-				rlide.getJFrame().dispose();
+				easyIDE.getJFrame().dispose();
 			}
 		} else {
-			rlide.getJFrame().dispose();
+			easyIDE.getJFrame().dispose();
 		}
 
 	}
@@ -75,22 +75,22 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 
 	@Override
 	public void changedUpdate(DocumentEvent de) {
-		rlide.setSelectedTabToModified();
+		easyIDE.setSelectedTabToModified();
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent de) {
-		rlide.setSelectedTabToModified();
+		easyIDE.setSelectedTabToModified();
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent de) {
-		rlide.setSelectedTabToModified();
+		easyIDE.setSelectedTabToModified();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent me) {
-		rlide.mouseClicked(me);
+		easyIDE.mouseClicked(me);
 
 	}
 
@@ -112,18 +112,18 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 
 	@Override
 	public boolean valueForPathChanged(TreePath path, Object newValue) {
-		return rlide.valueForPathChanged(path, newValue);
+		return easyIDE.valueForPathChanged(path, newValue);
 	}
 
 	@Override
 	public void writeln(Object o) {
-		rlide.writeln(o);
+		easyIDE.writeln(o);
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		rlide.actionPerformed(ae);
+		easyIDE.actionPerformed(ae);
 
 	}
 

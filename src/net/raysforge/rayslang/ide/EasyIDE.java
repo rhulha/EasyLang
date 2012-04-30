@@ -26,7 +26,7 @@ import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RaySource;
 import net.raysforge.rayslang.RayUtils;
 
-public class Rlide  {
+public class EasyIDE  {
 
 	private static final String NEW_PROJECT = "newProject";
 	private static final String NEW_FILE = "newFile";
@@ -41,10 +41,10 @@ public class Rlide  {
 	private JTabbedPane tabbedPane;
 	private EventDelegator delegator;
 
-	public Rlide(File projectsHome) {
+	public EasyIDE(File projectsHome) {
 
 		this.projectsHome = projectsHome;
-		ResourceBundle rb = ResourceBundle.getBundle("net.raysforge.rayslang.ide.Rlide");
+		ResourceBundle rb = ResourceBundle.getBundle("net.raysforge.rayslang.ide.EasyIDE");
 		
 		delegator = new EventDelegator(this);
 
@@ -208,7 +208,7 @@ public class Rlide  {
 				System.exit(2);
 			}
 		}
-		new Rlide(projectsHome).start();
+		new EasyIDE(projectsHome).start();
 	}
 
 	public boolean checkIfAnyTabIsModified() {
