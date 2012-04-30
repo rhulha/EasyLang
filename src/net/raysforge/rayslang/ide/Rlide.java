@@ -2,14 +2,13 @@ package net.raysforge.rayslang.ide;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -21,18 +20,17 @@ import net.raysforge.easyswing.EasySplitPane;
 import net.raysforge.easyswing.EasySwing;
 import net.raysforge.easyswing.EasyTextArea;
 import net.raysforge.easyswing.EasyTree;
-import net.raysforge.easyswing.ValueForPathChangedListener;
 import net.raysforge.rayslang.FileUtils;
-import net.raysforge.rayslang.Output;
 import net.raysforge.rayslang.RayClass;
 import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RaySource;
 import net.raysforge.rayslang.RayUtils;
 
-public class Rlide implements ActionListener, Output, ValueForPathChangedListener, MouseListener {
+public class Rlide  {
 
 	private static final String NEW_PROJECT = "newProject";
 	private static final String NEW_FILE = "newFile";
+	private static final String SAVE_ALL = "saveAll";
 
 	private EasySwing es;
 	private EasyTextArea console;
@@ -41,19 +39,24 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 	private EasyTree easyTree;
 	private final File projectsHome;
 	private JTabbedPane tabbedPane;
+	private EventDelegator delegator;
 
 	public Rlide(File projectsHome) {
 
 		this.projectsHome = projectsHome;
 		ResourceBundle rb = ResourceBundle.getBundle("net.raysforge.rayslang.ide.Rlide");
+		
+		delegator = new EventDelegator(this);
 
-		es = new EasySwing("RayLang IDE", 800, 600);
+		es = new EasySwing("RayLang IDE", 800, 600, JFrame.DO_NOTHING_ON_CLOSE);
+		es.addWindowListener(delegator);
+		
 		EasySplitPane codeAndConsole = new EasySplitPane(false, 400);
 		EasySplitPane treeAndSplitPane = new EasySplitPane(true, 200);
 		easyTree = new EasyTree("Projects");
 		easyTree.setShowsRootHandles(false);
 		easyTree.setEditable();
-		easyTree.setValueForPathChangedListener(this);
+		easyTree.setValueForPathChangedListener(delegator);
 
 		traverse(easyTree.getRootNode(), projectsHome);
 
@@ -69,7 +72,7 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 
 		tabbedPane = new JTabbedPane();
 
-		easyTree.getJTree().addMouseListener(this);
+		easyTree.getJTree().addMouseListener(delegator);
 
 		codeAndConsole.setTop(tabbedPane);
 		codeAndConsole.setBottom(console = new EasyTextArea());
@@ -77,11 +80,12 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		es.getContentPane().add(treeAndSplitPane.getSplitPane(), BorderLayout.CENTER);
 
 		JMenu fileMenuItem = es.addMenuItem(rb.getString("MenuItemFile"));
-		es.addMenuItem(fileMenuItem, rb.getString("MenuItemNewProject"), NEW_PROJECT, this);
-		es.addMenuItem(fileMenuItem, rb.getString("MenuItemNewFile"), NEW_FILE, this);
+		es.addMenuItem(fileMenuItem, rb.getString("MenuItemNewProject"), NEW_PROJECT, delegator);
+		es.addMenuItem(fileMenuItem, rb.getString("MenuItemNewFile"), NEW_FILE, delegator);
+		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 
 		addToolBarItem = es.addToolBarItem("LOS");
-		addToolBarItem.addActionListener(this);
+		addToolBarItem.addActionListener(delegator);
 		addToolBarItem.setActionCommand("run");
 
 	}
@@ -98,18 +102,16 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 
 	private void start() {
 		rayLang = new RayLang();
-		rayLang.setOutput(this);
+		rayLang.setOutput(delegator);
 		// rayLang.parse(new File("raysrc"));
 		es.show();
 	}
 
-	@Override
 	public void writeln(Object o) {
 		console.appendString(o + "\n");
 
 	}
 
-	@Override
 	public boolean valueForPathChanged(TreePath path, Object newValue) {
 		File fileFromTreePath = getFileFromTreePath(path);
 		boolean renameToSucceeded = fileFromTreePath.renameTo(new File(fileFromTreePath.getParentFile(), newValue.toString()));
@@ -128,7 +130,6 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		return file;
 	}
 
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			TreePath selectionPath = easyTree.getSelectionPath();
@@ -146,7 +147,9 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 					tabbedPane.setSelectedIndex(found);
 				else {
 					char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
-					tabbedPane.addTab(fileFromTreePath.getName(), null, new JTextArea(new String(completeFile)), fileFromTreePath.getPath());
+					JTextArea jTextArea = new JTextArea(new String(completeFile));
+					jTextArea.getDocument().addDocumentListener(delegator);
+					tabbedPane.addTab(fileFromTreePath.getName(), null, jTextArea, fileFromTreePath.getPath());
 					tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 				}
 			}
@@ -154,23 +157,6 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
 	public void actionPerformed(ActionEvent e) {
 
 		//System.out.println(e.getActionCommand());
@@ -187,6 +173,12 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 			else
 				JOptionPane.showMessageDialog(null, "'New Project' folder could not be created in: " + projectsHome);
 
+		} else if (e.getActionCommand().equals(SAVE_ALL)) {
+			for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+				String title = tabbedPane.getTitleAt(i);
+				if( title.startsWith("*"))
+					tabbedPane.setTitleAt(i, title.substring(1));
+			}
 		} else if (e.getActionCommand().equals(NEW_FILE)) {
 			if (easyTree.isSelected(1)) {
 				File projectFolder = new File(projectsHome, easyTree.getSelectedNode(1).toString());
@@ -218,5 +210,24 @@ public class Rlide implements ActionListener, Output, ValueForPathChangedListene
 		}
 		new Rlide(projectsHome).start();
 	}
+
+	public boolean checkIfAnyTabIsModified() {
+		for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+			if (tabbedPane.getTitleAt(i).startsWith("*"))
+				return true;
+		}
+		return false;
+	}
+
+	protected void setSelectedTabToModified() {
+		String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+		if (!title.startsWith("*"))
+			tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), "*" + title);
+	}
+
+	public JFrame getJFrame() {
+		return es.getFrame();
+	}
+
 
 }
