@@ -2,6 +2,7 @@ package net.raysforge.rayslang;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileUtils {
@@ -18,5 +19,16 @@ public class FileUtils {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void writeCompleteFile(File file, String text) {
+		try {
+			FileWriter fw = new FileWriter(file);
+			fw.write(text);
+			fw.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 }

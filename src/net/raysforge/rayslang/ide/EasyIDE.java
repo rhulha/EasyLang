@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
@@ -30,11 +29,12 @@ public class EasyIDE  {
 
 	private static final String NEW_PROJECT = "newProject";
 	private static final String NEW_FILE = "newFile";
+	private static final String SAVE = "save";
 	private static final String SAVE_ALL = "saveAll";
+	private static final String RUN = "run";
 
 	private EasySwing es;
 	private EasyTextArea console;
-	private JButton addToolBarItem;
 	private RayLang rayLang;
 	private EasyTree easyTree;
 	private final File projectsHome;
@@ -50,6 +50,7 @@ public class EasyIDE  {
 
 		es = new EasySwing("RayLang IDE", 800, 600, JFrame.DO_NOTHING_ON_CLOSE);
 		es.addWindowListener(delegator);
+		es.addGlobalKeyEventListener(delegator);
 		
 		EasySplitPane codeAndConsole = new EasySplitPane(false, 400);
 		EasySplitPane treeAndSplitPane = new EasySplitPane(true, 200);
@@ -82,11 +83,14 @@ public class EasyIDE  {
 		JMenu fileMenuItem = es.addMenuItem(rb.getString("MenuItemFile"));
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemNewProject"), NEW_PROJECT, delegator);
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemNewFile"), NEW_FILE, delegator);
+		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSave"), SAVE, delegator);
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 
-		addToolBarItem = es.addToolBarItem("LOS");
-		addToolBarItem.addActionListener(delegator);
-		addToolBarItem.setActionCommand("run");
+		es.addToolBarItem(rb.getString("MenuItemNewProject"), NEW_PROJECT, delegator);
+		es.addToolBarItem(rb.getString("MenuItemNewFile"), NEW_FILE, delegator);
+		es.addToolBarItem(rb.getString("MenuItemSave"), SAVE, delegator);
+		es.addToolBarItem(rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
+		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
 
 	}
 
@@ -161,9 +165,9 @@ public class EasyIDE  {
 
 		//System.out.println(e.getActionCommand());
 
-		if (e.getActionCommand().equals("run")) {
+		if (e.getActionCommand().equals(RUN)) {
 			RayLang.instance.unregisterClasses("test");
-			JTextArea textArea = (JTextArea) tabbedPane.getSelectedComponent();
+			JTextArea textArea = getSelectedTextArea();
 			RayClass.parse("test", RayUtils.convertSourceToTokenList(new RaySource(textArea.getText().toCharArray())));
 			RayLang.runClass(rayLang.getClass("test"));
 		} else if (e.getActionCommand().equals(NEW_PROJECT)) {
@@ -173,11 +177,16 @@ public class EasyIDE  {
 			else
 				JOptionPane.showMessageDialog(null, "'New Project' folder could not be created in: " + projectsHome);
 
+		} else if (e.getActionCommand().equals(SAVE)) {
+			saveSelectedTextArea();
 		} else if (e.getActionCommand().equals(SAVE_ALL)) {
 			for (int i = 0; i < tabbedPane.getTabCount(); i++) {
 				String title = tabbedPane.getTitleAt(i);
 				if( title.startsWith("*"))
+				{
+					FileUtils.writeCompleteFile( getFile(i), getTextArea(i).getText());
 					tabbedPane.setTitleAt(i, title.substring(1));
+				}
 			}
 		} else if (e.getActionCommand().equals(NEW_FILE)) {
 			if (easyTree.isSelected(1)) {
@@ -192,6 +201,26 @@ public class EasyIDE  {
 				}
 			}
 		}
+	}
+	
+	private JTextArea getSelectedTextArea()
+	{
+		return (JTextArea) tabbedPane.getSelectedComponent();
+	}
+
+	private JTextArea getTextArea(int index)
+	{
+		return (JTextArea) tabbedPane.getTabComponentAt(index);
+	}
+	
+	private File getFile(int index)
+	{
+		return new File(tabbedPane.getToolTipTextAt(index));
+	}
+
+	private File getSelectedFile()
+	{
+		return new File(tabbedPane.getToolTipTextAt(tabbedPane.getSelectedIndex()));
 	}
 
 	public static void main(String[] args) {
@@ -225,8 +254,19 @@ public class EasyIDE  {
 			tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), "*" + title);
 	}
 
+	protected void setSelectedTabToSaved() {
+		String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+		if (title.startsWith("*"))
+			tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), title.substring(1));
+	}
+
 	public JFrame getJFrame() {
 		return es.getFrame();
+	}
+
+	public void saveSelectedTextArea() {
+		FileUtils.writeCompleteFile(getSelectedFile(), getSelectedTextArea().getText());
+		setSelectedTabToSaved();
 	}
 
 

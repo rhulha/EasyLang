@@ -1,7 +1,10 @@
 package net.raysforge.rayslang.ide;
 
+import java.awt.AWTEvent;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -15,7 +18,7 @@ import javax.swing.tree.TreePath;
 import net.raysforge.easyswing.ValueForPathChangedListener;
 import net.raysforge.rayslang.Output;
 
-public class EventDelegator implements ActionListener, Output, ValueForPathChangedListener, MouseListener, DocumentListener, WindowListener {
+public class EventDelegator implements ActionListener, Output, ValueForPathChangedListener, MouseListener, DocumentListener, WindowListener, AWTEventListener {
 
 	private final EasyIDE easyIDE;
 
@@ -125,6 +128,16 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 	public void actionPerformed(ActionEvent ae) {
 		easyIDE.actionPerformed(ae);
 
+	}
+
+	@Override
+	public void eventDispatched(AWTEvent arg0) {
+		if (arg0 instanceof KeyEvent) {
+			KeyEvent ke = (KeyEvent) arg0;
+			if( ke.getKeyCode() == 'S' && (ke.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK)  && ke.getID() == KeyEvent.KEY_RELEASED)
+				easyIDE.saveSelectedTextArea();
+		}
+		
 	}
 
 }
