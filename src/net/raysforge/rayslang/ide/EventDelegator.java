@@ -1,16 +1,20 @@
 package net.raysforge.rayslang.ide;
 
 import java.awt.AWTEvent;
+import java.awt.Point;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreePath;
@@ -18,7 +22,7 @@ import javax.swing.tree.TreePath;
 import net.raysforge.easyswing.ValueForPathChangedListener;
 import net.raysforge.rayslang.Output;
 
-public class EventDelegator implements ActionListener, Output, ValueForPathChangedListener, MouseListener, DocumentListener, WindowListener, AWTEventListener {
+public class EventDelegator implements ActionListener, Output, ValueForPathChangedListener, MouseListener, DocumentListener, WindowListener, AWTEventListener, KeyListener {
 
 	private final EasyIDE easyIDE;
 
@@ -131,13 +135,43 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 	}
 
 	@Override
-	public void eventDispatched(AWTEvent arg0) {
-		if (arg0 instanceof KeyEvent) {
-			KeyEvent ke = (KeyEvent) arg0;
+	public void eventDispatched(AWTEvent awtEvent) {
+		if (awtEvent instanceof KeyEvent) {
+			KeyEvent ke = (KeyEvent) awtEvent;
 			if( ke.getKeyCode() == 'S' && (ke.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK)  && ke.getID() == KeyEvent.KEY_RELEASED)
 				easyIDE.saveSelectedTextArea();
 		}
 		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent ke) {
+		Object source = ke.getSource();
+		if (source instanceof JTextArea) {
+			JTextArea textArea = (JTextArea) source;
+			if( ke.getKeyChar() == ' ' && ke.getModifiers() == KeyEvent.CTRL_MASK )
+			{
+				
+				Point mcp = textArea.getCaret().getMagicCaretPosition();
+				easyIDE.showAutoCompleteBox( textArea, mcp);
+			}
+		}
+		if (source instanceof JList) {
+			JList list = (JList) source;
+			if (ke.getKeyChar() == KeyEvent.VK_ENTER) {
+                final String s = (String) list.getSelectedValue();
+                easyIDE.useSelectedListVlaue(s);
+            }
+		}
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent ke) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent ke) {
 	}
 
 }

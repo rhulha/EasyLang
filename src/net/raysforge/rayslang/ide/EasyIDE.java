@@ -1,17 +1,25 @@
 package net.raysforge.rayslang.ide;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -25,7 +33,7 @@ import net.raysforge.rayslang.RayLang;
 import net.raysforge.rayslang.RaySource;
 import net.raysforge.rayslang.RayUtils;
 
-public class EasyIDE  {
+public class EasyIDE {
 
 	private static final String NEW_PROJECT = "newProject";
 	private static final String NEW_FILE = "newFile";
@@ -40,18 +48,20 @@ public class EasyIDE  {
 	private final File projectsHome;
 	private JTabbedPane tabbedPane;
 	private EventDelegator delegator;
+	private JPopupMenu popupMenu = new JPopupMenu();
+	private JList list = new JList();
 
 	public EasyIDE(File projectsHome) {
 
 		this.projectsHome = projectsHome;
 		ResourceBundle rb = ResourceBundle.getBundle("net.raysforge.rayslang.ide.EasyIDE");
-		
+
 		delegator = new EventDelegator(this);
 
 		es = new EasySwing("RayLang IDE", 800, 600, JFrame.DO_NOTHING_ON_CLOSE);
 		es.addWindowListener(delegator);
 		es.addGlobalKeyEventListener(delegator);
-		
+
 		EasySplitPane codeAndConsole = new EasySplitPane(false, 400);
 		EasySplitPane treeAndSplitPane = new EasySplitPane(true, 200);
 		easyTree = new EasyTree("Projects");
@@ -91,6 +101,17 @@ public class EasyIDE  {
 		es.addToolBarItem(rb.getString("MenuItemSave"), SAVE, delegator);
 		es.addToolBarItem(rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
+
+		list.addKeyListener(delegator);
+		
+		DefaultListModel defaultListModel = new DefaultListModel();
+		list.setModel(defaultListModel);
+		defaultListModel.addElement("test2");
+		defaultListModel.addElement("test3");
+		defaultListModel.addElement("test4");
+
+		popupMenu.setPreferredSize(new Dimension(100, 100));
+		popupMenu.add(new JScrollPane(list));
 
 	}
 
@@ -153,6 +174,7 @@ public class EasyIDE  {
 					char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
 					JTextArea jTextArea = new JTextArea(new String(completeFile));
 					jTextArea.getDocument().addDocumentListener(delegator);
+					jTextArea.addKeyListener(delegator);
 					tabbedPane.addTab(fileFromTreePath.getName(), null, jTextArea, fileFromTreePath.getPath());
 					tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 				}
@@ -182,9 +204,8 @@ public class EasyIDE  {
 		} else if (e.getActionCommand().equals(SAVE_ALL)) {
 			for (int i = 0; i < tabbedPane.getTabCount(); i++) {
 				String title = tabbedPane.getTitleAt(i);
-				if( title.startsWith("*"))
-				{
-					FileUtils.writeCompleteFile( getFile(i), getTextArea(i).getText());
+				if (title.startsWith("*")) {
+					FileUtils.writeCompleteFile(getFile(i), getTextArea(i).getText());
 					tabbedPane.setTitleAt(i, title.substring(1));
 				}
 			}
@@ -202,24 +223,20 @@ public class EasyIDE  {
 			}
 		}
 	}
-	
-	private JTextArea getSelectedTextArea()
-	{
+
+	private JTextArea getSelectedTextArea() {
 		return (JTextArea) tabbedPane.getSelectedComponent();
 	}
 
-	private JTextArea getTextArea(int index)
-	{
+	private JTextArea getTextArea(int index) {
 		return (JTextArea) tabbedPane.getTabComponentAt(index);
 	}
-	
-	private File getFile(int index)
-	{
+
+	private File getFile(int index) {
 		return new File(tabbedPane.getToolTipTextAt(index));
 	}
 
-	private File getSelectedFile()
-	{
+	private File getSelectedFile() {
 		return new File(tabbedPane.getToolTipTextAt(tabbedPane.getSelectedIndex()));
 	}
 
@@ -269,5 +286,26 @@ public class EasyIDE  {
 		setSelectedTabToSaved();
 	}
 
+	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
+		popupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);
+		SwingUtilities.invokeLater(new Runnable() {
+
+			public void run() {
+				list.requestFocus();
+			}
+		});
+	}
+
+	public void useSelectedListVlaue(String s) {
+		System.out.println(s);
+        final int cp = getSelectedTextArea().getCaretPosition();
+        try {
+			getSelectedTextArea().getDocument().insertString(cp, s, null);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+        popupMenu.setVisible(false);
+		
+	}
 
 }
