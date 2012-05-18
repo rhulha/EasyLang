@@ -1,14 +1,14 @@
 package net.raysforge.rayslang;
 
-public enum RayLog {
+public enum EasyLog {
 	
 	error, warn, info, debug, trace;
 	
-	static RayLog level = RayLog.info;
+	static EasyLog level = EasyLog.info;
 	
 	public void log(Object s) {
 		if( level.ordinal() >= ordinal())
-			RayLang.instance.writeln(name() + ": " + s);
+			EasyLang.instance.writeln(name() + ": " + s);
 	}
 	
 }

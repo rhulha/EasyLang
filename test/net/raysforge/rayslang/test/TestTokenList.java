@@ -1,20 +1,20 @@
 package net.raysforge.rayslang.test;
 
-import net.raysforge.rayslang.RaySource;
-import net.raysforge.rayslang.RayUtils;
+import net.raysforge.rayslang.EasySource;
+import net.raysforge.rayslang.EasyUtils;
 import net.raysforge.rayslang.TokenList;
 
 public class TestTokenList {
 	
 	public static void main(String[] args) {
-		RaySource rs = new RaySource("Zahl[] x = neu Zahl[];".toCharArray());
-		TokenList tokenList = RayUtils.convertSourceToTokenList(rs);
+		EasySource rs = new EasySource("Zahl[] x = neu Zahl[];".toCharArray());
+		TokenList tokenList = EasyUtils.convertSourceToTokenList(rs);
 		System.out.println( tokenList.startsWithPattern("i[]i=") );
 	}
 	
 	public static void main1(String[] args) {
-		RaySource rs = new RaySource("{\nZeichen zeile -> zeile.schreibe();\n}".toCharArray());
-		TokenList tl = RayUtils.convertSourceToTokenList(rs);
+		EasySource rs = new EasySource("{\nZeichen zeile -> zeile.schreibe();\n}".toCharArray());
+		TokenList tl = EasyUtils.convertSourceToTokenList(rs);
 		System.out.println("original: " + tl);
 		tl.remove("{");
 		TokenList innerList = tl.getSubList('{', '}');
@@ -32,16 +32,16 @@ public class TestTokenList {
 	}
 
 	public static void main2(String[] args) {
-		RaySource rs = new RaySource("x.add!(7);".toCharArray());
-		TokenList tl = RayUtils.convertSourceToTokenList(rs);
+		EasySource rs = new EasySource("x.add!(7);".toCharArray());
+		TokenList tl = EasyUtils.convertSourceToTokenList(rs);
 		System.out.println(tl);
-		RayUtils.assert_(tl.remaining()==7);
-		RayUtils.assert_(tl.startsWithPattern("i.i("));
-		RayUtils.assert_(!tl.contains("add"));
-		RayUtils.assert_(tl.contains("add!"));
+		EasyUtils.assert_(tl.remaining()==7);
+		EasyUtils.assert_(tl.startsWithPattern("i.i("));
+		EasyUtils.assert_(!tl.contains("add"));
+		EasyUtils.assert_(tl.contains("add!"));
 		
-		RaySource rs2 = new RaySource("{as{d -> as}d\n}\r\n".toCharArray());
-		TokenList tl2 = RayUtils.convertSourceToTokenList(rs2);
+		EasySource rs2 = new EasySource("{as{d -> as}d\n}\r\n".toCharArray());
+		TokenList tl2 = EasyUtils.convertSourceToTokenList(rs2);
 
 		System.out.println(  tl2.copy().getAndRemoveSourceTokenUntil( true, "->" ));;
 		System.out.println(  tl2.copy().getAndRemoveSourceTokenUntil( false, "->" ));;
@@ -54,31 +54,31 @@ public class TestTokenList {
 		TokenList innerList = test1.getSubList('{', '}');
 		System.out.println(innerList);
 		
-		RayUtils.assert_(innerList.hasMore());
-		RayUtils.assert_(innerList.remaining()==3);
-		RayUtils.assertNotNull( innerList.pop());
-		RayUtils.assert_(innerList.remaining()==2);
-		RayUtils.assertNotNull( innerList.pop());
-		RayUtils.assert_(innerList.remaining()==1);
-		RayUtils.assertNotNull( innerList.pop());
-		RayUtils.assert_(innerList.remaining()==0);
-		RayUtils.assert_(!innerList.hasMore());
-		RayUtils.assert_(innerList.isEmpty());
+		EasyUtils.assert_(innerList.hasMore());
+		EasyUtils.assert_(innerList.remaining()==3);
+		EasyUtils.assertNotNull( innerList.pop());
+		EasyUtils.assert_(innerList.remaining()==2);
+		EasyUtils.assertNotNull( innerList.pop());
+		EasyUtils.assert_(innerList.remaining()==1);
+		EasyUtils.assertNotNull( innerList.pop());
+		EasyUtils.assert_(innerList.remaining()==0);
+		EasyUtils.assert_(!innerList.hasMore());
+		EasyUtils.assert_(innerList.isEmpty());
 		
 
 		TokenList test2 = tl2.copy();
 		System.out.println(test2);
-		RayUtils.assert_(test2.remaining()==9);
+		EasyUtils.assert_(test2.remaining()==9);
 		test2.remove("{");
-		RayUtils.assert_(test2.remaining()==8);
-		RayUtils.assert_( test2.getLast().equals("}"));
+		EasyUtils.assert_(test2.remaining()==8);
+		EasyUtils.assert_( test2.getLast().equals("}"));
 		test2.removeLast("}");
-		RayUtils.assert_( test2.getLast().equals("d"));
+		EasyUtils.assert_( test2.getLast().equals("d"));
 		test2.removeLast("d");
-		RayUtils.assert_( test2.getLast().equals("}"));
+		EasyUtils.assert_( test2.getLast().equals("}"));
 		test2.removeLast("}");
-		RayUtils.assert_( test2.getLast().equals("as"));
-		RayUtils.assert_(test2.remaining()==5);
+		EasyUtils.assert_( test2.getLast().equals("as"));
+		EasyUtils.assert_(test2.remaining()==5);
 		
 		
 		

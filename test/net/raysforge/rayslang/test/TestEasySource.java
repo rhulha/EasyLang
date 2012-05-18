@@ -1,16 +1,16 @@
 package net.raysforge.rayslang.test;
 
-import net.raysforge.rayslang.RaySource;
+import net.raysforge.rayslang.EasySource;
 import net.raysforge.rayslang.Token;
 
-public class TestRaySource {
+public class TestEasySource {
 	
 	public static void main(String[] args) {
-		new RaySource("Zahl[] za = neu Zahl[];".toCharArray());
+		new EasySource("Zahl[] za = neu Zahl[];".toCharArray());
 	}
 
 	public static void main0(String[] args) {
-		RaySource rs = new RaySource("{ \n Zahl !zahl! -> zahl.print()    \n}".toCharArray());
+		EasySource rs = new EasySource("{ \n Zahl !zahl! -> zahl.print()    \n}".toCharArray());
 		
 		System.out.println( rs.contains("->"));
 		
@@ -27,7 +27,7 @@ public class TestRaySource {
 	}
 
 	public static void main1(String[] args) {
-		RaySource rs = new RaySource("{as{d as}d\n}\r\n".toCharArray());
+		EasySource rs = new EasySource("{as{d as}d\n}\r\n".toCharArray());
 		System.out.println(rs.getSourceToken());
 		System.out.println(rs.getSourceToken());
 		System.out.println(rs.getSourceToken());

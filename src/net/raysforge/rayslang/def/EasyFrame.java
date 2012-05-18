@@ -14,33 +14,33 @@ import net.raysforge.easyswing.eventpanel.EventPanel;
 import net.raysforge.easyswing.eventpanel.PaintEvent;
 import net.raysforge.easyswing.eventpanel.PaintListener;
 import net.raysforge.rayslang.KeyWords;
-import net.raysforge.rayslang.RayClassInterface;
-import net.raysforge.rayslang.RayLang;
-import net.raysforge.rayslang.RayLog;
-import net.raysforge.rayslang.RayMethod;
+import net.raysforge.rayslang.EasyClassInterface;
+import net.raysforge.rayslang.EasyLang;
+import net.raysforge.rayslang.EasyLog;
+import net.raysforge.rayslang.EasyMethod;
 
-public class RayFrame implements RayClassInterface, PaintListener, AWTEventListener {
+public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventListener {
 
 	EasySwing easySwing = new EasySwing("", 800, 600);
-	RayMethod paintClosure;
-	RayMethod keyEventHandler;
+	EasyMethod paintClosure;
+	EasyMethod keyEventHandler;
 	private EventPanel eventPanel;
 
-	public RayFrame() {
+	public EasyFrame() {
 		eventPanel = easySwing.setEventPanelAsMainContent();
 		eventPanel.addPaintListener(this);
 		easySwing.addGlobalKeyEventListener(this);
 	}
 
 	@Override
-	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
-		return new RayFrame(); // parameter.get(0).toString()
+	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
+		return new EasyFrame(); // parameter.get(0).toString()
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, final RayMethod closure, List<RayClassInterface> parameter) {
+	public EasyClassInterface invoke(String methodName, final EasyMethod closure, List<EasyClassInterface> parameter) {
 
-		RayLog.debug.log(methodName + " " + parameter + " on " + this);
+		EasyLog.debug.log(methodName + " " + parameter + " on " + this);
 		
 		int pc = 0;
 		if( parameter != null)
@@ -52,15 +52,15 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 			easySwing.getContentPane().repaint();
 			eventPanel.repaint();
 		} else if (methodName.equals("holeBreite") && (pc == 0)) {
-			return new RayInteger(easySwing.getContentPane().getWidth());
+			return new EasyInteger(easySwing.getContentPane().getWidth());
 		} else if (methodName.equals("holeHöhe") && (pc == 0)) {
-			return new RayInteger(easySwing.getContentPane().getHeight());
+			return new EasyInteger(easySwing.getContentPane().getHeight());
 		} else if (methodName.equals("setzeBreite") && (pc == 1)) {
-			RayInteger p0 = (RayInteger) parameter.get(0);
+			EasyInteger p0 = (EasyInteger) parameter.get(0);
 			int height = easySwing.getFrame().getHeight();
 			this.easySwing.getFrame().setSize((int) p0.getIntValue(), height);
 		} else if (methodName.equals("setzeHöhe") && (pc == 1)) {
-			RayInteger p0 = (RayInteger) parameter.get(0);
+			EasyInteger p0 = (EasyInteger) parameter.get(0);
 			int width = easySwing.getFrame().getWidth();
 			this.easySwing.getFrame().setSize(width, (int) p0.getIntValue());
 		} else if (methodName.equals("zeigeAn") && (pc == 0)) {
@@ -79,7 +79,7 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 		} else if (methodName.equals("male") && pc == 0 && closure != null) {
 			paintClosure = closure;
 		} else {
-			RayLang.instance.writeln("err");
+			EasyLang.instance.writeln("err");
 		}
 		return null;
 	}
@@ -93,8 +93,8 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 	public boolean paint(PaintEvent pe) {
 		if (paintClosure != null) {
 			Graphics g = (Graphics) pe.getSource();
-			List<RayClassInterface> p = Generics.newArrayList();
-			p.add(new RayGraphics(g));
+			List<EasyClassInterface> p = Generics.newArrayList();
+			p.add(new EasyGraphics(g));
 			paintClosure.invoke(p);
 		}
 		return false;
@@ -108,8 +108,8 @@ public class RayFrame implements RayClassInterface, PaintListener, AWTEventListe
 		if (keyEvent.getID() != KeyEvent.KEY_PRESSED)
 			return;
 		if (keyEventHandler != null) {
-			List<RayClassInterface> p = Generics.newArrayList();
-			p.add(new RayInteger(keyEvent.getKeyCode()));
+			List<EasyClassInterface> p = Generics.newArrayList();
+			p.add(new EasyInteger(keyEvent.getKeyCode()));
 			keyEventHandler.invoke(p);
 		}
 	}

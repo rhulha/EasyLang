@@ -1,21 +1,21 @@
 package net.raysforge.rayslang;
 
-public class RayVar {
+public class EasyVar {
 
 	private Visibility visibility;
 	private String name;
-	private RayClassInterface value;
+	private EasyClassInterface value;
 	private final String type;
 
-	public RayVar(String type, String name, RayClassInterface value) {
+	public EasyVar(String type, String name, EasyClassInterface value) {
 		this(Visibility.local_, type, name, value);
 	}
 
-	public RayVar(Visibility visibility, String type, String name) {
+	public EasyVar(Visibility visibility, String type, String name) {
 		this(visibility, type, name, null);
 	}
 
-	public RayVar(Visibility visibility, String type, String name, RayClassInterface value) {
+	public EasyVar(Visibility visibility, String type, String name, EasyClassInterface value) {
 		super();
 		this.visibility = visibility;
 		this.type = type;
@@ -42,15 +42,15 @@ public class RayVar {
 
 	@Override
 	public String toString() {
-		return "RayVar [visibility=" + visibility + ", name=" + name + ", instance=" + value + "]";
+		return "EasyVar [visibility=" + visibility + ", name=" + name + ", instance=" + value + "]";
 	}
 
-	public RayClassInterface getValue() {
+	public EasyClassInterface getValue() {
 		return value;
 	}
 
-	public void setValue(RayClassInterface value) {
-		RayUtils.assert_(value.getName().equals(type), value.getName() + " != " + type);
+	public void setValue(EasyClassInterface value) {
+		EasyUtils.assert_(value.getName().equals(type), value.getName() + " != " + type);
 		this.value = value;
 	}
 
@@ -58,8 +58,8 @@ public class RayVar {
 		return type;
 	}
 
-	public RayVar copy() {
-		return new RayVar(visibility, type, name);
+	public EasyVar copy() {
+		return new EasyVar(visibility, type, name);
 	}
 
 }

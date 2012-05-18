@@ -30,7 +30,7 @@ public class TokenList {
 
 	public Token get(int i) {
 		if ((offset + position + i) >= limit)
-			RayUtils.runtimeExcp("(offset + position + i)>=limit -> (" + offset + "+" + position + "+" + i + ")>=" + limit);
+			EasyUtils.runtimeExcp("(offset + position + i)>=limit -> (" + offset + "+" + position + "+" + i + ")>=" + limit);
 		return tokens.get(offset + position + i);
 	}
 
@@ -89,7 +89,7 @@ public class TokenList {
 					break;
 
 				default:
-					RayUtils.runtimeExcp("unknown pattern element");
+					EasyUtils.runtimeExcp("unknown pattern element");
 			}
 
 		}
@@ -114,13 +114,13 @@ public class TokenList {
 
 	public void remove(String string) {
 		if (!get(0).equals(string))
-			RayUtils.runtimeExcp(get(0) + " != " + string + " (" + this + ")");
+			EasyUtils.runtimeExcp(get(0) + " != " + string + " (" + this + ")");
 		position++;
 	}
 
 	public void removeLast(String string) {
 		if (!getLast().equals(string))
-			RayUtils.runtimeExcp(getLast()+ " != " + string);
+			EasyUtils.runtimeExcp(getLast()+ " != " + string);
 		limit--;
 	}
 
@@ -185,7 +185,7 @@ public class TokenList {
 		while (hasMore()) {
 			Token t = pop();
 			if (t == null)
-				RayUtils.runtimeExcp("unexpected end of tokens");
+				EasyUtils.runtimeExcp("unexpected end of tokens");
 			if (t.equals(open)) {
 				brace_counter++;
 			} else if (t.equals(close)) {

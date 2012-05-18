@@ -11,14 +11,14 @@ import java.util.HashMap;
 // problem: mac/dos/unix returns...
 // problem: steht pos auf letztem oder nächstem zeichen ?
 
-public class RayUtils {
+public class EasyUtils {
 	
 	public static TokenList convertSourceToTokenList(File file)
 	{
-		return convertSourceToTokenList(new RaySource(FileUtils.readCompleteFile(file)));
+		return convertSourceToTokenList(new EasySource(FileUtils.readCompleteFile(file)));
 	}
 	
-	public static TokenList convertSourceToTokenList(RaySource rs)
+	public static TokenList convertSourceToTokenList(EasySource rs)
 	{
 		ArrayList<Token> tokens = newArrayList();
 

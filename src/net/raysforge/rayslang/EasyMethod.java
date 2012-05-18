@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.raysforge.rayslang.def.RayArray;
+import net.raysforge.rayslang.def.EasyArray;
 
-public class RayMethod {
+public class EasyMethod {
 
 	protected String name;
 
-	protected RayClass parentClass; // this is not a good variable, it is not really used and not correctly filled.
+	protected EasyClass parentClass; // this is not a good variable, it is not really used and not correctly filled.
 
-	List<RayVar> parameterList = new ArrayList<RayVar>();
+	List<EasyVar> parameterList = new ArrayList<EasyVar>();
 
-	HashMap<String, RayVar> closureVariables;
+	HashMap<String, EasyVar> closureVariables;
 
 	String returnType;
 
 	TokenList code;
 
-	public RayMethod(RayClass parentClass, String name) {
-		RayUtils.assertNotNull(parentClass);
+	public EasyMethod(EasyClass parentClass, String name) {
+		EasyUtils.assertNotNull(parentClass);
 		this.name = name;
 		this.parentClass = parentClass;
 
@@ -29,17 +29,17 @@ public class RayMethod {
 			parentClass.methods.put(name, this);
 	}
 
-	private static void populateParameter(RayMethod rm, TokenList parameterList) {
-		RayLog.trace.log("parameterList " + parameterList);
+	private static void populateParameter(EasyMethod rm, TokenList parameterList) {
+		EasyLog.trace.log("parameterList " + parameterList);
 		while (parameterList.remaining() >= 2) {
-			rm.parameterList.add(new RayVar(Visibility.local_, parameterList.popString(), parameterList.popString()));
+			rm.parameterList.add(new EasyVar(Visibility.local_, parameterList.popString(), parameterList.popString()));
 			if (parameterList.hasMore())
 				parameterList.remove(",");
 		}
 	}
 
-	public static RayMethod parseClosure(RayClass parentClass, HashMap<String, RayVar> closureVariables, TokenList tokenList) {
-		RayMethod rm = new RayMethod(parentClass, "#");
+	public static EasyMethod parseClosure(EasyClass parentClass, HashMap<String, EasyVar> closureVariables, TokenList tokenList) {
+		EasyMethod rm = new EasyMethod(parentClass, "#");
 		rm.returnType = KeyWords.VOID;
 		rm.closureVariables = closureVariables;
 		rm.code = tokenList.getSubList('{', '}');
@@ -54,9 +54,9 @@ public class RayMethod {
 		return rm;
 	}
 
-	public static RayMethod parse(RayClass parentClass, String returnType, String name, TokenList tokenList) {
+	public static EasyMethod parse(EasyClass parentClass, String returnType, String name, TokenList tokenList) {
 
-		RayMethod rm = new RayMethod(parentClass, name);
+		EasyMethod rm = new EasyMethod(parentClass, name);
 		rm.returnType = returnType;
 
 		TokenList parameterList = tokenList.getSubList('(', ')');
@@ -69,25 +69,25 @@ public class RayMethod {
 		return rm;
 	}
 
-	public RayClassInterface invoke(List<RayClassInterface> parameter) {
+	public EasyClassInterface invoke(List<EasyClassInterface> parameter) {
 
-		if (RayLog.level == RayLog.trace)
-			RayLog.info.log("RayMethod.invoke instance: " + name + " " + parentClass + " - " + parameterList + " - " + code);
+		if (EasyLog.level == EasyLog.trace)
+			EasyLog.info.log("EasyMethod.invoke instance: " + name + " " + parentClass + " - " + parameterList + " - " + code);
 
-		HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
-		variables.put(KeyWords.THIS, new RayVar( parentClass.getName(), KeyWords.THIS, parentClass));
+		HashMap<String, EasyVar> variables = new HashMap<String, EasyVar>();
+		variables.put(KeyWords.THIS, new EasyVar( parentClass.getName(), KeyWords.THIS, parentClass));
 		if( closureVariables != null)
-			for (RayVar closureRayVar : closureVariables.values()) {
-				variables.put(closureRayVar.getName(), closureRayVar);
+			for (EasyVar closureVar : closureVariables.values()) {
+				variables.put(closureVar.getName(), closureVar);
 			}
-		for (RayVar parameterRayVar : parameterList) {
-			RayVar rayVarForVariables = parameterRayVar.copy();
-			rayVarForVariables.setValue(parameter.get(0));
-			variables.put(parameterRayVar.getName(), rayVarForVariables);
+		for (EasyVar parameterVar : parameterList) {
+			EasyVar VarForVariables = parameterVar.copy();
+			VarForVariables.setValue(parameter.get(0));
+			variables.put(parameterVar.getName(), VarForVariables);
 		}
 
 		TokenList tokenList = code.copy().resetPosition();
-		RayClassInterface eval=null;
+		EasyClassInterface eval=null;
 		
 		while (true) {
 
@@ -96,7 +96,7 @@ public class RayMethod {
 
 			String varTypeName = null;
 			String varName = null;
-			RayArrayExpr arrayExpr = null;
+			EasyArrayExpr arrayExpr = null;
 
 			if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
 				varTypeName = tokenList.popString();
@@ -107,8 +107,8 @@ public class RayMethod {
 				}
 				varName = tokenList.popString();
 				tokenList.remove(";");
-				RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
-				RayClassInterface instanceTypeClass = RayLang.instance.getClass(varTypeName);
+				EasyVar rv = new EasyVar(Visibility.private_, varTypeName, varName);
+				EasyClassInterface instanceTypeClass = EasyLang.instance.getClass(varTypeName);
 				rv.setValue(instanceTypeClass.getNewInstance(null));
 				variables.put(rv.getName(), rv);
 				continue;
@@ -134,7 +134,7 @@ public class RayMethod {
 					// this means that there is an array expression on the left hand side of an assignment
 					varName = tokenList.popString();
 					tokenList.remove("[");
-					RayClassInterface arrayIndex = evaluateExpression(parentClass, variables, tokenList.getSubList('[', ']'));
+					EasyClassInterface arrayIndex = evaluateExpression(parentClass, variables, tokenList.getSubList('[', ']'));
 					arrayExpr = mustGetArray(parentClass, variables, varName, arrayIndex);
 					tokenList.remove("=");
 				}
@@ -147,10 +147,10 @@ public class RayMethod {
 				tokenList.remove(";");
 
 			if (varTypeName != null) {
-				//RayClassInterface mytype = rayClass.rayLang.getClass( mytypeName);
-				RayVar rv = new RayVar(Visibility.private_, varTypeName, varName);
+				//EasyClassInterface mytype = easyClass.rayLang.getClass( mytypeName);
+				EasyVar rv = new EasyVar(Visibility.private_, varTypeName, varName);
 				if( eval == null)
-					RayLang.instance.writeln("null value");
+					EasyLang.instance.writeln("null value");
 				rv.setValue(eval);
 				variables.put(rv.getName(), rv);
 			} else if (varName != null) {
@@ -158,7 +158,7 @@ public class RayMethod {
 					// TODO: verify that the value is of the correct type !
 					arrayExpr.put(eval);
 				} else {
-					RayVar rayVar = mustGetVariable(parentClass, variables, varName);
+					EasyVar rayVar = mustGetVariable(parentClass, variables, varName);
 					rayVar.setValue(eval);
 				}
 			}
@@ -166,11 +166,11 @@ public class RayMethod {
 		return eval;
 	}
 
-	public static RayClassInterface evaluateExpression(RayClass parentClass, HashMap<String, RayVar> variables, TokenList tokenList) {
+	public static EasyClassInterface evaluateExpression(EasyClass parentClass, HashMap<String, EasyVar> variables, TokenList tokenList) {
 
-		RayLog.trace.log("ee: " + tokenList);
+		EasyLog.trace.log("ee: " + tokenList);
 
-		RayClassInterface value;
+		EasyClassInterface value;
 
 		if (tokenList.startsWithPattern("v")) {
 			value = tokenList.pop().getValue();
@@ -180,22 +180,22 @@ public class RayMethod {
 
 			if (varName.equals(KeyWords.NEW)) {
 				if (!tokenList.startsWithPattern("i"))
-					RayUtils.runtimeExcp("unknown token after " + KeyWords.NEW + ": " + tokenList.get(0));
+					EasyUtils.runtimeExcp("unknown token after " + KeyWords.NEW + ": " + tokenList.get(0));
 				String instanceType = tokenList.popString();
 				if (tokenList.startsWithPattern("[]")) {
 					tokenList.remove("[");
 					tokenList.remove("]");
-					value = new RayArray(instanceType+"[]");
+					value = new EasyArray(instanceType+"[]");
 				} else {
 					tokenList.remove("(");
 					TokenList parameter2 = tokenList.getSubList('(', ')');
-					List<RayClassInterface> params = evaluateParams(parentClass, variables, parameter2);
-					value = RayLang.instance.getClass(instanceType).getNewInstance(params);
+					List<EasyClassInterface> params = evaluateParams(parentClass, variables, parameter2);
+					value = EasyLang.instance.getClass(instanceType).getNewInstance(params);
 				}
 			} else {
 				if (tokenList.startsWithPattern("[")) {
 					tokenList.remove("[");
-					RayClassInterface arrayIndex = evaluateExpression(parentClass, variables, tokenList.getSubList('[', ']'));
+					EasyClassInterface arrayIndex = evaluateExpression(parentClass, variables, tokenList.getSubList('[', ']'));
 					value = mustGetArray(parentClass, variables, varName, arrayIndex).get();
 				} else {
 					value = mustGetVariable(parentClass, variables, varName).getValue();
@@ -209,48 +209,48 @@ public class RayMethod {
 		while (tokenList.startsWithPattern(".")) {
 			tokenList.remove(".");
 			String methodName = tokenList.popString();
-			List<RayClassInterface> evaluatedParams = null;
+			List<EasyClassInterface> evaluatedParams = null;
 			if (tokenList.startsWithPattern("(")) {
 				tokenList.remove("(");
 				TokenList parameter = tokenList.getSubList('(', ')');
 				evaluatedParams = evaluateParams(parentClass, variables, parameter);
 			}
-			RayMethod rm = null;
+			EasyMethod rm = null;
 			if (tokenList.startsWithPattern("{")) {
 				tokenList.remove("{");
-				rm = RayMethod.parseClosure(parentClass, variables, tokenList);
+				rm = EasyMethod.parseClosure(parentClass, variables, tokenList);
 			}
 			value = value.invoke(methodName, rm, evaluatedParams);
 		}
 		return value;
 	}
 
-	private static RayArrayExpr mustGetArray(RayClass parentClass, HashMap<String, RayVar> variables, String varName, RayClassInterface arrayIndex) {
-		RayVar rayVar = mustGetVariable(parentClass, variables, varName);
-		RayArray ra = (RayArray) rayVar.getValue();
-		return new RayArrayExpr(ra, arrayIndex);
+	private static EasyArrayExpr mustGetArray(EasyClass parentClass, HashMap<String, EasyVar> variables, String varName, EasyClassInterface arrayIndex) {
+		EasyVar rayVar = mustGetVariable(parentClass, variables, varName);
+		EasyArray ra = (EasyArray) rayVar.getValue();
+		return new EasyArrayExpr(ra, arrayIndex);
 	}
 
-	private static RayVar mustGetVariable(RayClass parentClass, HashMap<String, RayVar> variables, String varName) {
-		RayVar rayVar = variables.get(varName);
+	private static EasyVar mustGetVariable(EasyClass parentClass, HashMap<String, EasyVar> variables, String varName) {
+		EasyVar rayVar = variables.get(varName);
 		if (rayVar == null) {
 			rayVar = parentClass.variables.get(varName); // TODO: loop over parents ?
 		}
 		if (rayVar == null) {
-			RayLog.error.log("RayMethod: " + "variable not found: " + varName);
-			RayUtils.runtimeExcp("unknown var: " + varName);
+			EasyLog.error.log("EasyMethod: " + "variable not found: " + varName);
+			EasyUtils.runtimeExcp("unknown var: " + varName);
 		}
 		return rayVar;
 	}
 
-	protected static List<RayClassInterface> evaluateParams(RayClass parentClass, HashMap<String, RayVar> variables, TokenList paramTokenList) {
-		List<RayClassInterface> evaluatedParams = RayUtils.newArrayList();
+	protected static List<EasyClassInterface> evaluateParams(EasyClass parentClass, HashMap<String, EasyVar> variables, TokenList paramTokenList) {
+		List<EasyClassInterface> evaluatedParams = EasyUtils.newArrayList();
 
-		RayLog.trace.log("ep: " + paramTokenList);
+		EasyLog.trace.log("ep: " + paramTokenList);
 
 		while (paramTokenList.remaining() > 0) {
 
-			RayClassInterface evaluatedExpr = evaluateExpression(parentClass, variables, paramTokenList);
+			EasyClassInterface evaluatedExpr = evaluateExpression(parentClass, variables, paramTokenList);
 			evaluatedParams.add(evaluatedExpr);
 			if (paramTokenList.hasMore())
 				paramTokenList.remove(",");
@@ -264,7 +264,7 @@ public class RayMethod {
 		return /*returnType + " " + */parentClass + "." + name;
 	}
 
-	public RayClass getParentClass() {
+	public EasyClass getParentClass() {
 		return parentClass;
 	}
 
@@ -272,12 +272,12 @@ public class RayMethod {
 		return code;
 	}
 
-	public List<RayVar> getParameterList() {
+	public List<EasyVar> getParameterList() {
 		return parameterList;
 	}
 
-	public RayMethod copy(RayClass ri) {
-		RayMethod rm = new RayMethod(ri, name);
+	public EasyMethod copy(EasyClass ri) {
+		EasyMethod rm = new EasyMethod(ri, name);
 		rm.parameterList = parameterList;
 		rm.returnType = returnType;
 		rm.code = code.copy();

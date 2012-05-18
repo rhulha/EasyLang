@@ -8,23 +8,23 @@ import java.util.List;
 
 import net.raysforge.commons.Generics;
 import net.raysforge.rayslang.KeyWords;
-import net.raysforge.rayslang.RayClassInterface;
-import net.raysforge.rayslang.RayMethod;
-import net.raysforge.rayslang.RayUtils;
+import net.raysforge.rayslang.EasyClassInterface;
+import net.raysforge.rayslang.EasyMethod;
+import net.raysforge.rayslang.EasyUtils;
 
-public class RayFileReader implements RayClassInterface {
+public class EasyFileReader implements EasyClassInterface {
 
 	BufferedReader br;
 
-	public RayFileReader() {
+	public EasyFileReader() {
 
 	}
 
-	public RayFileReader(String name) {
+	public EasyFileReader(String name) {
 		try {
 			br = new BufferedReader(new FileReader(name));
 		} catch (FileNotFoundException e) {
-			RayUtils.runtimeExcp(e.getMessage());
+			EasyUtils.runtimeExcp(e.getMessage());
 		}
 	}
 
@@ -34,29 +34,29 @@ public class RayFileReader implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
+	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
 		if (methodName.equals("leseZeile")) {
 			try {
-				return new RayString(br.readLine());
+				return new EasyString(br.readLine());
 			} catch (IOException e) {
-				RayUtils.runtimeExcp(e.getMessage());
+				EasyUtils.runtimeExcp(e.getMessage());
 			}
 		} else if (methodName.equals("ende")) {
 			try {
 				br.close();
 			} catch (IOException e) {
-				RayUtils.runtimeExcp(e.getMessage());
+				EasyUtils.runtimeExcp(e.getMessage());
 			}
 		} else if (methodName.equals("fürJedeZeile") && closure != null) {
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {
-					List<RayClassInterface> p = Generics.newArrayList();
-					p.add(new RayString(line));
+					List<EasyClassInterface> p = Generics.newArrayList();
+					p.add(new EasyString(line));
 					closure.invoke(p );
 				}
 			} catch (IOException e) {
-				RayUtils.runtimeExcp(e);
+				EasyUtils.runtimeExcp(e);
 			}
 		}
 
@@ -64,8 +64,8 @@ public class RayFileReader implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
-		return new RayFileReader(parameter.get(0).toString());
+	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
+		return new EasyFileReader(parameter.get(0).toString());
 	}
 
 }

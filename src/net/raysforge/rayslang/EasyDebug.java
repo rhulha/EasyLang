@@ -3,11 +3,11 @@ package net.raysforge.rayslang;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RayDebug {
+public class EasyDebug {
 	
-	private static final List<RayClass> classes = new ArrayList<RayClass>();
+	private static final List<EasyClass> classes = new ArrayList<EasyClass>();
 	
-	public static void add( RayClass rc)
+	public static void add( EasyClass rc)
 	{
 		if( classes.contains(rc))
 		{
@@ -17,7 +17,7 @@ public class RayDebug {
 		classes.add(rc);
 	}
 
-	public static List<RayClass> getClasses() {
+	public static List<EasyClass> getClasses() {
 		return classes;
 	}
 	

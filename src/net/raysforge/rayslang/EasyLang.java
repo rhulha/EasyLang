@@ -3,14 +3,15 @@ package net.raysforge.rayslang;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
-import net.raysforge.rayslang.def.RayArray;
-import net.raysforge.rayslang.def.RayAssert;
-import net.raysforge.rayslang.def.RayFileReader;
-import net.raysforge.rayslang.def.RayFrame;
-import net.raysforge.rayslang.def.RayGraphics;
-import net.raysforge.rayslang.def.RayInteger;
-import net.raysforge.rayslang.def.RayString;
+import net.raysforge.rayslang.def.EasyArray;
+import net.raysforge.rayslang.def.EasyAssert;
+import net.raysforge.rayslang.def.EasyFileReader;
+import net.raysforge.rayslang.def.EasyFrame;
+import net.raysforge.rayslang.def.EasyGraphics;
+import net.raysforge.rayslang.def.EasyInteger;
+import net.raysforge.rayslang.def.EasyString;
 
 
 //Integer extends Float extends String
@@ -31,31 +32,34 @@ import net.raysforge.rayslang.def.RayString;
 // no checked exceptions, only runtime exceptions 
 
 
-public class RayLang {
+public class EasyLang {
 	
 	Output op;
 
-	private HashMap<String, RayClassInterface> classes = new HashMap<String, RayClassInterface>();
+	private HashMap<String, EasyClassInterface> classes = new HashMap<String, EasyClassInterface>();
 	
-	public static RayLang instance;
+	public static EasyLang instance;
 
-	public RayLang() {
+	public static ResourceBundle rb;
+
+	public EasyLang() {
 		instance = this;
+		rb = ResourceBundle.getBundle("net.raysforge.rayslang.EasyLang");
 		initNativeClasses();
 	}
 	
 	private void initNativeClasses() {
-		registerClasses( new RayInteger());
-		registerClasses( new RayString());
-		registerClasses( new RayFrame());
-		registerClasses( new RayFileReader());
-		registerClasses( new RayGraphics());
-		registerClasses( new RayAssert());
+		registerClasses( new EasyInteger());
+		registerClasses( new EasyString());
+		registerClasses( new EasyFrame());
+		registerClasses( new EasyFileReader());
+		registerClasses( new EasyGraphics());
+		registerClasses( new EasyAssert());
 	}
 	
 	public static void main(String[] args) throws IOException {
 		
-		RayLang rayLang = new RayLang();
+		EasyLang rayLang = new EasyLang();
 		rayLang.parse(new File("raysrc"));
 //		runClass(rayLang.getClass("TestDatei"));
 //		runClass(rayLang.getClass("Sokoban"));
@@ -69,8 +73,8 @@ public class RayLang {
 //		runClass(rayLang.getClass("TestHashMap"));
 	}
 
-	public static void runClass(RayClassInterface rc) {
-		RayClassInterface ri = rc.getNewInstance(null);
+	public static void runClass(EasyClassInterface rc) {
+		EasyClassInterface ri = rc.getNewInstance(null);
 		ri.invoke( "start", null, null);
 	}
 
@@ -81,27 +85,27 @@ public class RayLang {
 			if( file.isDirectory())
 				parse( file);
 			else if( file.getName().endsWith(".ray"))
-				RayClass.parse( file.getName().substring(0, file.getName().length()-4), file);
+				EasyClass.parse( file.getName().substring(0, file.getName().length()-4), file);
 		}
 	}
 
-	public RayClassInterface getClass( String fullClassName) {
+	public EasyClassInterface getClass( String fullClassName) {
 		boolean array = false;
 		if( fullClassName.endsWith("[]"))
 		{
 			array = true;
 			fullClassName = fullClassName.substring(0, fullClassName.length()-4);
 		}
-		RayClassInterface rci = classes.get(fullClassName);
+		EasyClassInterface rci = classes.get(fullClassName);
 		if( rci == null)
-			RayLang.instance.writeln(fullClassName + " not found.");
+			EasyLang.instance.writeln(fullClassName + " not found.");
 		if( array)
-			return new RayArray(fullClassName);
+			return new EasyArray(fullClassName);
 		else
 			return rci;
 	}
 
-	public void registerClasses(RayClassInterface rayClass) {
+	public void registerClasses(EasyClassInterface rayClass) {
 		classes.put( rayClass.getName(), rayClass);
 		
 	}

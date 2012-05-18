@@ -1,7 +1,7 @@
 package net.raysforge.rayslang;
 
-import net.raysforge.rayslang.def.RayInteger;
-import net.raysforge.rayslang.def.RayString;
+import net.raysforge.rayslang.def.EasyInteger;
+import net.raysforge.rayslang.def.EasyString;
 
 public class Token {
 
@@ -98,8 +98,8 @@ public class Token {
 		return new String(tokenStr.toCharArray(), 1, tokenStr.length() - 2);
 	}
 
-	public RayString getUnquotedRayString() {
-		return new RayString(new String(tokenStr.toCharArray(), 1, tokenStr.length() - 2));
+	public EasyString getUnquotedEasyString() {
+		return new EasyString(new String(tokenStr.toCharArray(), 1, tokenStr.length() - 2));
 	}
 
 	public static void main(String[] args) {
@@ -107,15 +107,15 @@ public class Token {
 		System.out.println(t.getUnquotedString());
 	}
 
-	public RayInteger getRayInteger() {
-		return new RayInteger(Long.parseLong(s()));
+	public EasyInteger getEasyInteger() {
+		return new EasyInteger(Long.parseLong(s()));
 	}
 
-	public RayClassInterface getValue() {
+	public EasyClassInterface getValue() {
 		if (isDigitorMinus()) {
-			return getRayInteger();
+			return getEasyInteger();
 		} else if (isQuote()) {
-			return getUnquotedRayString();
+			return getUnquotedEasyString();
 		} else {
 			System.err.println("arg456");
 			return null; // should never happen, right ? :-)

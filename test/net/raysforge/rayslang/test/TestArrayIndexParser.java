@@ -1,7 +1,7 @@
 package net.raysforge.rayslang.test;
 
-import net.raysforge.rayslang.RaySource;
-import net.raysforge.rayslang.RayUtils;
+import net.raysforge.rayslang.EasySource;
+import net.raysforge.rayslang.EasyUtils;
 import net.raysforge.rayslang.TokenList;
 
 public class TestArrayIndexParser {
@@ -20,8 +20,8 @@ public class TestArrayIndexParser {
 	}
 	
 	public static void main(String[] args) {
-		RaySource rs = new RaySource("myarray[myexpr.coolFunc()] = twoarray[12];".toCharArray());
-		TokenList tokenList = RayUtils.convertSourceToTokenList(rs);
+		EasySource rs = new EasySource("myarray[myexpr.coolFunc()] = twoarray[12];".toCharArray());
+		TokenList tokenList = EasyUtils.convertSourceToTokenList(rs);
 		
 		if (tokenList.indexOf("[") < tokenList.indexOf("=") && tokenList.indexOf("=") < tokenList.indexOf(";")) {
 			System.out.println("juhu");

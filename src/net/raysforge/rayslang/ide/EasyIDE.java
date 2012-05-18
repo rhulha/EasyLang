@@ -27,11 +27,12 @@ import net.raysforge.easyswing.EasySplitPane;
 import net.raysforge.easyswing.EasySwing;
 import net.raysforge.easyswing.EasyTextArea;
 import net.raysforge.easyswing.EasyTree;
+import net.raysforge.rayslang.EasyLang;
 import net.raysforge.rayslang.FileUtils;
-import net.raysforge.rayslang.RayClass;
-import net.raysforge.rayslang.RayLang;
-import net.raysforge.rayslang.RaySource;
-import net.raysforge.rayslang.RayUtils;
+import net.raysforge.rayslang.EasyClass;
+import net.raysforge.rayslang.EasyClassInterface;
+import net.raysforge.rayslang.EasySource;
+import net.raysforge.rayslang.EasyUtils;
 
 public class EasyIDE {
 
@@ -43,7 +44,7 @@ public class EasyIDE {
 
 	private EasySwing es;
 	private EasyTextArea console;
-	private RayLang rayLang;
+	private EasyLang easyLang;
 	private EasyTree easyTree;
 	private final File projectsHome;
 	private JTabbedPane tabbedPane;
@@ -58,7 +59,7 @@ public class EasyIDE {
 
 		delegator = new EventDelegator(this);
 
-		es = new EasySwing("RayLang IDE", 800, 600, JFrame.DO_NOTHING_ON_CLOSE);
+		es = new EasySwing("EasyLang IDE", 800, 600, JFrame.DO_NOTHING_ON_CLOSE);
 		es.addWindowListener(delegator);
 		es.addGlobalKeyEventListener(delegator);
 
@@ -126,8 +127,8 @@ public class EasyIDE {
 	}
 
 	private void start() {
-		rayLang = new RayLang();
-		rayLang.setOutput(delegator);
+		easyLang = new EasyLang();
+		easyLang.setOutput(delegator);
 		// rayLang.parse(new File("raysrc"));
 		es.show();
 	}
@@ -188,10 +189,10 @@ public class EasyIDE {
 		//System.out.println(e.getActionCommand());
 
 		if (e.getActionCommand().equals(RUN)) {
-			RayLang.instance.unregisterClasses("test");
+			EasyLang.instance.unregisterClasses("test");
 			JTextArea textArea = getSelectedTextArea();
-			RayClass.parse("test", RayUtils.convertSourceToTokenList(new RaySource(textArea.getText().toCharArray())));
-			RayLang.runClass(rayLang.getClass("test"));
+			EasyClass.parse("test", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
+			EasyLang.runClass(easyLang.getClass("test"));
 		} else if (e.getActionCommand().equals(NEW_PROJECT)) {
 
 			if (new File(projectsHome, "New Project").mkdir())
@@ -287,6 +288,15 @@ public class EasyIDE {
 	}
 
 	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
+		
+		EasyLang.instance.unregisterClasses("parse");
+		JTextArea textArea = getSelectedTextArea();
+		EasyClass.parse("parse", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
+		EasyClassInterface class1 = easyLang.getClass("test");
+		//class1.get
+		
+		
+		
 		popupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);
 		SwingUtilities.invokeLater(new Runnable() {
 

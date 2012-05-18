@@ -2,12 +2,12 @@ package net.raysforge.rayslang;
 
 import java.util.Arrays;
 
-public class RaySource {
+public class EasySource {
 
 	protected int pos = 0;
 	protected char src[];
 
-	public RaySource(char[] src) {
+	public EasySource(char[] src) {
 		this.src = src;
 	}
 
@@ -54,7 +54,7 @@ public class RaySource {
 	// holt den inhalt zwischen open und close
 	// wobei das erste open bereits von dem aufrufer
 	// geholt sein muss.
-	public RaySource getInnerText(char open, char close) {
+	public EasySource getInnerText(char open, char close) {
 		StringBuffer code = new StringBuffer();
 		int brace_counter = 0;
 		while (true) {
@@ -79,7 +79,7 @@ public class RaySource {
 			code.append(c); // TODO: optimize
 			pos++;
 		}
-		return new RaySource(code.toString().toCharArray());
+		return new EasySource(code.toString().toCharArray());
 	}
 
 	public Token getSourceToken() {
@@ -208,8 +208,8 @@ public class RaySource {
 		pos=0;
 	}
 
-	public RaySource copyAtPos() {
-		return new RaySource(Arrays.copyOfRange(src, pos, src.length));
+	public EasySource copyAtPos() {
+		return new EasySource(Arrays.copyOfRange(src, pos, src.length));
 	}
 	
 }

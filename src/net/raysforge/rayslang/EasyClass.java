@@ -4,26 +4,26 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
-public class RayClass implements RayClassInterface {
+public class EasyClass implements EasyClassInterface {
 
 	protected String name;
 
-	HashMap<String, RayVar> variables = new HashMap<String, RayVar>();
+	HashMap<String, EasyVar> variables = new HashMap<String, EasyVar>();
 
-	HashMap<String, RayMethod> methods = new HashMap<String, RayMethod>();
+	HashMap<String, EasyMethod> methods = new HashMap<String, EasyMethod>();
 
-	public RayClass( String name) {
+	public EasyClass( String name) {
 		this.name = name;
-		RayDebug.add(this);
+		EasyDebug.add(this);
 	}
 
-	public static RayClass parse( String name, File file) {
-		return parse( name, RayUtils.convertSourceToTokenList(file));
+	public static EasyClass parse( String name, File file) {
+		return parse( name, EasyUtils.convertSourceToTokenList(file));
 	}
 
-	public static RayClass parse( String name, TokenList tokenList) {
-		RayClass rc = new RayClass( name);
-		RayLang.instance.registerClasses(rc);
+	public static EasyClass parse( String name, TokenList tokenList) {
+		EasyClass rc = new EasyClass( name);
+		EasyLang.instance.registerClasses(rc);
 
 		while (true) {
 
@@ -43,29 +43,29 @@ public class RayClass implements RayClassInterface {
 				}
 				String varName = tokenList.popString();
 				tokenList.remove("=");
-				RayClassInterface eval = RayMethod.evaluateExpression(rc, rc.variables, tokenList);
+				EasyClassInterface eval = EasyMethod.evaluateExpression(rc, rc.variables, tokenList);
 				
 				/*
 				tokenList.remove(KeyWords.NEW);
 				String instanceType = tokenList.popString();
 				
-				RayClassInterface varTypeClass = rayLang.getClass(varTypeStr);
+				EasyClassInterface varTypeClass = rayLang.getClass(varTypeStr);
 				if (varTypeClass == null)
-					RayUtils.runtimeExcp(varTypeStr + " not found");
+					EasyUtils.runtimeExcp(varTypeStr + " not found");
 
-				RayClassInterface instanceTypeClass = rayLang.getClass(instanceType);
+				EasyClassInterface instanceTypeClass = rayLang.getClass(instanceType);
 
-				RayUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
+				EasyUtils.assert_(instanceTypeClass == varTypeClass, instanceTypeClass + " != " + varTypeClass); // check for inhertiance ? // TODO: check using equals ?
 				tokenList.remove("(");
 				tokenList.remove(")");
 				*/
 
 				// removed the following code, because currently I don't want to support constructors with parameters. 
 				//TokenList paramTokenList = tokenList.getSubList('(', ')');
-				//List<RayClassInterface> myparams = RayMethod.evaluateParams( rc, rc.variables, paramTokenList);
+				//List<EasyClassInterface> myparams = EasyMethod.evaluateParams( rc, rc.variables, paramTokenList);
 				
 				Visibility v = Visibility.protected_;
-				RayVar rayVar = new RayVar(v, varTypeStr, varName);
+				EasyVar rayVar = new EasyVar(v, varTypeStr, varName);
 				//rayVar.setValue( instanceTypeClass.getNewInstance(myparams));
 				// rayVar.setValue( instanceTypeClass.getNewInstance(null));
 				rayVar.setValue( eval);
@@ -86,19 +86,19 @@ public class RayClass implements RayClassInterface {
 				String methodName = tokenList.popString();
 				tokenList.remove("(");
 
-				RayLog.trace.log("methodName: " + rc.name + "." + methodName);
-				RayMethod.parse(rc, typeStr, methodName, tokenList);
+				EasyLog.trace.log("methodName: " + rc.name + "." + methodName);
+				EasyMethod.parse(rc, typeStr, methodName, tokenList);
 
 			} else {
-				RayLog.warn.log("hm: " + tokenList);
+				EasyLog.warn.log("hm: " + tokenList);
 			}
-			//RayLog.log("XX" + token + "YY");
+			//EasyLog.log("XX" + token + "YY");
 		}
 
 		return rc;
 	}
 
-	private static void parseNewVariable(  Visibility v, RayClass rc, TokenList tokenList) {
+	private static void parseNewVariable(  Visibility v, EasyClass rc, TokenList tokenList) {
 		String typeStr = tokenList.popString();
 		if( tokenList.startsWithPattern("[]"))
 		{
@@ -109,27 +109,27 @@ public class RayClass implements RayClassInterface {
 		String varName = tokenList.popString();
 		tokenList.remove(";");
 
-		RayClassInterface type = RayLang.instance.getClass(typeStr);
+		EasyClassInterface type = EasyLang.instance.getClass(typeStr);
 		if (type == null)
-			RayUtils.runtimeExcp(typeStr + " not found");
+			EasyUtils.runtimeExcp(typeStr + " not found");
 
-		rc.variables.put(varName, new RayVar(v, typeStr, varName));
-		RayLog.debug.log("var: " + type.getName() + " - " + varName);
+		rc.variables.put(varName, new EasyVar(v, typeStr, varName));
+		EasyLog.debug.log("var: " + type.getName() + " - " + varName);
 	}
 
-	public RayClassInterface getNewInstance(List<RayClassInterface> parameter) {
+	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
 
-		RayClass ri = new RayClass( name);
-		ri.methods = new HashMap<String, RayMethod>();
+		EasyClass ri = new EasyClass( name);
+		ri.methods = new HashMap<String, EasyMethod>();
 		for( String key : methods.keySet())
 		{
 			methods.get(key).copy(ri);
 		}
 
 		for (String key : variables.keySet()) {
-			RayVar rayVar = this.variables.get(key);
-			RayVar rayVar2 = rayVar.copy();
-			rayVar2.setValue( rayVar.getValue() == null ? RayLang.instance.getClass( rayVar.getType()).getNewInstance(null) : rayVar.getValue());
+			EasyVar rayVar = this.variables.get(key);
+			EasyVar rayVar2 = rayVar.copy();
+			rayVar2.setValue( rayVar.getValue() == null ? EasyLang.instance.getClass( rayVar.getType()).getNewInstance(null) : rayVar.getValue());
 			ri.variables.put(key, rayVar2);
 		}
 		return ri;
@@ -140,7 +140,7 @@ public class RayClass implements RayClassInterface {
 		return getName();
 	}
 
-	public RayMethod getMethod(String name) {
+	public EasyMethod getMethod(String name) {
 		return methods.get(name);
 	}
 
@@ -150,38 +150,38 @@ public class RayClass implements RayClassInterface {
 	}
 
 	@Override
-	public RayClassInterface invoke(String methodName, RayMethod closure, List<RayClassInterface> parameter) {
+	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
 		if( methodName.equals("debug"))
 		{
-			RayLang.instance.writeln("debug start.");
+			EasyLang.instance.writeln("debug start.");
 			//Thread.dumpStack();
-			for( RayClass rc : RayDebug.getClasses())
+			for( EasyClass rc : EasyDebug.getClasses())
 			{
-				//RayLang.instance.writeln(rc.getName());
+				//EasyLang.instance.writeln(rc.getName());
 				if( rc.getName().equals("TestFunction"))
 				{
-					RayLang.instance.writeln("debugging: " + rc.getName());
+					EasyLang.instance.writeln("debugging: " + rc.getName());
 					for( String k : rc.variables.keySet())
 					{
-						RayLang.instance.writeln(rc.variables.get(k));
+						EasyLang.instance.writeln(rc.variables.get(k));
 					}
 				}
 			}
-			RayLang.instance.writeln("debug end.");
+			EasyLang.instance.writeln("debug end.");
 			return null;
 		} else {
-			RayMethod method = getMethod(methodName);
+			EasyMethod method = getMethod(methodName);
 			return method.invoke( parameter);
 		}
 	}
 
 	/*
-	public RayClass invokeNative(RayClass rc, String methodName, RayClass ... parameter) {
+	public EasyClass invokeNative(EasyClass rc, String methodName, EasyClass ... parameter) {
 		if( methodName.equals("print") && (parameter.length == 0) )
 		{
-			System err.println(((RayString)rc).getValue());
+			System err.println(((EasyString)rc).getValue());
 		} else {
-			RayUtils.RunExp("method not found: " + methodName);
+			EasyUtils.RunExp("method not found: " + methodName);
 		}
 		return null;
 	}
@@ -189,8 +189,8 @@ public class RayClass implements RayClassInterface {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof RayClass) {
-			RayClass rc = (RayClass) obj;
+		if (obj instanceof EasyClass) {
+			EasyClass rc = (EasyClass) obj;
 			return rc.getName().equals(getName());
 			
 		}
