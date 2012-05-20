@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.raysforge.commons.Generics;
-import net.raysforge.rayslang.EasyLang;
-import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.EasyClassInterface;
+import net.raysforge.rayslang.EasyLang;
 import net.raysforge.rayslang.EasyMethod;
-import net.raysforge.rayslang.EasyUtils;
+import net.raysforge.rayslang.EasyMethodInterface;
 
 public class EasyString implements EasyClassInterface {
 
@@ -18,32 +17,68 @@ public class EasyString implements EasyClassInterface {
 	public EasyString() {
 	}
 
-	static Map<String, NativeMethod> methods = new HashMap<String, NativeMethod>();
-
-	static {
-		add(new NativeMethod("void", EasyLang.rb.getString("String.write"), null) {
-			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
-				EasyLang.instance.writeln(((EasyString) instance).stringValue);
-				return null;
-			}
-		});
-		add(new NativeMethod("void", EasyLang.rb.getString("String.write"), null) {
-			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
-				EasyLang.instance.writeln(((EasyString) instance).stringValue);
-				return null;
-			}
-		});
-	}
-
 	public EasyString(String s) {
 		stringValue = s;
 	}
 
+	static Map<String, EasyMethodInterface> methods = new HashMap<String, EasyMethodInterface>();
+
+	static {
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("String.write"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyLang.instance.writeln(instance.toString());
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("String.append"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				return new EasyString(instance.toString() + parameter.get(0).toString());
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("String")+"[]", EasyLang.rb.getString("String.split"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyClassInterface p0 = parameter.get(0);
+				String[] split = instance.toString().split(p0.toString());
+				EasyArray ra = new EasyArray(getName() + "[]");
+				for (String string : split) {
+					ra.list.add(new EasyString(string));
+				}
+				return ra;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("String.asNumber"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				return new EasyInteger(Long.parseLong(instance.toString()));
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("String.equals"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyClassInterface p0 = parameter.get(0);
+				if (closure != null) {
+					if (instance.toString().equals(p0.toString())) {
+						List<EasyClassInterface> p = Generics.newArrayList();
+						closure.invoke(null, null, p);
+					}
+					return null;
+				} else {
+					return new EasyBoolean(instance.toString().equals(p0.toString()));
+				}
+			}
+		});
+	}
+
 	private static void add(NativeMethod nativeMethod) {
 		methods.put(nativeMethod.getName(), nativeMethod);
-
 	}
 
 	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
@@ -60,44 +95,22 @@ public class EasyString implements EasyClassInterface {
 
 	@Override
 	public String getName() {
-		return KeyWords.CLASS_STRING;
-	}
-
-	@Override
-	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
-		if (methodName.equals("schreibe") && (parameter.size() == 0)) {
-
-		} else if (methodName.equals("und") && parameter.size() == 1) {
-			return new EasyString(stringValue + parameter.get(0).toString());
-		} else if (methodName.equals("spalte") && (parameter.size() == 1)) {
-			EasyClassInterface p0 = parameter.get(0);
-			String[] split = stringValue.split(p0.toString());
-			EasyArray ra = new EasyArray(getName() + "[]");
-			for (String string : split) {
-				ra.list.add(new EasyString(string));
-			}
-			return ra;
-		} else if (methodName.equals("alsZahl")) {
-			return new EasyInteger(Long.parseLong(stringValue));
-		} else if ((methodName.equals("istGleich") || methodName.equals("gleicht")) && (parameter.size() == 1)) {
-			EasyClassInterface p0 = parameter.get(0);
-			if (closure != null) {
-				if (stringValue.equals(p0.toString())) {
-					List<EasyClassInterface> p = Generics.newArrayList();
-					closure.invoke(p);
-				}
-			} else {
-				return new EasyBoolean(stringValue.equals(p0.toString()));
-			}
-		} else {
-			EasyUtils.runtimeExcp("method not found: " + methodName);
-		}
-		return null;
+		return EasyLang.rb.getString("String");
 	}
 
 	@Override
 	public String toString() {
 		return stringValue;
+	}
+
+	@Override
+	public EasyMethodInterface getMethod(String methodName) {
+		return methods.get(methodName);
+	}
+
+	@Override
+	public Map<String, EasyMethodInterface> getMethods() {
+		return methods;
 	}
 
 }

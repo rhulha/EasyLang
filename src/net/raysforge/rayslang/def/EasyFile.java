@@ -1,10 +1,11 @@
 package net.raysforge.rayslang.def;
 
 import java.util.List;
+import java.util.Map;
 
-import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.EasyClassInterface;
-import net.raysforge.rayslang.EasyMethod;
+import net.raysforge.rayslang.EasyLang;
+import net.raysforge.rayslang.EasyMethodInterface;
 
 public class EasyFile implements EasyClassInterface {
 	
@@ -12,17 +13,24 @@ public class EasyFile implements EasyClassInterface {
 
 	@Override
 	public String getName() {
-		return KeyWords.CLASS_FILE;
-	}
-
-	@Override
-	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
-			return null;
+		return EasyLang.rb.getString("File");
 	}
 
 	@Override
 	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
 		return new EasyFile();
+	}
+
+	@Override
+	public EasyMethodInterface getMethod(String methodName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, EasyMethodInterface> getMethods() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

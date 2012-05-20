@@ -75,7 +75,7 @@ public class EasyLang {
 
 	public static void runClass(EasyClassInterface rc) {
 		EasyClassInterface ri = rc.getNewInstance(null);
-		ri.invoke( "start", null, null);
+		ri.getMethod("start").invoke( null, null, null);
 	}
 
 	public void parse(File dir) {

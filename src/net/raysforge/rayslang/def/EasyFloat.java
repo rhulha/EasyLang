@@ -1,10 +1,10 @@
 package net.raysforge.rayslang.def;
 
 import java.util.List;
+import java.util.Map;
 
-import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.EasyClassInterface;
-import net.raysforge.rayslang.EasyMethod;
+import net.raysforge.rayslang.EasyMethodInterface;
 
 public class EasyFloat implements EasyClassInterface {
 	
@@ -19,18 +19,24 @@ public class EasyFloat implements EasyClassInterface {
 
 	@Override
 	public String getName() {
-		return KeyWords.CLASS_FLOAT;
-	}
-
-	@Override
-	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
-		// TODO Auto-generated method stub
-		return null;
+		return "Float";
 	}
 
 	@Override
 	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
 		return new EasyFloat();
+	}
+
+	@Override
+	public EasyMethodInterface getMethod(String methodName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, EasyMethodInterface> getMethods() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

@@ -2,11 +2,14 @@ package net.raysforge.rayslang.def;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.raysforge.rayslang.EasyClassInterface;
 import net.raysforge.rayslang.EasyLang;
 import net.raysforge.rayslang.EasyMethod;
+import net.raysforge.rayslang.EasyMethodInterface;
 
 public class EasyGraphics implements EasyClassInterface {
 	
@@ -21,32 +24,61 @@ public class EasyGraphics implements EasyClassInterface {
 
 	@Override
 	public String getName() {
-		return "Grafik";
+		return EasyLang.rb.getString("Graphics");
 	}
+	
+	static Map<String, EasyMethodInterface> methods = new HashMap<String, EasyMethodInterface>();
 
-	@Override
-	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
-		if( methodName.equals("setzeFarbe") && parameter.size() == 1)
-		{
-			g.setColor(Color.decode(parameter.get(0).toString()));
-		} else if( methodName.equals("holeFarbe") && parameter.size() == 0)
-		{
-			return new EasyString( "0x"+Integer.toHexString( g.getColor().getRGB()&0xffffff));
-		} else if( methodName.equals("fülleRechteck") && parameter.size() == 4){
-			int i1 = (int) ((EasyInteger)parameter.get(0)).getIntValue();
-			int i2 = (int) ((EasyInteger)parameter.get(1)).getIntValue();
-			int i3 = (int) ((EasyInteger)parameter.get(2)).getIntValue();
-			int i4 = (int) ((EasyInteger)parameter.get(3)).getIntValue();
-			g.fillRect( i1, i2, i3, i4);
-		} else if( methodName.equals("maleRechteck") && parameter.size() == 4) {
-			int i1 = (int) ((EasyInteger)parameter.get(0)).getIntValue();
-			int i2 = (int) ((EasyInteger)parameter.get(1)).getIntValue();
-			int i3 = (int) ((EasyInteger)parameter.get(2)).getIntValue();
-			int i4 = (int) ((EasyInteger)parameter.get(3)).getIntValue();
-			g.drawRect( i1, i2, i3, i4);
-		}
+	static {
+		add(new NativeMethod(EasyLang.rb.getString("Graphics"), EasyLang.rb.getString("Graphics.setColor"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyClassInterface p0 = parameter.get(0);
+				EasyGraphics eg = (EasyGraphics) instance;
+				eg.g.setColor(Color.decode(p0.toString()));
+				return instance;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("Graphics.getColor"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyGraphics eg = (EasyGraphics) instance;
+				return new EasyString( "0x"+Integer.toHexString( eg.g.getColor().getRGB()&0xffffff));
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Graphics"), EasyLang.rb.getString("Graphics.fillRect"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 4);
+				int i1 = (int) ((EasyInteger)parameter.get(0)).getIntValue();
+				int i2 = (int) ((EasyInteger)parameter.get(1)).getIntValue();
+				int i3 = (int) ((EasyInteger)parameter.get(2)).getIntValue();
+				int i4 = (int) ((EasyInteger)parameter.get(3)).getIntValue();
+				EasyGraphics eg = (EasyGraphics) instance;
+				eg.g.fillRect( i1, i2, i3, i4);
+				return instance;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Graphics"), EasyLang.rb.getString("Graphics.drawRect"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 4);
+				int i1 = (int) ((EasyInteger)parameter.get(0)).getIntValue();
+				int i2 = (int) ((EasyInteger)parameter.get(1)).getIntValue();
+				int i3 = (int) ((EasyInteger)parameter.get(2)).getIntValue();
+				int i4 = (int) ((EasyInteger)parameter.get(3)).getIntValue();
+				EasyGraphics eg = (EasyGraphics) instance;
+				eg.g.drawRect( i1, i2, i3, i4);
+				return instance;
+			}
+		});
 
-		return this;
+	}
+	
+	private static void add(NativeMethod nativeMethod) {
+		methods.put(nativeMethod.getName(), nativeMethod);
 	}
 
 	@Override
@@ -60,4 +92,15 @@ public class EasyGraphics implements EasyClassInterface {
 		EasyLang.instance.writeln(s);
 		EasyLang.instance.writeln(Color.decode("0x"+s));
 	}
+
+	@Override
+	public EasyMethodInterface getMethod(String methodName) {
+		return methods.get(methodName);
+	}
+
+	@Override
+	public Map<String, EasyMethodInterface> getMethods() {
+		return methods;
+	}
+
 }

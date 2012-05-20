@@ -6,18 +6,19 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.raysforge.commons.Generics;
 import net.raysforge.easyswing.EasySwing;
 import net.raysforge.easyswing.eventpanel.EventPanel;
 import net.raysforge.easyswing.eventpanel.PaintEvent;
 import net.raysforge.easyswing.eventpanel.PaintListener;
-import net.raysforge.rayslang.KeyWords;
 import net.raysforge.rayslang.EasyClassInterface;
 import net.raysforge.rayslang.EasyLang;
-import net.raysforge.rayslang.EasyLog;
 import net.raysforge.rayslang.EasyMethod;
+import net.raysforge.rayslang.EasyMethodInterface;
 
 public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventListener {
 
@@ -37,56 +38,118 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		return new EasyFrame(); // parameter.get(0).toString()
 	}
 
-	@Override
-	public EasyClassInterface invoke(String methodName, final EasyMethod closure, List<EasyClassInterface> parameter) {
+	static Map<String, EasyMethodInterface> methods = new HashMap<String, EasyMethodInterface>();
 
-		EasyLog.debug.log(methodName + " " + parameter + " on " + this);
-		
-		int pc = 0;
-		if( parameter != null)
-			pc = parameter.size();
-
-		if (methodName.equals("setzeTitel") && (pc == 1)) {
-			this.easySwing.getFrame().setTitle(parameter.get(0).toString());
-		} else if (methodName.equals("male") && (pc == 0) && closure == null) {
-			easySwing.getContentPane().repaint();
-			eventPanel.repaint();
-		} else if (methodName.equals("holeBreite") && (pc == 0)) {
-			return new EasyInteger(easySwing.getContentPane().getWidth());
-		} else if (methodName.equals("holeHöhe") && (pc == 0)) {
-			return new EasyInteger(easySwing.getContentPane().getHeight());
-		} else if (methodName.equals("setzeBreite") && (pc == 1)) {
-			EasyInteger p0 = (EasyInteger) parameter.get(0);
-			int height = easySwing.getFrame().getHeight();
-			this.easySwing.getFrame().setSize((int) p0.getIntValue(), height);
-		} else if (methodName.equals("setzeHöhe") && (pc == 1)) {
-			EasyInteger p0 = (EasyInteger) parameter.get(0);
-			int width = easySwing.getFrame().getWidth();
-			this.easySwing.getFrame().setSize(width, (int) p0.getIntValue());
-		} else if (methodName.equals("zeigeAn") && (pc == 0)) {
-			this.easySwing.show();
-		} else if (methodName.equals("setzeTastenDruckBehandler") && pc == 0 && closure != null) {
-			keyEventHandler = closure;
-		} else if (methodName.equals("fügeWerkzeugLeistenPunktHinzu") && pc == 1 && closure != null) {
-			String p0 = parameter.get(0).toString();
-			easySwing.addToolBarItem(p0, p0, new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent ae) {
-					closure.invoke(null);
+	static {
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setTitle"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyClassInterface p0 = parameter.get(0);
+				EasyFrame ef = (EasyFrame) instance;
+				ef.easySwing.getFrame().setTitle(p0.toString());
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.draw"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyFrame ef = (EasyFrame) instance;
+				if( closure != null)
+				{
+					ef.paintClosure = closure;
+				} else {
+					ef.easySwing.getContentPane().repaint();
+					ef.eventPanel.repaint();
 				}
-			});
-		} else if (methodName.equals("male") && pc == 0 && closure != null) {
-			paintClosure = closure;
-		} else {
-			EasyLang.instance.writeln("err");
-		}
-		return null;
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Frame.getWidth"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyFrame ef = (EasyFrame) instance;
+				return new EasyInteger(ef.easySwing.getContentPane().getWidth());
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Frame.getHeight"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyFrame ef = (EasyFrame) instance;
+				return new EasyInteger(ef.easySwing.getContentPane().getHeight());
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setWidth"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyFrame ef = (EasyFrame) instance;
+				EasyInteger p0 = (EasyInteger) parameter.get(0);
+				int height = ef.easySwing.getFrame().getHeight();
+				ef.easySwing.getFrame().setSize((int) p0.getIntValue(), height);
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setHeight"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyFrame ef = (EasyFrame) instance;
+				EasyInteger p0 = (EasyInteger) parameter.get(0);
+				int width = ef.easySwing.getFrame().getWidth();
+				ef.easySwing.getFrame().setSize(width, (int) p0.getIntValue());
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.show"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyFrame ef = (EasyFrame) instance;
+				ef.easySwing.show();
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setKeyEventHandler"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				assertClosure(closure);
+				EasyFrame ef = (EasyFrame) instance;
+				ef.keyEventHandler = closure;
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.addToolBarItem"), null) {
+			@Override
+			public EasyClassInterface invoke(final EasyClassInterface instance, final EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				assertClosure(closure);
+				EasyFrame ef = (EasyFrame) instance;
+				String p0 = parameter.get(0).toString();
+				ef.easySwing.addToolBarItem(p0, p0, new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent ae) {
+						closure.invoke(instance, null, null);
+					}
+				});
+				return null;
+			}
+		});
+
+	}
+
+	private static void add(NativeMethod nativeMethod) {
+		methods.put(nativeMethod.getName(), nativeMethod);
 	}
 
 	@Override
 	public String getName() {
-		return KeyWords.CLASS_FRAME;
+		return EasyLang.rb.getString("Frame");
 	}
 
 	@Override
@@ -95,7 +158,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 			Graphics g = (Graphics) pe.getSource();
 			List<EasyClassInterface> p = Generics.newArrayList();
 			p.add(new EasyGraphics(g));
-			paintClosure.invoke(p);
+			paintClosure.invoke(null, null, p); // TODO: instance ?
 		}
 		return false;
 	}
@@ -110,8 +173,18 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		if (keyEventHandler != null) {
 			List<EasyClassInterface> p = Generics.newArrayList();
 			p.add(new EasyInteger(keyEvent.getKeyCode()));
-			keyEventHandler.invoke(p);
+			keyEventHandler.invoke(null, null, p); // TODO: instance ?
 		}
+	}
+
+	@Override
+	public EasyMethodInterface getMethod(String methodName) {
+		return methods.get(methodName);
+	}
+
+	@Override
+	public Map<String, EasyMethodInterface> getMethods() {
+		return methods;
 	}
 
 }

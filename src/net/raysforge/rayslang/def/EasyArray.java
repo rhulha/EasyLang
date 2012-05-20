@@ -3,11 +3,13 @@ package net.raysforge.rayslang.def;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.raysforge.commons.Generics;
 import net.raysforge.rayslang.EasyClassInterface;
 import net.raysforge.rayslang.EasyLang;
 import net.raysforge.rayslang.EasyMethod;
+import net.raysforge.rayslang.EasyMethodInterface;
 
 public class EasyArray implements EasyClassInterface {
 
@@ -25,98 +27,165 @@ public class EasyArray implements EasyClassInterface {
 		return type;
 	}
 
-	@Override
-	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
-		if (methodName.equals("get") && parameter.size() == 1) {
-			EasyClassInterface p0 = parameter.get(0);
-			EasyClassInterface value=null;
-			if (p0 instanceof EasyInteger) {
-				EasyInteger ri = (EasyInteger) p0;
-				value = list.get((int) ri.getIntValue());
-			} else if (p0 instanceof EasyString) {
-				EasyString rs = (EasyString) p0;
-				value = map.get(rs.getStringValue());
-			} else {
-				EasyLang.instance.writeln("array index must be int or string.");
-			}
-			EasyLang.instance.writeln(type.substring(0, type.length()-3));
-			return value != null ? value : EasyLang.instance.getClass(type.substring(0, type.length()-3)).getNewInstance(null);
+	static Map<String, EasyMethodInterface> methods = new HashMap<String, EasyMethodInterface>();
 
-		} else if (methodName.equals("löschen") && parameter.size() == 0 && closure == null) {
-			map.clear();
-			list.clear();
-		} else if (methodName.equals("entferne") && parameter.size() == 1 && closure == null) {
-			EasyClassInterface p0 = parameter.get(0);
-			if (p0 instanceof EasyString) {
-				map.remove(p0.toString());
+	static {
+		add(new NativeMethod("", EasyLang.rb.getString("Array.get"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyArray easyArray = (EasyArray) instance;
+				EasyClassInterface p0 = parameter.get(0);
+				EasyClassInterface value = null;
+				if (p0 instanceof EasyInteger) {
+					EasyInteger ei = (EasyInteger) p0;
+					value = easyArray.list.get((int) ei.getIntValue());
+				} else if (p0 instanceof EasyString) {
+					EasyString rs = (EasyString) p0;
+					value = easyArray.map.get(rs.getStringValue());
+				} else {
+					EasyLang.instance.writeln("array index must be int or string.");
+				}
+				EasyLang.instance.writeln(easyArray.type.substring(0, easyArray.type.length() - 3));
+				return value != null ? value : EasyLang.instance.getClass(easyArray.type.substring(0, easyArray.type.length() - 3)).getNewInstance(null);
 			}
-		} else if (methodName.equals("anzahlSchlüssel") && parameter.size() == 0 && closure == null) {
-			return new EasyInteger(map.size());
-		} else if (methodName.equals("enthältSchlüssel") && parameter.size() == 1 && closure != null) {
-			EasyClassInterface p0 = parameter.get(0);
-			if (p0 instanceof EasyString) {
-				if (map.containsKey(p0.toString())) {
-					closure.invoke(null);
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.clear"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyArray easyArray = (EasyArray) instance;
+				easyArray.map.clear();
+				easyArray.list.clear();
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.remove"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyArray easyArray = (EasyArray) instance;
+				EasyClassInterface p0 = parameter.get(0);
+				if (p0 instanceof EasyString) {
+					easyArray.map.remove(p0.toString());
+				} else if (p0 instanceof EasyInteger) {
+					EasyInteger ei = (EasyInteger) p0;
+					easyArray.list.remove(ei.getIntValue());
+				}
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Array.keyCount"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyArray easyArray = (EasyArray) instance;
+				return new EasyInteger(easyArray.map.size());
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Array.containsKey"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyArray easyArray = (EasyArray) instance;
+				EasyClassInterface p0 = parameter.get(0);
+				if (!(p0 instanceof EasyString)) {
+					throw new RuntimeException("parameter must be a String");
+				}
+				if (closure != null && easyArray.map.containsKey(p0.toString())) {
+					closure.invoke(instance, null, null);
+				}
+				return new EasyBoolean(easyArray.map.containsKey(p0.toString()));
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Array.containsKeyNot"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyArray easyArray = (EasyArray) instance;
+				EasyClassInterface p0 = parameter.get(0);
+				if (!(p0 instanceof EasyString)) {
+					throw new RuntimeException("parameter must be a String");
+				}
+				if (closure != null && !easyArray.map.containsKey(p0.toString())) {
+					closure.invoke(instance, null, null);
+				}
+				return new EasyBoolean(!easyArray.map.containsKey(p0.toString()));
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.write"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyArray easyArray = (EasyArray) instance;
+
+				for (String key : easyArray.map.keySet()) {
+					EasyLang.instance.writeln(key + ": " + easyArray.map.get(key));
+				}
+				for (EasyClassInterface rci : easyArray.list) {
+					EasyLang.instance.writeln(rci);
+				}
+				EasyLang.instance.writeln("");
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.add"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				EasyArray easyArray = (EasyArray) instance;
+
+				EasyClassInterface p0 = parameter.get(0);
+
+				if (parameter.size() == 1) {
+					if ((p0.getName() + "[]").equals(easyArray.type)) {
+						easyArray.list.add(p0);
+					}
+					return p0;
+				} else if (parameter.size() == 2) {
+					EasyClassInterface p1 = parameter.get(1);
+
+					if (p0 instanceof EasyInteger) {
+						EasyInteger ri = (EasyInteger) p0;
+						easyArray.list.add((int) ri.getIntValue(), p1);
+					} else if (p0 instanceof EasyString) {
+						EasyString rs = (EasyString) p0;
+						easyArray.map.put(rs.getStringValue(), p1);
+					}
+					return p1;
+				} else {
+					throw new RuntimeException("wrong parameter count ( 1 or 2 )");
 				}
 			}
-		} else if (methodName.equals("enthältSchlüsselNicht") && parameter.size() == 1 && closure == null) {
-			EasyClassInterface p0 = parameter.get(0);
-			return new EasyBoolean(!map.containsKey(p0.toString()));
-		} else if (methodName.equals("enthältSchlüsselNicht") && parameter.size() == 1 && closure != null) {
-			EasyClassInterface p0 = parameter.get(0);
-			if (p0 instanceof EasyString) {
-				if (!map.containsKey(p0.toString())) {
-					closure.invoke(null);
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.forEachKey"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				assertClosure(closure);
+				EasyArray easyArray = (EasyArray) instance;
+				
+				List<EasyClassInterface> p = Generics.newArrayList();
+				for (String key : easyArray.map.keySet()) {
+					p.clear();
+					p.add(new EasyString(key));
+					closure.invoke(instance, null, p);
 				}
+				return null;
 			}
-		} else if (methodName.equals("put") && parameter.size() == 2) {
-			EasyClassInterface p0 = parameter.get(0);
-			EasyClassInterface p1 = parameter.get(1);
+		});
 
-			if (p0 instanceof EasyInteger) {
-				EasyInteger ri = (EasyInteger) p0;
-				list.add((int) ri.getIntValue(), p1);
-			} else if (p0 instanceof EasyString) {
-				EasyString rs = (EasyString) p0;
-				map.put(rs.getStringValue(), p1);
-			}
-		} else if (methodName.equals("schreibe") && parameter.size() == 0) {
-			for (String key : map.keySet()) {
-				EasyLang.instance.writeln(key + ": " + map.get(key));
-			}
-			for (EasyClassInterface rci : list) {
-				EasyLang.instance.writeln(rci);
-			}
-			EasyLang.instance.writeln("");
-		} else if (methodName.equals("add") && parameter.size() == 1) {
-			EasyClassInterface p0 = parameter.get(0);
+	}
 
-			if ((p0.getName() + "[]").equals(type)) {
-				list.add(p0);
-			} else {
-				// error.
-				EasyLang.instance.writeln("error");
-			}
-
-		} else if (methodName.equals("fürJedenSchlüssel") && closure != null) {
-			List<EasyClassInterface> p = Generics.newArrayList();
-			for (String key : map.keySet()) {
-				p.clear();
-				p.add(new EasyString(key));
-				closure.invoke(p);
-			}
-		} else {
-			EasyLang.instance.writeln("method not found: " + methodName);
-		}
-		return null;
+	private static void add(NativeMethod nativeMethod) {
+		methods.put(nativeMethod.getName(), nativeMethod);
 	}
 
 	public EasyClassInterface get(int i) {
-		return list.get(i) != null ? list.get(i) : EasyLang.instance.getClass(type.substring(0, type.length()-2)).getNewInstance(null);
+		return list.get(i) != null ? list.get(i) : EasyLang.instance.getClass(type.substring(0, type.length() - 2)).getNewInstance(null);
 	}
 
 	public EasyClassInterface get(String key) {
-		return map.get(key) != null ?  map.get(key) : EasyLang.instance.getClass(type.substring(0, type.length()-2)).getNewInstance(null);
+		return map.get(key) != null ? map.get(key) : EasyLang.instance.getClass(type.substring(0, type.length() - 2)).getNewInstance(null);
 	}
 
 	@Override
@@ -132,6 +201,16 @@ public class EasyArray implements EasyClassInterface {
 		while (list.size() <= index)
 			list.add(null); // TODO: is there really no better way to do this ?
 		return list.set(index, value);
+	}
+
+	@Override
+	public EasyMethodInterface getMethod(String methodName) {
+		return methods.get(methodName);
+	}
+
+	@Override
+	public Map<String, EasyMethodInterface> getMethods() {
+		return methods;
 	}
 
 }

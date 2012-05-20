@@ -10,7 +10,7 @@ public class EasyClass implements EasyClassInterface {
 
 	HashMap<String, EasyVar> variables = new HashMap<String, EasyVar>();
 
-	HashMap<String, EasyMethod> methods = new HashMap<String, EasyMethod>();
+	HashMap<String, EasyMethodInterface> methods = new HashMap<String, EasyMethodInterface>();
 
 	public EasyClass( String name) {
 		this.name = name;
@@ -87,7 +87,7 @@ public class EasyClass implements EasyClassInterface {
 				tokenList.remove("(");
 
 				EasyLog.trace.log("methodName: " + rc.name + "." + methodName);
-				EasyMethod.parse(rc, typeStr, methodName, tokenList);
+				EasyMethod.parse( rc.getName(), typeStr, methodName, tokenList);
 
 			} else {
 				EasyLog.warn.log("hm: " + tokenList);
@@ -120,10 +120,10 @@ public class EasyClass implements EasyClassInterface {
 	public EasyClassInterface getNewInstance(List<EasyClassInterface> parameter) {
 
 		EasyClass ri = new EasyClass( name);
-		ri.methods = new HashMap<String, EasyMethod>();
+		ri.methods = new HashMap<String, EasyMethodInterface>();
 		for( String key : methods.keySet())
 		{
-			methods.get(key).copy(ri);
+			((EasyMethod)methods.get(key)).copy(ri);
 		}
 
 		for (String key : variables.keySet()) {
@@ -140,7 +140,7 @@ public class EasyClass implements EasyClassInterface {
 		return getName();
 	}
 
-	public EasyMethod getMethod(String name) {
+	public EasyMethodInterface getMethod(String name) {
 		return methods.get(name);
 	}
 
@@ -149,6 +149,7 @@ public class EasyClass implements EasyClassInterface {
 		return name;
 	}
 
+	/*
 	@Override
 	public EasyClassInterface invoke(String methodName, EasyMethod closure, List<EasyClassInterface> parameter) {
 		if( methodName.equals("debug"))
@@ -174,6 +175,7 @@ public class EasyClass implements EasyClassInterface {
 			return method.invoke( parameter);
 		}
 	}
+	*/
 
 	/*
 	public EasyClass invokeNative(EasyClass rc, String methodName, EasyClass ... parameter) {
@@ -200,6 +202,12 @@ public class EasyClass implements EasyClassInterface {
 	@Override
 	public int hashCode() {
 		return getName().hashCode();
+	}
+
+	@Override
+	public HashMap<String, EasyMethodInterface> getMethods() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
