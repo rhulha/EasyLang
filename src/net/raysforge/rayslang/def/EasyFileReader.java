@@ -13,7 +13,7 @@ import net.raysforge.rayslang.EasyClassInterface;
 import net.raysforge.rayslang.EasyLang;
 import net.raysforge.rayslang.EasyMethod;
 import net.raysforge.rayslang.EasyMethodInterface;
-import net.raysforge.rayslang.EasyUtils;
+import net.raysforge.rayslang.utils.EasyUtils;
 
 public class EasyFileReader implements EasyClassInterface {
 

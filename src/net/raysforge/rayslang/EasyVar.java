@@ -1,5 +1,7 @@
 package net.raysforge.rayslang;
 
+import net.raysforge.rayslang.utils.EasyUtils;
+
 public class EasyVar {
 
 	private Visibility visibility;

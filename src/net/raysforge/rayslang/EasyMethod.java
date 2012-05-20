@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.raysforge.rayslang.def.EasyArray;
+import net.raysforge.rayslang.utils.EasyLog;
+import net.raysforge.rayslang.utils.EasyUtils;
 
 public class EasyMethod implements EasyMethodInterface {
 

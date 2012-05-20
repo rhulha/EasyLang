@@ -28,11 +28,11 @@ import net.raysforge.easyswing.EasySwing;
 import net.raysforge.easyswing.EasyTextArea;
 import net.raysforge.easyswing.EasyTree;
 import net.raysforge.rayslang.EasyLang;
-import net.raysforge.rayslang.FileUtils;
 import net.raysforge.rayslang.EasyClass;
 import net.raysforge.rayslang.EasyClassInterface;
 import net.raysforge.rayslang.EasySource;
-import net.raysforge.rayslang.EasyUtils;
+import net.raysforge.rayslang.utils.EasyUtils;
+import net.raysforge.rayslang.utils.FileUtils;
 
 public class EasyIDE {
 

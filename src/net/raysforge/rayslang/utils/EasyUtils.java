@@ -1,8 +1,12 @@
-package net.raysforge.rayslang;
+package net.raysforge.rayslang.utils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import net.raysforge.rayslang.EasySource;
+import net.raysforge.rayslang.Token;
+import net.raysforge.rayslang.TokenList;
 
 // gibt zwei arten token zu holen
 // 1. vorher aufräumen und dan token holen ( returns und spacer weg danach kommt token )

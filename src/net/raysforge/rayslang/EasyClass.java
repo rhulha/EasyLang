@@ -4,6 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import net.raysforge.rayslang.utils.EasyDebug;
+import net.raysforge.rayslang.utils.EasyLog;
+import net.raysforge.rayslang.utils.EasyUtils;
+
 public class EasyClass implements EasyClassInterface {
 
 	protected String name;

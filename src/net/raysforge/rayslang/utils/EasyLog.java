@@ -1,10 +1,12 @@
-package net.raysforge.rayslang;
+package net.raysforge.rayslang.utils;
+
+import net.raysforge.rayslang.EasyLang;
 
 public enum EasyLog {
 	
 	error, warn, info, debug, trace;
 	
-	static EasyLog level = EasyLog.info;
+	public static EasyLog level = EasyLog.info;
 	
 	public void log(Object s) {
 		if( level.ordinal() >= ordinal())

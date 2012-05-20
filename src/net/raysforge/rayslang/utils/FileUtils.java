@@ -1,4 +1,4 @@
-package net.raysforge.rayslang;
+package net.raysforge.rayslang.utils;
 
 import java.io.File;
 import java.io.FileReader;

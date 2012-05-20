@@ -1,7 +1,9 @@
-package net.raysforge.rayslang;
+package net.raysforge.rayslang.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.raysforge.rayslang.EasyClass;
 
 public class EasyDebug {
 	

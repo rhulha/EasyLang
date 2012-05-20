@@ -2,6 +2,8 @@ package net.raysforge.rayslang;
 
 import java.util.ArrayList;
 
+import net.raysforge.rayslang.utils.EasyUtils;
+
 public class TokenList {
 
 	private final ArrayList<Token> tokens;

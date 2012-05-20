@@ -1,8 +1,8 @@
 package net.raysforge.rayslang.test;
 
 import net.raysforge.rayslang.EasySource;
-import net.raysforge.rayslang.EasyUtils;
 import net.raysforge.rayslang.TokenList;
+import net.raysforge.rayslang.utils.EasyUtils;
 
 public class TestArrayIndexParser {
 

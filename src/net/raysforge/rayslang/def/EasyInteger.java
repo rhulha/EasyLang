@@ -7,9 +7,9 @@ import java.util.Map;
 import net.raysforge.commons.Generics;
 import net.raysforge.rayslang.EasyClassInterface;
 import net.raysforge.rayslang.EasyLang;
-import net.raysforge.rayslang.EasyLog;
 import net.raysforge.rayslang.EasyMethod;
 import net.raysforge.rayslang.EasyMethodInterface;
+import net.raysforge.rayslang.utils.EasyLog;
 
 public class EasyInteger implements EasyClassInterface {
 

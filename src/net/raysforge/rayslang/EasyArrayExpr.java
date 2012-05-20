@@ -3,6 +3,7 @@ package net.raysforge.rayslang;
 import net.raysforge.rayslang.def.EasyArray;
 import net.raysforge.rayslang.def.EasyInteger;
 import net.raysforge.rayslang.def.EasyString;
+import net.raysforge.rayslang.utils.EasyUtils;
 
 public class EasyArrayExpr {
 
