@@ -134,7 +134,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 
 					@Override
 					public void actionPerformed(ActionEvent ae) {
-						closure.invoke(instance, null, null);
+						closure.invoke(null, null, null);
 					}
 				});
 				return null;

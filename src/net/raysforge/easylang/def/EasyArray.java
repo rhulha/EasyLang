@@ -93,7 +93,7 @@ public class EasyArray implements EasyClassInterface {
 					throw new RuntimeException("parameter must be a String");
 				}
 				if (closure != null && easyArray.map.containsKey(p0.toString())) {
-					closure.invoke(instance, null, null);
+					closure.invoke(null, null, null);
 				}
 				return new EasyBoolean(easyArray.map.containsKey(p0.toString()));
 			}
@@ -108,9 +108,15 @@ public class EasyArray implements EasyClassInterface {
 					throw new RuntimeException("parameter must be a String");
 				}
 				if (closure != null && !easyArray.map.containsKey(p0.toString())) {
-					closure.invoke(instance, null, null);
+					closure.invoke(null, null, null);
 				}
-				return new EasyBoolean(!easyArray.map.containsKey(p0.toString()));
+				EasyBoolean easyBoolean = new EasyBoolean(!easyArray.map.containsKey(p0.toString()));
+//				for (String key : easyArray.map.keySet()) {
+//					System.out.println("keys: "+key);
+//				}
+//				System.out.println("p: "+p0);
+//				System.out.println("x: "+easyBoolean);
+				return easyBoolean;
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.write"), null) {
@@ -168,7 +174,7 @@ public class EasyArray implements EasyClassInterface {
 				for (String key : easyArray.map.keySet()) {
 					p.clear();
 					p.add(new EasyString(key));
-					closure.invoke(instance, null, p);
+					closure.invoke(null, null, p);
 				}
 				return null;
 			}

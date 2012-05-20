@@ -35,8 +35,23 @@ public class EasyBoolean implements EasyClassInterface {
 				if (p0 instanceof EasyBoolean) {
 					EasyBoolean rb = (EasyBoolean) p0;
 					if (((EasyBoolean)instance).b || rb.b)
-						closure.invoke(instance, null, null);
+						closure.invoke(null, null, null);
+					else{
+						System.out.println(instance);
+						System.out.println(rb);
+
+					}
+				} else {
+					System.out.println("parameter to Boolean.or must be Boolean");
 				}
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Boolean.write"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				EasyLang.instance.writeln(instance.toString());
 				return null;
 			}
 		});
@@ -59,5 +74,10 @@ public class EasyBoolean implements EasyClassInterface {
 	@Override
 	public Map<String, EasyMethodInterface> getMethods() {
 		return methods;
+	}
+	
+	@Override
+	public String toString() {
+		return b?EasyLang.rb.getString("Boolean.true"):EasyLang.rb.getString("Boolean.false");
 	}
 }

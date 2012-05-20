@@ -95,7 +95,7 @@ public class EasyInteger implements EasyClassInterface {
 					for (int i = 0; i < instanceInt.intValue; i++) {
 						p.clear();
 						p.add(new EasyInteger(i));
-						closure.invoke(instance, null, p);
+						closure.invoke(null, null, p);
 					}
 					return null;
 				}
@@ -160,9 +160,10 @@ public class EasyInteger implements EasyClassInterface {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
-				boolean theyAreTheSame = (instanceInt == parameterInt);
+				boolean theyAreTheSame = (instanceInt.intValue == parameterInt.intValue);
 				if (closure != null) {
 					if (theyAreTheSame) {
+						System.out.println("xcx");
 						List<EasyClassInterface> p = Generics.newArrayList();
 						closure.invoke(null, null, p);
 					}

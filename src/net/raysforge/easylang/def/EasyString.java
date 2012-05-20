@@ -45,7 +45,7 @@ public class EasyString implements EasyClassInterface {
 				assertParameterSize(parameter, 1);
 				EasyClassInterface p0 = parameter.get(0);
 				String[] split = instance.toString().split(p0.toString());
-				EasyArray ra = new EasyArray(getName() + "[]");
+				EasyArray ra = new EasyArray(instance.getName() + "[]");
 				for (String string : split) {
 					ra.list.add(new EasyString(string));
 				}

@@ -12,23 +12,29 @@ public class EasyMethod implements EasyMethodInterface {
 
 	protected String name;
 
-	private String parentClass;
+	private String parentClassType;
 
 	List<EasyVar> parameterList = new ArrayList<EasyVar>();
 
 	HashMap<String, EasyVar> closureVariables;
+	EasyClass closureSurroundingClass;
 
 	String returnType;
 
 	TokenList code;
 
-	public EasyMethod( String parentClass, String name) {
-		EasyUtils.assertNotNull(parentClass);
+	public EasyMethod(String parentClassType, String name) {
+		EasyUtils.assertNotNull(parentClassType);
 		this.name = name;
-		this.parentClass = parentClass;
+		this.parentClassType = parentClassType;
+	}
 
-//		if (!name.equals("#"))
-//			parentClass.methods.put(name, this);
+	// this is a closure
+	public EasyMethod(EasyClass closureSurroundingClass) {
+		EasyUtils.assertNotNull(closureSurroundingClass);
+		this.name = "#";
+		this.parentClassType = closureSurroundingClass.getName();
+		this.closureSurroundingClass = closureSurroundingClass;
 	}
 
 	private static void populateParameter(EasyMethod rm, TokenList parameterList) {
@@ -40,12 +46,12 @@ public class EasyMethod implements EasyMethodInterface {
 		}
 	}
 
-	public static EasyMethod parseClosure( String parentClass, HashMap<String, EasyVar> closureVariables, TokenList tokenList) {
-		EasyMethod rm = new EasyMethod( parentClass, "#");
+	public static EasyMethod parseClosure(EasyClass closureSurroundingClass, HashMap<String, EasyVar> closureVariables, TokenList tokenList) {
+		EasyMethod rm = new EasyMethod(closureSurroundingClass);
 		rm.returnType = EasyLang.rb.getString("void");
 		rm.closureVariables = closureVariables;
 		rm.code = tokenList.getSubList('{', '}');
-		TokenList test = rm.code.copy().getAndRemoveSourceTokenUntil( true, ";", "{", "=");
+		TokenList test = rm.code.copy().getAndRemoveSourceTokenUntil(true, ";", "{", "=");
 		if (test.contains("->")) {
 			TokenList parameterList = rm.code.getAndRemoveSourceTokenUntil(false, "->");
 			//parameterList.removeLast("->");
@@ -56,7 +62,7 @@ public class EasyMethod implements EasyMethodInterface {
 		return rm;
 	}
 
-	public static EasyMethod parse( String parentClass, String returnType, String name, TokenList tokenList) {
+	public static EasyMethod parse(String parentClass, String returnType, String name, TokenList tokenList) {
 
 		EasyMethod rm = new EasyMethod(parentClass, name);
 		rm.returnType = returnType;
@@ -90,7 +96,7 @@ public class EasyMethod implements EasyMethodInterface {
 				if (tokenList.startsWithPattern("[]")) {
 					tokenList.remove("[");
 					tokenList.remove("]");
-					value = new EasyArray(instanceType+"[]");
+					value = new EasyArray(instanceType + "[]");
 				} else {
 					tokenList.remove("(");
 					TokenList parameter2 = tokenList.getSubList('(', ')');
@@ -123,9 +129,15 @@ public class EasyMethod implements EasyMethodInterface {
 			EasyMethod rm = null;
 			if (tokenList.startsWithPattern("{")) {
 				tokenList.remove("{");
-				rm = EasyMethod.parseClosure(parentClass.getName(), variables, tokenList);
+				rm = EasyMethod.parseClosure(parentClass, variables, tokenList);
 			}
-			value = value.getMethod(methodName).invoke( value, rm, evaluatedParams);
+			//System.out.println(methodName);
+			EasyMethodInterface method = value.getMethod(methodName);
+			if (method == null) {
+				EasyLang.instance.writeln("The method you are trying to use does not exist: " + methodName);
+			} else {
+				value = method.invoke(value, rm, evaluatedParams);
+			}
 		}
 		return value;
 	}
@@ -166,11 +178,11 @@ public class EasyMethod implements EasyMethodInterface {
 
 	@Override
 	public String toString() {
-		return /*returnType + " " + */parentClass + "." + name;
+		return /*returnType + " " + */parentClassType + "." + name;
 	}
 
 	public String getParentClass() {
-		return parentClass;
+		return parentClassType;
 	}
 
 	public TokenList getCode() {
@@ -202,13 +214,15 @@ public class EasyMethod implements EasyMethodInterface {
 
 	@Override
 	public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
-		EasyClass instance_ = (EasyClass) instance;
+		if (closureSurroundingClass == null && instance == null)
+			throw new NullPointerException("instance variable is not set");
+		EasyClass instance_ = (EasyClass) (closureSurroundingClass == null ? instance : closureSurroundingClass);
 		if (EasyLog.level == EasyLog.trace)
-			EasyLog.info.log("EasyMethod.invoke instance: " + name + " " + parentClass + " - " + parameterList + " - " + code);
+			EasyLog.info.log("EasyMethod.invoke instance: " + name + " " + parentClassType + " - " + parameterList + " - " + code);
 
 		HashMap<String, EasyVar> variables = new HashMap<String, EasyVar>();
-		variables.put(EasyLang.rb.getString("this"), new EasyVar( parentClass, EasyLang.rb.getString("this"), instance));
-		if( closureVariables != null)
+		variables.put(EasyLang.rb.getString("this"), new EasyVar(parentClassType, EasyLang.rb.getString("this"), instance_));
+		if (closureVariables != null)
 			for (EasyVar closureVar : closureVariables.values()) {
 				variables.put(closureVar.getName(), closureVar);
 			}
@@ -219,8 +233,8 @@ public class EasyMethod implements EasyMethodInterface {
 		}
 
 		TokenList tokenList = code.copy().resetPosition();
-		EasyClassInterface eval=null;
-		
+		EasyClassInterface eval = null;
+
 		while (true) {
 
 			if (tokenList.isEmpty())
@@ -260,20 +274,20 @@ public class EasyMethod implements EasyMethodInterface {
 			} else {
 				// this next line tries to find out if the next tokens are an array expression on the left hand side of an assignment.
 				// it is broken at least for when a closure is used in an expression to generate the array index.
-				TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil( true, ";", "{", "=");
+				TokenList preview = tokenList.copy().getAndRemoveSourceTokenUntil(true, ";", "{", "=");
 
-				if ( preview.getLast().equals("=") && preview.contains("[")  ) {
+				if (preview.getLast().equals("=") && preview.contains("[")) {
 					// this means that there is an array expression on the left hand side of an assignment
 					varName = tokenList.popString();
 					tokenList.remove("[");
-					EasyClassInterface arrayIndex = evaluateExpression( instance_, variables, tokenList.getSubList('[', ']'));
-					arrayExpr = mustGetArray( instance_, variables, varName, arrayIndex);
+					EasyClassInterface arrayIndex = evaluateExpression(instance_, variables, tokenList.getSubList('[', ']'));
+					arrayExpr = mustGetArray(instance_, variables, varName, arrayIndex);
 					tokenList.remove("=");
 				}
 			}
 
 			//debugVariables();
-			eval = evaluateExpression( instance_, variables, tokenList);
+			eval = evaluateExpression(instance_, variables, tokenList);
 			// closure don't have an ending semicolon, so we only remove it otherwise.
 			if (!tokenList.get(-1).equals("}"))
 				tokenList.remove(";");
@@ -281,7 +295,7 @@ public class EasyMethod implements EasyMethodInterface {
 			if (varTypeName != null) {
 				//EasyClassInterface mytype = easyClass.easyLang.getClass( mytypeName);
 				EasyVar rv = new EasyVar(Visibility.private_, varTypeName, varName);
-				if( eval == null)
+				if (eval == null)
 					EasyLang.instance.writeln("null value");
 				rv.setValue(eval);
 				variables.put(rv.getName(), rv);
@@ -290,7 +304,7 @@ public class EasyMethod implements EasyMethodInterface {
 					// TODO: verify that the value is of the correct type !
 					arrayExpr.put(eval);
 				} else {
-					EasyVar var = mustGetVariable( instance_, variables, varName);
+					EasyVar var = mustGetVariable(instance_, variables, varName);
 					var.setValue(eval);
 				}
 			}

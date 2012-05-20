@@ -71,7 +71,7 @@ public class EasyFileReader implements EasyClassInterface {
 					while ((line = efr.br.readLine()) != null) {
 						List<EasyClassInterface> p = Generics.newArrayList();
 						p.add(new EasyString(line));
-						closure.invoke( instance, null, p );
+						closure.invoke( null, null, p );
 					}
 				} catch (IOException e) {
 					EasyUtils.runtimeExcp(e);

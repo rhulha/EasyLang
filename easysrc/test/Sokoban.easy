@@ -13,7 +13,7 @@ publik nichts ladeLevel()
 	"start lade level".schreibe();
 	level.löschen(); 
 	ziele.löschen(); 
-	DateiLeser dl = neu DateiLeser("level0".und(levelcounter.plus!(1)).und(".sokoban"));
+	DateiLeser dl = neu DateiLeser("easysrc/test/level0".und(levelcounter.plus!(1)).und(".sokoban"));
 	dl.fürJedeZeile{
 		Zeichen zeile -> 
 		Zeichen[] parts = zeile.spalte(":");
@@ -57,41 +57,43 @@ publik nichts start()
 	  Zahl taste ->
 	  Zahl dx = 0;
 	  Zahl dy = 0;
-	  
+
 	  # links
-	  taste.gleicht(37){
+	  taste.istGleich(37){
 	  	dx = -1;
 	  }
 	  # hoch
-	  taste.gleicht(38){
+	  taste.istGleich(38){
 	  	dy = -1;
 	  }
 	  # rechts
-	  taste.gleicht(39){
+	  taste.istGleich(39){
 	  	dx = 1;
 	  }
 	  # runter
-	  taste.gleicht(40){
+	  taste.istGleich(40){
 	  	dy = 1;
 	  }
 	  
 	  Zeichen zielZeichen = spielerX.plus(dx).und("-").und(spielerY.plus(dy));
 	  level.enthältSchlüssel(zielZeichen){
 		  Zeichen feld = level[zielZeichen];
-		  feld.gleicht("Kiste"){
+		  feld.istGleich("Kiste"){
 		  	Zeichen doppelZielZeichen = spielerX.plus(dx).plus(dx).und("-").und(spielerY.plus(dy).plus(dy));
 		  	level.enthältSchlüsselNicht(doppelZielZeichen){
 		  		level.entferne(zielZeichen);
 		  		level[doppelZielZeichen] = "Kiste";
 		  	}
-		  	level[doppelZielZeichen].gleicht("Ziel"){
+		  	level[doppelZielZeichen].istGleich("Ziel"){
 		  		level.entferne(zielZeichen);
 		  		level[doppelZielZeichen] = "Kiste";
 		  	}
 		  }
 	  }
 	  
-	  level.enthältSchlüsselNicht(zielZeichen).oder(level[zielZeichen].gleicht("Ziel")){
+	  dx.schreibe();
+	  
+	  level.enthältSchlüsselNicht(zielZeichen).oder(level[zielZeichen].istGleich("Ziel")){
 		  level.entferne(spielerX.und("-").und(spielerY));
 		  level[zielZeichen] = "Spieler";
 		  spielerX.plus!(dx);
@@ -102,11 +104,11 @@ publik nichts start()
 	  Zahl zähler = 0;
 	  ziele.fürJedenSchlüssel{
 	  	Zeichen schlüssel ->
-	  	level[schlüssel].gleicht("Kiste"){
+	  	level[schlüssel].istGleich("Kiste"){
 	  	  zähler.plus!(1);
 	  	}
 	  }
-	  zähler.gleicht(ziele.anzahlSchlüssel()) {
+	  zähler.istGleich(ziele.anzahlSchlüssel()) {
 	  	"Sieg".schreibe();
 	  	selbst.ladeLevel();
 	  }

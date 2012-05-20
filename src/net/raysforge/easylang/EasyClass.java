@@ -92,7 +92,7 @@ public class EasyClass implements EasyClassInterface {
 
 				EasyLog.trace.log("methodName: " + rc.name + "." + methodName);
 				EasyMethod em = EasyMethod.parse( rc.getName(), typeStr, methodName, tokenList);
-				System.out.println(methodName);
+				//System.out.println(methodName);
 				rc.methods.put(methodName, em);
 
 			} else {

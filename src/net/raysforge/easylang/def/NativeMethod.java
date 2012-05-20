@@ -38,9 +38,11 @@ public class NativeMethod implements EasyMethodInterface {
 	
 	public void assertParameterSize( List<EasyClassInterface> parameter, int size)
 	{
-		if( parameter.size() != size)
+		if( size == 0 && parameter == null)
+				return;
+		if (parameter == null || parameter.size() != size)
 		{
-			throw new RuntimeException("parameters given to not match required ammount: " + size + ", " + parameter.size());
+			throw new RuntimeException("parameters given to not match required ammount: " + size + ", " + (parameter == null ? 0 : parameter.size()));
 		}
 	}
 
