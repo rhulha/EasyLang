@@ -163,7 +163,6 @@ public class EasyInteger implements EasyClassInterface {
 				boolean theyAreTheSame = (instanceInt.intValue == parameterInt.intValue);
 				if (closure != null) {
 					if (theyAreTheSame) {
-						System.out.println("xcx");
 						List<EasyClassInterface> p = Generics.newArrayList();
 						closure.invoke(null, null, p);
 					}

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.swing.DefaultListModel;
@@ -26,7 +27,10 @@ import javax.swing.tree.TreePath;
 import net.raysforge.easylang.EasyClass;
 import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
+import net.raysforge.easylang.EasyMethodInterface;
 import net.raysforge.easylang.EasySource;
+import net.raysforge.easylang.Token;
+import net.raysforge.easylang.TokenList;
 import net.raysforge.easylang.utils.EasyUtils;
 import net.raysforge.easylang.utils.FileUtils;
 import net.raysforge.easyswing.EasySplitPane;
@@ -51,6 +55,7 @@ public class EasyIDE {
 	private EventDelegator delegator;
 	private JPopupMenu popupMenu = new JPopupMenu();
 	private JList list = new JList();
+	private DefaultListModel defaultListModel;
 
 	public EasyIDE(File projectsHome) {
 
@@ -105,7 +110,7 @@ public class EasyIDE {
 
 		list.addKeyListener(delegator);
 		
-		DefaultListModel defaultListModel = new DefaultListModel();
+		defaultListModel = new DefaultListModel();
 		list.setModel(defaultListModel);
 		defaultListModel.addElement("test2");
 		defaultListModel.addElement("test3");
@@ -147,7 +152,6 @@ public class EasyIDE {
 	// this method skips the root node
 	protected File getFileFromTreePath(TreePath path) {
 		File file = projectsHome;
-
 		Object[] path2 = path.getPath();
 		for (int i = 1; i < path2.length; i++) {
 			Object object = path2[i];
@@ -159,6 +163,9 @@ public class EasyIDE {
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			TreePath selectionPath = easyTree.getSelectionPath();
+			if( selectionPath == null)
+				return;
+
 			File fileFromTreePath = getFileFromTreePath(selectionPath);
 			if (fileFromTreePath.isFile()) {
 				int found = -1;
@@ -288,13 +295,36 @@ public class EasyIDE {
 	}
 
 	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
+		defaultListModel.clear();
 		
-		EasyLang.instance.unregisterClasses("parse");
-		JTextArea textArea = getSelectedTextArea();
-		EasyClass.parse("parse", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
-		EasyClassInterface class1 = easyLang.getClass("test");
-		//class1.get
+		String text=null;
+		try {
+			text = invoker.getText(0, invoker.getCaretPosition());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+			FindAllVariables fav = new FindAllVariables();
+			//JTextArea textArea = getSelectedTextArea();
+			TokenList tokenList = EasyUtils.convertSourceToTokenList(new EasySource(text.toCharArray()));
+			TokenList tokenListCopy = tokenList.copy();
+			fav.parse("parse", tokenList);
+			
+			//EasySource reverseSource = new EasySource(new StringBuffer(text).reverse().toString().toCharArray());
+			//String token = reverseSource.getToken();
+			Token last = tokenListCopy.popLast();
+			if( last.isDot())
+				last = tokenListCopy.popLast();
+			
+			String objectType = fav.vars.get(last.toString());
+			
+			defaultListModel.addElement(last.toString());
 		
+		EasyClassInterface class1 = easyLang.getClass(objectType);
+		Map<String, EasyMethodInterface> methods = class1.getMethods();
+		for( String key : methods.keySet())
+		{
+			defaultListModel.addElement(key);
+		}
 		
 		
 		popupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);

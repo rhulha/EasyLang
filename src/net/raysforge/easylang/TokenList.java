@@ -46,6 +46,8 @@ public class TokenList {
 		char[] charArray = string.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
 			char c = charArray[i];
+			if( i >= remaining())
+				return false;
 			Token token = get(i);
 
 			switch (c) {
@@ -118,6 +120,12 @@ public class TokenList {
 		if (!get(0).equals(string))
 			EasyUtils.runtimeExcp(get(0) + " != " + string + " (" + this + ")");
 		position++;
+	}
+
+	public Token popLast() {
+		Token last = getLast();
+		limit--;
+		return last;
 	}
 
 	public void removeLast(String string) {

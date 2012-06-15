@@ -21,7 +21,7 @@ public class EasyBoolean implements EasyClassInterface {
 	public String getName() {
 		return EasyLang.rb.getString("Boolean");
 	}
-	
+
 	static Map<String, EasyMethodInterface> methods = new HashMap<String, EasyMethodInterface>();
 
 	static {
@@ -29,18 +29,13 @@ public class EasyBoolean implements EasyClassInterface {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
-				assertClosure( closure);
-				
+				assertClosure(closure);
+
 				EasyClassInterface p0 = parameter.get(0);
 				if (p0 instanceof EasyBoolean) {
 					EasyBoolean rb = (EasyBoolean) p0;
-					if (((EasyBoolean)instance).b || rb.b)
+					if (((EasyBoolean) instance).b || rb.b)
 						closure.invoke(null, null, null);
-					else{
-						System.out.println(instance);
-						System.out.println(rb);
-
-					}
 				} else {
 					System.out.println("parameter to Boolean.or must be Boolean");
 				}
@@ -56,7 +51,7 @@ public class EasyBoolean implements EasyClassInterface {
 			}
 		});
 	}
-	
+
 	private static void add(NativeMethod nativeMethod) {
 		methods.put(nativeMethod.getName(), nativeMethod);
 	}
@@ -75,9 +70,9 @@ public class EasyBoolean implements EasyClassInterface {
 	public Map<String, EasyMethodInterface> getMethods() {
 		return methods;
 	}
-	
+
 	@Override
 	public String toString() {
-		return b?EasyLang.rb.getString("Boolean.true"):EasyLang.rb.getString("Boolean.false");
+		return b ? EasyLang.rb.getString("Boolean.true") : EasyLang.rb.getString("Boolean.false");
 	}
 }

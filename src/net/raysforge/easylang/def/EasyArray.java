@@ -111,11 +111,6 @@ public class EasyArray implements EasyClassInterface {
 					closure.invoke(null, null, null);
 				}
 				EasyBoolean easyBoolean = new EasyBoolean(!easyArray.map.containsKey(p0.toString()));
-//				for (String key : easyArray.map.keySet()) {
-//					System.out.println("keys: "+key);
-//				}
-//				System.out.println("p: "+p0);
-//				System.out.println("x: "+easyBoolean);
 				return easyBoolean;
 			}
 		});

@@ -212,8 +212,7 @@ public class EasyClass implements EasyClassInterface {
 
 	@Override
 	public HashMap<String, EasyMethodInterface> getMethods() {
-		// TODO Auto-generated method stub
-		return null;
+		return methods;
 	}
 
 }
