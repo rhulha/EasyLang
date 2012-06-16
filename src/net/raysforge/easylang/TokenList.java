@@ -1,6 +1,7 @@
 package net.raysforge.easylang;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import net.raysforge.easylang.utils.EasyUtils;
 
@@ -39,61 +40,61 @@ public class TokenList {
 	// e.g.: "ii=v;" => identifier, identifier, equals sign, value, semicolon.
 
 	public boolean startsWithPattern(String string) {
-		
-		if( isEmpty())
+
+		if (isEmpty())
 			return false;
 
 		char[] charArray = string.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
 			char c = charArray[i];
-			if( i >= remaining())
+			if (i >= remaining())
 				return false;
 			Token token = get(i);
 
 			switch (c) {
-				case 'i':
-					if (!token.isIdentifier())
-						return false;
-					break;
-				case '=':
-					if (!token.isEqualsSign())
-						return false;
-					break;
-				case 'v':
-					if (!token.isValue())
-						return false;
-					break;
-				case ';':
-					if (!token.isSemicolon())
-						return false;
-					break;
-				case '.':
-					if (!token.isDot())
-						return false;
-					break;
-				case '(':
-					if (!token.isOpenParentheses())
-						return false;
-					break;
-				case '[':
-					if (!token.isOpenBracket())
-						return false;
-					break;
-				case ']':
-					if (!token.isClosedBracket())
-						return false;
-					break;
-				case '{':
-					if (!token.isOpenBrace())
-						return false;
-					break;
-				case '}':
-					if (!token.isClosedBrace())
-						return false;
-					break;
+			case 'i':
+				if (!token.isIdentifier())
+					return false;
+				break;
+			case '=':
+				if (!token.isEqualsSign())
+					return false;
+				break;
+			case 'v':
+				if (!token.isValue())
+					return false;
+				break;
+			case ';':
+				if (!token.isSemicolon())
+					return false;
+				break;
+			case '.':
+				if (!token.isDot())
+					return false;
+				break;
+			case '(':
+				if (!token.isOpenParentheses())
+					return false;
+				break;
+			case '[':
+				if (!token.isOpenBracket())
+					return false;
+				break;
+			case ']':
+				if (!token.isClosedBracket())
+					return false;
+				break;
+			case '{':
+				if (!token.isOpenBrace())
+					return false;
+				break;
+			case '}':
+				if (!token.isClosedBrace())
+					return false;
+				break;
 
-				default:
-					EasyUtils.runtimeExcp("unknown pattern element");
+			default:
+				EasyUtils.runtimeExcp("unknown pattern element");
 			}
 
 		}
@@ -128,9 +129,13 @@ public class TokenList {
 		return last;
 	}
 
+	public String popLastString() {
+		return popLast().toString();
+	}
+
 	public void removeLast(String string) {
 		if (!getLast().equals(string))
-			EasyUtils.runtimeExcp(getLast()+ " != " + string);
+			EasyUtils.runtimeExcp(getLast() + " != " + string);
 		limit--;
 	}
 
@@ -147,23 +152,21 @@ public class TokenList {
 	}
 
 	public boolean contains(String string) {
-		return indexOf(string)>=0;
+		return indexOf(string) >= 0;
 	}
 
 	// final token is always removed, it may be returned though.
-	public TokenList getAndRemoveSourceTokenUntil( boolean includeFinalToken, String ... any) {
+	public TokenList getAndRemoveSourceTokenUntil(boolean includeFinalToken, String... any) {
 		int pos = position;
-		label:
-		while (hasMore()) {
+		label: while (hasMore()) {
 			Token token = pop();
-			for( String s : any)
-			{
+			for (String s : any) {
 				if (token.equals(s)) {
 					break label;
 				}
 			}
 		}
-		return getSubListUsingOnlyOffset( pos, includeFinalToken ? position : position - 1);
+		return getSubListUsingOnlyOffset(pos, includeFinalToken ? position : position - 1);
 	}
 
 	public void hideCodeBeforePosAndResetPos() {
@@ -181,7 +184,7 @@ public class TokenList {
 	}
 
 	public Token getLast() {
-		return get(remaining()-1);
+		return get(remaining() - 1);
 
 	}
 
@@ -206,15 +209,21 @@ public class TokenList {
 				}
 			}
 		}
-		return getSubListUsingOnlyOffset( pos, position - 1);
+		return getSubListUsingOnlyOffset(pos, position - 1);
 	}
 
 	public TokenList getSubListUsingOnlyOffset(int from, int to) {
-		return new TokenList(tokens, offset+from, 0, offset+to);
+		return new TokenList(tokens, offset + from, 0, offset + to);
 	}
 
 	public TokenList getSubList(int from, int to) {
-		return new TokenList(tokens, offset+position+from, 0, offset+position+to);
+		return new TokenList(tokens, offset + position + from, 0, offset + position + to);
+	}
+
+	public TokenList reverse() {
+		ArrayList<Token> clone = new ArrayList<Token>(tokens);
+		Collections.reverse(clone);
+		return new TokenList(clone);
 	}
 
 	/* very bad idea due to offset !!!

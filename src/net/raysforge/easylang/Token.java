@@ -13,11 +13,6 @@ public class Token {
 		this.fc = token.charAt(0);
 	}
 
-	@Override
-	public String toString() {
-		return tokenStr;
-	}
-
 	public boolean isIdentifier() {
 		return Character.isLetter(fc);
 	}
@@ -43,6 +38,11 @@ public class Token {
 	}
 
 	public String s() {
+		return tokenStr;
+	}
+
+	@Override
+	public String toString() {
 		return tokenStr;
 	}
 
@@ -99,7 +99,7 @@ public class Token {
 	}
 
 	public EasyString getUnquotedEasyString() {
-		return new EasyString(new String(tokenStr.toCharArray(), 1, tokenStr.length() - 2));
+		return new EasyString(getUnquotedString());
 	}
 
 	public static void main(String[] args) {

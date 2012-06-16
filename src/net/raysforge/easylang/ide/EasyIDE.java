@@ -29,7 +29,6 @@ import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
 import net.raysforge.easylang.EasyMethodInterface;
 import net.raysforge.easylang.EasySource;
-import net.raysforge.easylang.Token;
 import net.raysforge.easylang.TokenList;
 import net.raysforge.easylang.utils.EasyUtils;
 import net.raysforge.easylang.utils.FileUtils;
@@ -109,7 +108,7 @@ public class EasyIDE {
 		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
 
 		list.addKeyListener(delegator);
-		
+
 		defaultListModel = new DefaultListModel();
 		list.setModel(defaultListModel);
 		defaultListModel.addElement("test2");
@@ -163,7 +162,7 @@ public class EasyIDE {
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			TreePath selectionPath = easyTree.getSelectionPath();
-			if( selectionPath == null)
+			if (selectionPath == null)
 				return;
 
 			File fileFromTreePath = getFileFromTreePath(selectionPath);
@@ -296,37 +295,56 @@ public class EasyIDE {
 
 	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
 		defaultListModel.clear();
-		
-		String text=null;
+
+		String text = null;
 		try {
 			text = invoker.getText(0, invoker.getCaretPosition());
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-			FindAllVariables fav = new FindAllVariables();
-			//JTextArea textArea = getSelectedTextArea();
-			TokenList tokenList = EasyUtils.convertSourceToTokenList(new EasySource(text.toCharArray()));
-			TokenList tokenListCopy = tokenList.copy();
-			fav.parse("parse", tokenList);
-			
-			//EasySource reverseSource = new EasySource(new StringBuffer(text).reverse().toString().toCharArray());
-			//String token = reverseSource.getToken();
-			Token last = tokenListCopy.popLast();
-			if( last.isDot())
-				last = tokenListCopy.popLast();
-			
-			String objectType = fav.vars.get(last.toString());
-			
-			defaultListModel.addElement(last.toString());
-		
-		EasyClassInterface class1 = easyLang.getClass(objectType);
-		Map<String, EasyMethodInterface> methods = class1.getMethods();
-		for( String key : methods.keySet())
+		FindAllVariables fav = new FindAllVariables();
+		//JTextArea textArea = getSelectedTextArea();
+		TokenList tokenList = EasyUtils.convertSourceToTokenList(new EasySource(text.toCharArray()));
+		TokenList tokenListCopy = tokenList.copy();
+		fav.parse("parse", tokenList);
+		tokenList = null;
+
+		//EasySource reverseSource = new EasySource(new StringBuffer(text).reverse().toString().toCharArray());
+		//String token = reverseSource.getToken();
+
+		ParseAutoCompletion pac = new ParseAutoCompletion(tokenListCopy);
+		pac.parse();
+		pac.debug();
+
+		if( pac.rootVar.isQuote())
 		{
-			defaultListModel.addElement(key);
+			EasyClassInterface class1 = easyLang.getClass(EasyLang.rb.getString("String"));
+			if (class1 != null) {
+				Map<String, EasyMethodInterface> methods = class1.getMethods();
+				for (String key : methods.keySet()) {
+					if (key.startsWith(pac.partial.s()))
+						defaultListModel.addElement(key);
+				}
+			}
 		}
-		
-		
+		else if (fav.vars.containsKey(pac.rootVar.s())) {
+			String objectType = fav.vars.get(pac.rootVar.s());
+			EasyClassInterface class1 = easyLang.getClass(objectType);
+			if (class1 != null) {
+				Map<String, EasyMethodInterface> methods = class1.getMethods();
+				for (String key : methods.keySet()) {
+					if (key.startsWith(pac.partial.s()))
+						defaultListModel.addElement(key);
+				}
+			}
+
+		} else {
+			for (String key : fav.vars.keySet()) {
+				if (key.startsWith(pac.partial.s()))
+					defaultListModel.addElement(key);
+			}
+		}
+
 		popupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);
 		SwingUtilities.invokeLater(new Runnable() {
 
@@ -338,14 +356,14 @@ public class EasyIDE {
 
 	public void useSelectedListVlaue(String s) {
 		System.out.println(s);
-        final int cp = getSelectedTextArea().getCaretPosition();
-        try {
+		final int cp = getSelectedTextArea().getCaretPosition();
+		try {
 			getSelectedTextArea().getDocument().insertString(cp, s, null);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-        popupMenu.setVisible(false);
-		
+		popupMenu.setVisible(false);
+
 	}
 
 }
