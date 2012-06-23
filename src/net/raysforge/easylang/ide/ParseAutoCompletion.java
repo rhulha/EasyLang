@@ -68,8 +68,8 @@ public class ParseAutoCompletion {
 
 
 	public void debug() {
-		System.out.println("rootVarName: "+rootVar.toString());
-		System.out.println("partialString: "+partial.toString());
+		System.out.println("rootVarName: "+rootVar);
+		System.out.println("partialString: "+partial);
 		System.out.println("methodChainNames: "+methodChainNames);
 	}
 

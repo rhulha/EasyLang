@@ -179,10 +179,11 @@ public class EasyIDE {
 					tabbedPane.setSelectedIndex(found);
 				else {
 					char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
-					JTextArea jTextArea = new JTextArea(new String(completeFile));
-					jTextArea.getDocument().addDocumentListener(delegator);
-					jTextArea.addKeyListener(delegator);
-					tabbedPane.addTab(fileFromTreePath.getName(), null, jTextArea, fileFromTreePath.getPath());
+					EasyTextArea eta = new EasyTextArea();
+					eta.setText(new String(completeFile));
+					eta.getDocument().addDocumentListener(delegator);
+					eta.addKeyListener(delegator);
+					tabbedPane.addTab(fileFromTreePath.getName(), null, eta.getScrollPane(), fileFromTreePath.getPath());
 					tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 				}
 			}
@@ -195,6 +196,7 @@ public class EasyIDE {
 		//System.out.println(e.getActionCommand());
 
 		if (e.getActionCommand().equals(RUN)) {
+			console.setText("");
 			EasyLang.instance.unregisterClasses("test");
 			JTextArea textArea = getSelectedTextArea();
 			EasyClass.parse("test", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
@@ -333,14 +335,20 @@ public class EasyIDE {
 			if (class1 != null) {
 				Map<String, EasyMethodInterface> methods = class1.getMethods();
 				for (String key : methods.keySet()) {
-					if (key.startsWith(pac.partial.s()))
+					String s = "";
+					if( pac.partial != null)
+						s = pac.partial.s();
+					if (key.startsWith(s))
 						defaultListModel.addElement(key);
 				}
 			}
 
 		} else {
 			for (String key : fav.vars.keySet()) {
-				if (key.startsWith(pac.partial.s()))
+				String s = "";
+				if( pac.partial != null)
+					s = pac.partial.s();
+				if (key.startsWith(s))
 					defaultListModel.addElement(key);
 			}
 		}

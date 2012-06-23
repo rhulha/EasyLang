@@ -1,0 +1,2 @@
+close auto complete popup when clicking on text or pressing ESC
+when auto complete popup inserts text, cut away the partial string
