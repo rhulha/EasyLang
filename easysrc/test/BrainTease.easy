@@ -1,0 +1,36 @@
+
+
+Fenster fenster = neu Fenster();
+Liste liste = neu Liste();
+
+publik nichts start()
+{
+
+	fenster.setzeTitel("Sokoban");
+	fenster.setzeBreite(800);
+	fenster.setzeHöhe(600);
+	
+	fenster.fügeWerkzeugLeistenPunktHinzu("Neuer Versuch"){
+		
+	}
+	
+
+	liste.setzeZeichenGröße(32);	
+	fenster.fügeHinzu( liste);
+	
+	fenster.setzeTastenDruckBehandler{
+	  Zahl taste ->
+	  
+	  # links
+	  taste.istGleich(37){
+	  }
+	  # rechts
+	  taste.istGleich(39){
+	  }
+	  
+	  
+	}
+	
+	
+}
+

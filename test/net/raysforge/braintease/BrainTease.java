@@ -31,7 +31,7 @@ public class BrainTease implements AWTEventListener, ActionListener {
 
 		Random rand = new Random();
 
-		String sings = "+-x:";
+		String signs = "+-x:";
 
 		for (int i = 0; i < 25; i++) {
 
@@ -64,7 +64,7 @@ public class BrainTease implements AWTEventListener, ActionListener {
 				a = temp;
 			}
 
-			list.addElement(new BrainTeaseElement("" + a + sings.charAt(sign) + b + '=' + result, correct));
+			list.addElement(new BrainTeaseElement("" + a + signs.charAt(sign) + b + '=' + result, correct));
 
 		}
 

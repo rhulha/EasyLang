@@ -163,6 +163,11 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
                 easyIDE.useSelectedListVlaue(s);
             }
 		}
+		
+		if( ke.getKeyCode() == KeyEvent.VK_ESCAPE)
+		{
+			System.out.println("sedf");
+		}
 
 	}
 

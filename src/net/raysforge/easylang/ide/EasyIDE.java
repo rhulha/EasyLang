@@ -234,7 +234,7 @@ public class EasyIDE {
 	}
 
 	private JTextArea getSelectedTextArea() {
-		return (JTextArea) tabbedPane.getSelectedComponent();
+		return (JTextArea)((JScrollPane) tabbedPane.getSelectedComponent()).getViewport().getView();
 	}
 
 	private JTextArea getTextArea(int index) {
