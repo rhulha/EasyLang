@@ -53,7 +53,7 @@ public class EasyIDE {
 	private JTabbedPane tabbedPane;
 	private EventDelegator delegator;
 	private JPopupMenu popupMenu = new JPopupMenu();
-	private JList list = new JList();
+	private JList autoCompleteList = new JList();
 	private DefaultListModel defaultListModel;
 
 	public EasyIDE(File projectsHome) {
@@ -107,16 +107,16 @@ public class EasyIDE {
 		es.addToolBarItem(rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
 
-		list.addKeyListener(delegator);
+		autoCompleteList.addKeyListener(delegator);
 
 		defaultListModel = new DefaultListModel();
-		list.setModel(defaultListModel);
+		autoCompleteList.setModel(defaultListModel);
 		defaultListModel.addElement("test2");
 		defaultListModel.addElement("test3");
 		defaultListModel.addElement("test4");
 
 		popupMenu.setPreferredSize(new Dimension(100, 100));
-		popupMenu.add(new JScrollPane(list));
+		popupMenu.add(new JScrollPane(autoCompleteList));
 
 	}
 
@@ -234,7 +234,7 @@ public class EasyIDE {
 	}
 
 	private JTextArea getSelectedTextArea() {
-		return (JTextArea)((JScrollPane) tabbedPane.getSelectedComponent()).getViewport().getView();
+		return (JTextArea) ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport().getView();
 	}
 
 	private JTextArea getTextArea(int index) {
@@ -295,6 +295,8 @@ public class EasyIDE {
 		setSelectedTabToSaved();
 	}
 
+	private static String partial = "";
+
 	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
 		defaultListModel.clear();
 
@@ -318,8 +320,12 @@ public class EasyIDE {
 		pac.parse();
 		pac.debug();
 
-		if( pac.rootVar.isQuote())
-		{
+		if (pac.partial != null)
+			partial = pac.partial.s();
+		else
+			partial = "";
+
+		if (pac.rootVar.isQuote()) {
 			EasyClassInterface class1 = easyLang.getClass(EasyLang.rb.getString("String"));
 			if (class1 != null) {
 				Map<String, EasyMethodInterface> methods = class1.getMethods();
@@ -328,15 +334,14 @@ public class EasyIDE {
 						defaultListModel.addElement(key);
 				}
 			}
-		}
-		else if (fav.vars.containsKey(pac.rootVar.s())) {
+		} else if (fav.vars.containsKey(pac.rootVar.s())) {
 			String objectType = fav.vars.get(pac.rootVar.s());
 			EasyClassInterface class1 = easyLang.getClass(objectType);
 			if (class1 != null) {
 				Map<String, EasyMethodInterface> methods = class1.getMethods();
 				for (String key : methods.keySet()) {
 					String s = "";
-					if( pac.partial != null)
+					if (pac.partial != null)
 						s = pac.partial.s();
 					if (key.startsWith(s))
 						defaultListModel.addElement(key);
@@ -346,7 +351,7 @@ public class EasyIDE {
 		} else {
 			for (String key : fav.vars.keySet()) {
 				String s = "";
-				if( pac.partial != null)
+				if (pac.partial != null)
 					s = pac.partial.s();
 				if (key.startsWith(s))
 					defaultListModel.addElement(key);
@@ -357,7 +362,7 @@ public class EasyIDE {
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
-				list.requestFocus();
+				autoCompleteList.requestFocus();
 			}
 		});
 	}
@@ -366,6 +371,7 @@ public class EasyIDE {
 		System.out.println(s);
 		final int cp = getSelectedTextArea().getCaretPosition();
 		try {
+			s = s.substring(partial.length()); // for example if one auto completes this: 'x.min', then we only want to insert the 'us' => minus.
 			getSelectedTextArea().getDocument().insertString(cp, s, null);
 		} catch (BadLocationException e) {
 			e.printStackTrace();

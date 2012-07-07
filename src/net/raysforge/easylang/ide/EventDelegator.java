@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.tree.TreePath;
 
 import net.raysforge.easylang.Output;
@@ -45,9 +47,8 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 	@Override
 	public void windowClosing(WindowEvent we) {
 		if (easyIDE.checkIfAnyTabIsModified()) {
-			int result = JOptionPane.showConfirmDialog(easyIDE.getJFrame(), "You have unsaved changes. Do you really want to exit ?");
-			if (result == JOptionPane.YES_OPTION)
-			{
+			int result = JOptionPane.showConfirmDialog(easyIDE.getJFrame(), "You have unsaved changes. Do you want to save them ?");
+			if (result == JOptionPane.NO_OPTION) {
 				easyIDE.getJFrame().dispose();
 			}
 		} else {
@@ -138,10 +139,10 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 	public void eventDispatched(AWTEvent awtEvent) {
 		if (awtEvent instanceof KeyEvent) {
 			KeyEvent ke = (KeyEvent) awtEvent;
-			if( ke.getKeyCode() == 'S' && (ke.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK)  && ke.getID() == KeyEvent.KEY_RELEASED)
+			if (ke.getKeyCode() == 'S' && (ke.getModifiersEx() == KeyEvent.CTRL_DOWN_MASK) && ke.getID() == KeyEvent.KEY_RELEASED)
 				easyIDE.saveSelectedTextArea();
 		}
-		
+
 	}
 
 	@Override
@@ -149,23 +150,43 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 		Object source = ke.getSource();
 		if (source instanceof JTextArea) {
 			JTextArea textArea = (JTextArea) source;
-			if( ke.getKeyChar() == ' ' && ke.getModifiers() == KeyEvent.CTRL_MASK )
-			{
-				
+			if (ke.getKeyChar() == ' ' && ke.getModifiers() == KeyEvent.CTRL_MASK) {
+
 				Point mcp = textArea.getCaret().getMagicCaretPosition();
-				easyIDE.showAutoCompleteBox( textArea, mcp);
+				easyIDE.showAutoCompleteBox(textArea, mcp);
+			}
+			if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+				System.out.println("ENTER");
+				ke.consume();
+				Document doc = textArea.getDocument();
+				try {
+					int line = textArea.getLineOfOffset(textArea.getCaretPosition());
+					int start = textArea.getLineStartOffset(line);
+					int end = textArea.getLineEndOffset(line);
+					String str = doc.getText(start, end - start - 1);
+					for (int i = 0; i < str.length(); i++) {
+						if( str.charAt(i) != ' ')
+						{
+							str = str.substring(0, i);
+							break;
+						}
+					}
+					doc.insertString(textArea.getCaretPosition(), '\n' + str, null); 
+				} catch (BadLocationException ble) {
+					// TODO: handle exception
+				}
 			}
 		}
 		if (source instanceof JList) {
 			JList list = (JList) source;
 			if (ke.getKeyChar() == KeyEvent.VK_ENTER) {
-                final String s = (String) list.getSelectedValue();
-                easyIDE.useSelectedListVlaue(s);
-            }
+				final String s = (String) list.getSelectedValue();
+				if (s != null)
+					easyIDE.useSelectedListVlaue(s);
+			}
 		}
-		
-		if( ke.getKeyCode() == KeyEvent.VK_ESCAPE)
-		{
+
+		if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			System.out.println("sedf");
 		}
 
