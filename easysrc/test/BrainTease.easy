@@ -6,7 +6,7 @@ Liste liste = neu Liste();
 publik nichts start()
 {
 
-	fenster.setzeTitel("Sokoban");
+	fenster.setzeTitel("BrainTease");
 	fenster.setzeBreite(800);
 	fenster.setzeHöhe(600);
 	

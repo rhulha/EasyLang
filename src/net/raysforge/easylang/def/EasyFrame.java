@@ -1,6 +1,7 @@
 package net.raysforge.easylang.def;
 
 import java.awt.AWTEvent;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
@@ -120,6 +121,17 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 				assertClosure(closure);
 				EasyFrame ef = (EasyFrame) instance;
 				ef.keyEventHandler = closure;
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.add"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyFrame ef = (EasyFrame) instance;
+				EasyLangList ell = (EasyLangList) parameter.get(0);
+				Container cp = ef.easySwing.getContentPane();
+				
 				return null;
 			}
 		});

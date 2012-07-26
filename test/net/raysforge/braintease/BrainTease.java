@@ -1,34 +1,37 @@
 package net.raysforge.braintease;
 
 import java.awt.AWTEvent;
-import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.Color;
 import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import net.raysforge.easyswing.EasyList;
 import net.raysforge.easyswing.EasySwing;
 
-public class BrainTease implements AWTEventListener, ActionListener {
 
-	private JButton right;
-	private JButton wrong;
+// add timer to see how long it takes
+
+public class BrainTease implements AWTEventListener {
+
 	private EasyList list;
+	int currentElement=0;
+	private ScriptEngine engine;
 
 	public BrainTease() {
+		
+		ScriptEngineManager mgr = new ScriptEngineManager();
+	    engine = mgr.getEngineByName("JavaScript");
+	    
 		EasySwing es = new EasySwing("BrainTeaser", 800, 600);
-		Container cp = es.getContentPane();
 
 		list = new EasyList();
 		list.setFontSize(32);
-		list.getJList().setCellRenderer(new BrainTeaseCellRenderer());
-
+		
 		Random rand = new Random();
 
 		String signs = "+-x:";
@@ -64,22 +67,12 @@ public class BrainTease implements AWTEventListener, ActionListener {
 				a = temp;
 			}
 
-			list.addElement(new BrainTeaseElement("" + a + signs.charAt(sign) + b + '=' + result, correct));
+			list.addElement("" + a + signs.charAt(sign) + b + '=' + result);
 
 		}
 
-		wrong = new JButton("Wrong");
-		right = new JButton("Right");
 
-		JPanel bottom = new JPanel();
-		bottom.add(wrong);
-		bottom.add(right);
-
-		wrong.addActionListener(this);
-		right.addActionListener(this);
-
-		cp.add(list.getScrollPane(), BorderLayout.CENTER);
-		cp.add(bottom, BorderLayout.SOUTH);
+		es.add(list);
 
 		es.addGlobalKeyEventListener(this);
 
@@ -97,33 +90,37 @@ public class BrainTease implements AWTEventListener, ActionListener {
 		if (event instanceof KeyEvent) {
 			KeyEvent ke = (KeyEvent) event;
 			if (ke.getID() == KeyEvent.KEY_PRESSED) {
-				if (ke.getKeyCode() == KeyEvent.VK_LEFT)
-					wrong.doClick();
 				if (ke.getKeyCode() == KeyEvent.VK_RIGHT)
-					right.doClick();
+					tip(true);
+				if (ke.getKeyCode() == KeyEvent.VK_LEFT)
+					tip(false);
 			}
 		}
 
 	}
 	
-	int currentElement=0;
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		boolean correctTip = e.getSource() == right;
+	public void tip(boolean correctTip) {
 		if( list.getListModel().size() <= currentElement)
 			return;
-		BrainTeaseElement bte = (BrainTeaseElement) list.get(currentElement++);
-		if( ! bte.isCorrect())
-		{
-			bte.replaceChar('=', '\u2260');
+		String expr = (String) list.get(currentElement);
+		Boolean eval=true;
+		try {
+			eval = (Boolean) engine.eval(expr.replace("=", "=="));
+		} catch (ScriptException e) {
+			e.printStackTrace();
 		}
-		if (bte.isCorrect() == correctTip)
-			bte.answeredCorrect=true;
-		else
-			bte.answeredCorrect=false;
+		if( ! eval)
+		{
+			list.set(currentElement, expr.replace('=', '\u2260').replace(':', '/').replace('x', '*'));
+		}
+		if (eval == correctTip)
+		{
+			list.setBackgroundColor(currentElement, Color.GREEN);
+		} else {
+			list.setBackgroundColor(currentElement, Color.RED);
+		}
 		list.getJList().repaint();
-		list.getJList().ensureIndexIsVisible(currentElement);
+		list.getJList().ensureIndexIsVisible(currentElement++);
 		
 	}
 
