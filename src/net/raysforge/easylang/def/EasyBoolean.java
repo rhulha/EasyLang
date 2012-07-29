@@ -13,6 +13,10 @@ public class EasyBoolean implements EasyClassInterface {
 
 	private final boolean b;
 
+	public EasyBoolean() {
+		this.b = false;
+	}
+
 	public EasyBoolean(boolean b) {
 		this.b = b;
 	}
@@ -39,6 +43,26 @@ public class EasyBoolean implements EasyClassInterface {
 				} else {
 					System.out.println("parameter to Boolean.or must be Boolean");
 				}
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Boolean.ifTrue"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				assertClosure(closure);
+				if (((EasyBoolean) instance).b)
+					closure.invoke(null, null, null);
+				return null;
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Boolean.ifFalse"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				assertClosure(closure);
+				if (!((EasyBoolean) instance).b)
+					closure.invoke(null, null, null);
 				return null;
 			}
 		});

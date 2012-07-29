@@ -3,14 +3,20 @@ package net.raysforge.easylang;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.ResourceBundle;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import net.raysforge.easylang.def.EasyArray;
 import net.raysforge.easylang.def.EasyAssert;
+import net.raysforge.easylang.def.EasyBoolean;
 import net.raysforge.easylang.def.EasyFileReader;
 import net.raysforge.easylang.def.EasyFrame;
 import net.raysforge.easylang.def.EasyGraphics;
 import net.raysforge.easylang.def.EasyInteger;
+import net.raysforge.easylang.def.EasyLangList;
 import net.raysforge.easylang.def.EasyString;
 
 //Integer extends Float extends String
@@ -39,6 +45,10 @@ public class EasyLang {
 	private HashMap<String, EasyClassInterface> classes = new HashMap<String, EasyClassInterface>();
 
 	public static EasyLang instance;
+	
+	public Random random = new Random();
+	public ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+	public ScriptEngine javaScriptEngine = scriptEngineManager.getEngineByName("JavaScript");
 
 	public static ResourceBundle rb;
 
@@ -55,12 +65,14 @@ public class EasyLang {
 	}
 
 	private void initNativeClasses() {
-		registerClass(new EasyInteger());
-		registerClass(new EasyString());
-		registerClass(new EasyFrame());
-		registerClass(new EasyFileReader());
-		registerClass(new EasyGraphics());
 		registerClass(new EasyAssert());
+		registerClass(new EasyBoolean());
+		registerClass(new EasyFileReader());
+		registerClass(new EasyFrame());
+		registerClass(new EasyGraphics());
+		registerClass(new EasyInteger());
+		registerClass(new EasyLangList());
+		registerClass(new EasyString());
 	}
 
 	public static void main(String[] args) throws IOException {

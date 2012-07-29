@@ -1,21 +1,32 @@
 package net.raysforge.easylang.utils;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 
 public class FileUtils {
 	public static char[] readCompleteFile(File f) {
 		try {
-			FileReader reader = new FileReader(f);
-			int len = (int) f.length();
-			char buf[] = new char[len];
-			if ((reader.read(buf, 0, len)) != len) {
-				throw new RuntimeException("reader.read() != len");
+			Reader reader = new InputStreamReader(new FileInputStream(f), "utf-8");
+			char buf[] = new char[1024];
+			
+			StringWriter sw = new StringWriter();
+			
+			while (true)
+			{
+				int read = reader.read( buf, 0, buf.length);
+				if (read < 0)
+					break;
+				sw.write(buf, 0, read);
 			}
 			reader.close();
-			return buf;
+			return sw.toString().toCharArray();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -23,12 +34,14 @@ public class FileUtils {
 
 	public static void writeCompleteFile(File file, String text) {
 		try {
-			FileWriter fw = new FileWriter(file);
+			Writer fw = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
 			fw.write(text);
 			fw.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 	}
+	
+	main
 }

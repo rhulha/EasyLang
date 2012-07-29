@@ -80,6 +80,8 @@ public class BrainTease implements AWTEventListener {
 	}
 
 	public static void main(String[] args) {
+		
+		System.out.println("\u2260");
 
 		new BrainTease();
 
@@ -105,13 +107,13 @@ public class BrainTease implements AWTEventListener {
 		String expr = (String) list.get(currentElement);
 		Boolean eval=true;
 		try {
-			eval = (Boolean) engine.eval(expr.replace("=", "=="));
+			eval = (Boolean) engine.eval(expr.replace("=", "==").replace(':', '/').replace('x', '*'));
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		}
 		if( ! eval)
 		{
-			list.set(currentElement, expr.replace('=', '\u2260').replace(':', '/').replace('x', '*'));
+			list.set(currentElement, expr.replace('=', '\u2260'));
 		}
 		if (eval == correctTip)
 		{

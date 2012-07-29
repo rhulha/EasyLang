@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptException;
+
 import net.raysforge.commons.Generics;
 import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
@@ -39,6 +41,13 @@ public class EasyString implements EasyClassInterface {
 				return new EasyString(instance.toString() + parameter.get(0).toString());
 			}
 		});
+		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("String.replace"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 2);
+				return new EasyString(instance.toString().replace(parameter.get(0).toString(), parameter.get(1).toString()) );
+			}
+		});
 		add(new NativeMethod(EasyLang.rb.getString("String")+"[]", EasyLang.rb.getString("String.split"), null) {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
@@ -57,6 +66,20 @@ public class EasyString implements EasyClassInterface {
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				return new EasyInteger(Long.parseLong(instance.toString()));
+			}
+		});
+		// used for BrainTease.easy
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("String.evaluate"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 0);
+				Boolean eval;
+				try {
+					eval = (Boolean) EasyLang.instance.javaScriptEngine.eval(instance.toString().replace("=", "==").replace(':', '/').replace('x', '*'));
+				} catch (ScriptException e) {
+					throw new RuntimeException(e);
+				}
+				return new EasyBoolean(eval.booleanValue());
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("String.equals"), null) {

@@ -1,7 +1,6 @@
 package net.raysforge.easylang.def;
 
 import java.awt.AWTEvent;
-import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
@@ -130,8 +129,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 				assertParameterSize(parameter, 1);
 				EasyFrame ef = (EasyFrame) instance;
 				EasyLangList ell = (EasyLangList) parameter.get(0);
-				Container cp = ef.easySwing.getContentPane();
-				
+				ef.easySwing.add(ell.list);
 				return null;
 			}
 		});
