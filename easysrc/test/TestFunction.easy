@@ -1,16 +1,16 @@
 
-Zahl feldGröße = 40;
+Zahl feldGrÃ¶ÃŸe = 40;
 
 publik nichts start()
 {
-   feldGröße = 2;
-   feldGröße.schreibe();
+   feldGrÃ¶ÃŸe = 2;
+   feldGrÃ¶ÃŸe.schreibe();
    selbst.test();
-   feldGröße.schreibe();
+   feldGrÃ¶ÃŸe.schreibe();
 }
 
 
 publik nichts test()
 {
-   feldGröße.schreibe();
+   feldGrÃ¶ÃŸe.schreibe();
 }

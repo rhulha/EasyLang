@@ -5,16 +5,16 @@ Zeichen[] level = neu Zeichen[];
 Zeichen[] ziele = neu Zeichen[];
 Zahl spielerX = 0;
 Zahl spielerY = 0;
-Zahl feldGröße = 40;
+Zahl feldGrÃ¶ÃŸe = 40;
 Zahl levelcounter = -1;
 
 publik nichts ladeLevel()
 {
 	"start lade level".schreibe();
-	level.löschen(); 
-	ziele.löschen(); 
+	level.lÃ¶schen(); 
+	ziele.lÃ¶schen(); 
 	DateiLeser dl = neu DateiLeser("easysrc/test/level0".und(levelcounter.plus!(1)).und(".sokoban"));
-	dl.fürJedeZeile{
+	dl.fÃ¼rJedeZeile{
 		Zeichen zeile -> 
 		Zeichen[] parts = zeile.spalte(":");
 		level[parts[0]] = parts[1];
@@ -39,8 +39,8 @@ publik nichts start()
 {
 	fenster.setzeTitel("Sokoban");
 	fenster.setzeBreite(800);
-	fenster.setzeHöhe(600);
-	fenster.fügeWerkzeugLeistenPunktHinzu("Neuer Versuch"){
+	fenster.setzeHÃ¶he(600);
+	fenster.fÃ¼geWerkzeugLeistenPunktHinzu("Neuer Versuch"){
 		levelcounter.minus!(1);
 		selbst.ladeLevel();
 	}
@@ -76,11 +76,11 @@ publik nichts start()
 	  }
 	  
 	  Zeichen zielZeichen = spielerX.plus(dx).und("-").und(spielerY.plus(dy));
-	  level.enthältSchlüssel(zielZeichen){
+	  level.enthÃ¤ltSchlÃ¼ssel(zielZeichen){
 		  Zeichen feld = level[zielZeichen];
 		  feld.istGleich("Kiste"){
 		  	Zeichen doppelZielZeichen = spielerX.plus(dx).plus(dx).und("-").und(spielerY.plus(dy).plus(dy));
-		  	level.enthältSchlüsselNicht(doppelZielZeichen){
+		  	level.enthÃ¤ltSchlÃ¼sselNicht(doppelZielZeichen){
 		  		level.entferne(zielZeichen);
 		  		level[doppelZielZeichen] = "Kiste";
 		  	}
@@ -91,7 +91,7 @@ publik nichts start()
 		  }
 	  }
 	  
-	  level.enthältSchlüsselNicht(zielZeichen).oder(level[zielZeichen].istGleich("Ziel")){
+	  level.enthÃ¤ltSchlÃ¼sselNicht(zielZeichen).oder(level[zielZeichen].istGleich("Ziel")){
 		  level.entferne(spielerX.und("-").und(spielerY));
 		  level[zielZeichen] = "Spieler";
 		  spielerX.plus!(dx);
@@ -99,14 +99,14 @@ publik nichts start()
 		  fenster.male();
 	  }
 	  
-	  Zahl zähler = 0;
-	  ziele.fürJedenSchlüssel{
-	  	Zeichen schlüssel ->
-	  	level[schlüssel].istGleich("Kiste"){
-	  	  zähler.plus!(1);
+	  Zahl zÃ¤hler = 0;
+	  ziele.fÃ¼rJedenSchlÃ¼ssel{
+	  	Zeichen schlÃ¼ssel ->
+	  	level[schlÃ¼ssel].istGleich("Kiste"){
+	  	  zÃ¤hler.plus!(1);
 	  	}
 	  }
-	  zähler.istGleich(ziele.anzahlSchlüssel()) {
+	  zÃ¤hler.istGleich(ziele.anzahlSchlÃ¼ssel()) {
 	  	"Sieg".schreibe();
 	  	selbst.ladeLevel();
 	  }
@@ -116,22 +116,22 @@ publik nichts start()
 	
 	fenster.male{
 	  Grafik g ->
-		Zahl w = fenster.holeBreite().geteiltDurch( feldGröße);
-		Zahl h = fenster.holeHöhe().geteiltDurch( feldGröße);
+		Zahl w = fenster.holeBreite().geteiltDurch( feldGrÃ¶ÃŸe);
+		Zahl h = fenster.holeHÃ¶he().geteiltDurch( feldGrÃ¶ÃŸe);
 		w.mal{
 			Zahl x ->
 			h.mal{
 				Zahl y ->
-				ziele.enthältSchlüssel(x.und("-").und(y)){
+				ziele.enthÃ¤ltSchlÃ¼ssel(x.und("-").und(y)){
 					g.setzeFarbe(farben[ziele[x.und("-").und(y)]]);
-					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+					g.fÃ¼lleRechteck( x.mal(feldGrÃ¶ÃŸe), y.mal(feldGrÃ¶ÃŸe), feldGrÃ¶ÃŸe, feldGrÃ¶ÃŸe);  
 				}
-				level.enthältSchlüssel(x.und("-").und(y)){
+				level.enthÃ¤ltSchlÃ¼ssel(x.und("-").und(y)){
 					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
-					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+					g.fÃ¼lleRechteck( x.mal(feldGrÃ¶ÃŸe), y.mal(feldGrÃ¶ÃŸe), feldGrÃ¶ÃŸe, feldGrÃ¶ÃŸe);  
 				}
 				g.setzeFarbe("0x000000");
-				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+				g.maleRechteck( x.mal(feldGrÃ¶ÃŸe), y.mal(feldGrÃ¶ÃŸe), feldGrÃ¶ÃŸe, feldGrÃ¶ÃŸe);
 			}
 		}
 	}

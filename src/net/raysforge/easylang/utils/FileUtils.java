@@ -14,7 +14,7 @@ public class FileUtils {
 	public static char[] readCompleteFile(File f) {
 		try {
 			Reader reader = new InputStreamReader(new FileInputStream(f), "utf-8");
-			char buf[] = new char[1024];
+			char buf[] = new char[10];
 			
 			StringWriter sw = new StringWriter();
 			
@@ -43,5 +43,10 @@ public class FileUtils {
 
 	}
 	
-	main
+	public static void main(String[] args) {
+		char[] cf = FileUtils.readCompleteFile(new File("C:\\Coding\\Projekte\\private\\EasyLang\\easysrc\\test\\Sokoban.easy"));
+		String str = new String(cf);
+		System.out.println(str);
+		
+	}
 }

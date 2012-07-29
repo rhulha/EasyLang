@@ -3,37 +3,37 @@
 
 Fenster fenster = neu Fenster();
 
-Zahl feldGröße = 40;
+Zahl feldGrÃ¶ÃŸe = 40;
 
 publik nichts start()
 {
-	Zahl feldGröße = 40;
+	Zahl feldGrÃ¶ÃŸe = 40;
 
 	fenster.setzeTitel("Sokoban");
 	fenster.setzeBreite(800);
-	fenster.setzeHöhe(600);
+	fenster.setzeHÃ¶he(600);
 	
 	Zeichen[] level = neu Zeichen[];
 
 	fenster.male{
 		Grafik g ->
 		g.setzeFarbe("0xff0000");
-		g.fülleRechteck( 10, 10, 40, 40);
+		g.fÃ¼lleRechteck( 10, 10, 40, 40);
 	
-		Zahl w = fenster.holeBreite().geteiltDurch( feldGröße);
-		Zahl h = fenster.holeHöhe().geteiltDurch( feldGröße);
+		Zahl w = fenster.holeBreite().geteiltDurch( feldGrÃ¶ÃŸe);
+		Zahl h = fenster.holeHÃ¶he().geteiltDurch( feldGrÃ¶ÃŸe);
 
 		w.mal{
 			Zahl x ->
 			h.mal{
 				Zahl y ->
-				level.enthältSchlüssel(x.und("-").und(y)){
+				level.enthÃ¤ltSchlÃ¼ssel(x.und("-").und(y)){
 					Zeichen alteFarbe = g.holeFarbe();
 					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
-					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+					g.fÃ¼lleRechteck( x.mal(feldGrÃ¶ÃŸe), y.mal(feldGrÃ¶ÃŸe), feldGrÃ¶ÃŸe, feldGrÃ¶ÃŸe);  
 					g.setzeFarbe( alteFarbe);
 				}
-				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+				g.maleRechteck( x.mal(feldGrÃ¶ÃŸe), y.mal(feldGrÃ¶ÃŸe), feldGrÃ¶ÃŸe, feldGrÃ¶ÃŸe);
 			}
 		}				  
 	}

@@ -1,5 +1,6 @@
 package net.raysforge.easylang.def;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,17 @@ public class EasyLangList implements EasyClassInterface {
 				EasyLangList easyLangList = (EasyLangList) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
 				easyLangList.list.setFontSize(parameterInt.getIntValue());
+				return null;
+			}
+		});
+		add(new NativeMethod("", EasyLang.rb.getString("List.setBackgroundColor"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 2);
+				EasyLangList easyLangList = (EasyLangList) instance;
+				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
+				easyLangList.list.setBackgroundColor((int)parameterInt.getIntValue(), Color.decode( parameter.get(1).toString()));
+				easyLangList.list.getJList().ensureIndexIsVisible((int)parameterInt.getIntValue());
 				return null;
 			}
 		});

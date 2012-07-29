@@ -4,7 +4,7 @@ publik nichts start()
 {
 	
 	DateiLeser dl = neu DateiLeser("level01.sokoban");
-	dl.fürJedeZeile{
+	dl.fÃ¼rJedeZeile{
 		Zeichen zeile -> zeile.schreibe();
 	}
 	dl.ende();

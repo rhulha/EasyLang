@@ -18,7 +18,7 @@ publik nichts start()
 	
 	liste.setzeSchriftGröße(32);
 	
-	7.mal{
+	25.mal{
 	    Zahl a = 9.zufall().plus(1);
 	    Zahl b = 9.zufall().plus(1);
 	    Zahl operation = 4.zufall();
@@ -83,15 +83,21 @@ publik nichts start()
 	      {
 	         liste.setze( position, ausdruck.ersetze("=", "≠"));
 	      }
-		  # links
-		  taste.istGleich(37){
-		  }
+	      
+	      Boolean meinTip;
+
 		  # rechts
-		  taste.istGleich(39){
+		  meinTip = taste.istGleich(39);
+		  
+		  test.istGleich(meinTip){
+		  	liste.setzeHintergrundFarbe( position, "0x00FF00");
+		  }
+		  test.istNichtGleich(meinTip){
+		  	liste.setzeHintergrundFarbe( position, "0xFF0000");
 		  }
 		  position.plus!(1);
 	  }
-	  
+	  fenster.male();
 	}
 	
 	fenster.zeigeAn();

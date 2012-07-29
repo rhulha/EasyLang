@@ -33,17 +33,55 @@ public class EasyBoolean implements EasyClassInterface {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
-				assertClosure(closure);
 
 				EasyClassInterface p0 = parameter.get(0);
 				if (p0 instanceof EasyBoolean) {
 					EasyBoolean rb = (EasyBoolean) p0;
-					if (((EasyBoolean) instance).b || rb.b)
-						closure.invoke(null, null, null);
+					if (((EasyBoolean) instance).b || rb.b) {
+						if (closure != null)
+							closure.invoke(null, null, null);
+						return new EasyBoolean(true);
+					}
 				} else {
 					System.out.println("parameter to Boolean.or must be Boolean");
 				}
-				return null;
+				return new EasyBoolean(false);
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Boolean.equals"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyClassInterface p0 = parameter.get(0);
+				if (p0 instanceof EasyBoolean) {
+					EasyBoolean rb = (EasyBoolean) p0;
+					if (((EasyBoolean) instance).b == rb.b) {
+						if (closure != null)
+							closure.invoke(null, null, null);
+						return new EasyBoolean(true);
+					}
+				} else {
+					System.out.println("parameter to Boolean.equals must be Boolean");
+				}
+				return new EasyBoolean(false);
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Boolean.notEquals"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyClassInterface p0 = parameter.get(0);
+				if (p0 instanceof EasyBoolean) {
+					EasyBoolean rb = (EasyBoolean) p0;
+					if (((EasyBoolean) instance).b != rb.b) {
+						if (closure != null)
+							closure.invoke(null, null, null);
+						return new EasyBoolean(true);
+					}
+				} else {
+					System.out.println("parameter to Boolean.equals must be Boolean");
+				}
+				return new EasyBoolean(false);
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Boolean.ifTrue"), null) {

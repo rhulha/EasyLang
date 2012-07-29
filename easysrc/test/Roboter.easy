@@ -8,7 +8,7 @@ publik nichts norden()
    positionY.plus!(1);
 }
 
-publik nichts süden()
+publik nichts sÃ¼den()
 {
    positionY.minus!(1);
 }
