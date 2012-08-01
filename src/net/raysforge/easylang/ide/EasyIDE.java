@@ -19,6 +19,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -108,6 +109,7 @@ public class EasyIDE {
 		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
 
 		autoCompleteList.addKeyListener(delegator);
+		autoCompleteList.addMouseListener(delegator);
 
 		defaultListModel = new DefaultListModel();
 		autoCompleteList.setModel(defaultListModel);
@@ -160,32 +162,41 @@ public class EasyIDE {
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-			TreePath selectionPath = easyTree.getSelectionPath();
-			if (selectionPath == null)
-				return;
+		Object source = e.getSource();
+		if (source instanceof JTree) {
+			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+				TreePath selectionPath = easyTree.getSelectionPath();
+				if (selectionPath == null)
+					return;
 
-			File fileFromTreePath = getFileFromTreePath(selectionPath);
-			if (fileFromTreePath.isFile()) {
-				int found = -1;
-				for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-					String toolTipText = tabbedPane.getToolTipTextAt(i);
-					if (toolTipText.equals(fileFromTreePath.getPath())) {
-						found = i;
-						break;
+				File fileFromTreePath = getFileFromTreePath(selectionPath);
+				if (fileFromTreePath.isFile()) {
+					int found = -1;
+					for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+						String toolTipText = tabbedPane.getToolTipTextAt(i);
+						if (toolTipText.equals(fileFromTreePath.getPath())) {
+							found = i;
+							break;
+						}
+					}
+					if (found >= 0)
+						tabbedPane.setSelectedIndex(found);
+					else {
+						char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
+						EasyTextArea eta = new EasyTextArea();
+						eta.setText(new String(completeFile));
+						eta.getDocument().addDocumentListener(delegator);
+						eta.addKeyListener(delegator);
+						tabbedPane.addTab(fileFromTreePath.getName(), null, eta.getScrollPane(), fileFromTreePath.getPath());
+						tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
 					}
 				}
-				if (found >= 0)
-					tabbedPane.setSelectedIndex(found);
-				else {
-					char[] completeFile = FileUtils.readCompleteFile(fileFromTreePath);
-					EasyTextArea eta = new EasyTextArea();
-					eta.setText(new String(completeFile));
-					eta.getDocument().addDocumentListener(delegator);
-					eta.addKeyListener(delegator);
-					tabbedPane.addTab(fileFromTreePath.getName(), null, eta.getScrollPane(), fileFromTreePath.getPath());
-					tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-				}
+			}
+		} else if (source instanceof JList) {
+			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+				final String s = (String) autoCompleteList.getSelectedValue();
+				if (s != null)
+					useSelectedListValue(s);
 			}
 		}
 
@@ -325,35 +336,37 @@ public class EasyIDE {
 		else
 			partial = "";
 
-		if (pac.rootVar.isQuote()) {
-			EasyClassInterface class1 = easyLang.getClass(EasyLang.rb.getString("String"));
-			if (class1 != null) {
-				Map<String, EasyMethodInterface> methods = class1.getMethods();
-				for (String key : methods.keySet()) {
-					if (key.startsWith(pac.partial.s()))
-						defaultListModel.addElement(key);
+		if (pac.rootVar != null) {
+			if (pac.rootVar.isQuote()) {
+				EasyClassInterface class1 = easyLang.getClass(EasyLang.rb.getString("String"));
+				if (class1 != null) {
+					Map<String, EasyMethodInterface> methods = class1.getMethods();
+					for (String key : methods.keySet()) {
+						if (key.startsWith(pac.partial.s()))
+							defaultListModel.addElement(key);
+					}
 				}
-			}
-		} else if (fav.vars.containsKey(pac.rootVar.s())) {
-			String objectType = fav.vars.get(pac.rootVar.s());
-			EasyClassInterface class1 = easyLang.getClass(objectType);
-			if (class1 != null) {
-				Map<String, EasyMethodInterface> methods = class1.getMethods();
-				for (String key : methods.keySet()) {
-					String s = "";
-					if (pac.partial != null)
-						s = pac.partial.s();
-					if (key.startsWith(s))
-						defaultListModel.addElement(key);
+			} else if (fav.vars.containsKey(pac.rootVar.s())) {
+				String objectType = fav.vars.get(pac.rootVar.s());
+				EasyClassInterface class1 = easyLang.getClass(objectType);
+				if (class1 != null) {
+					Map<String, EasyMethodInterface> methods = class1.getMethods();
+					for (String key : methods.keySet()) {
+						String s = "";
+						if (pac.partial != null)
+							s = pac.partial.s();
+						if (key.startsWith(s))
+							defaultListModel.addElement(key);
+					}
 				}
-			}
 
+			}
 		} else {
 			for (String key : fav.vars.keySet()) {
 				String s = "";
 				if (pac.partial != null)
 					s = pac.partial.s();
-				if (key.startsWith(s))
+				if (s.length() == 0 || key.startsWith(s))
 					defaultListModel.addElement(key);
 			}
 		}
@@ -367,7 +380,7 @@ public class EasyIDE {
 		});
 	}
 
-	public void useSelectedListVlaue(String s) {
+	public void useSelectedListValue(String s) {
 		System.out.println(s);
 		final int cp = getSelectedTextArea().getCaretPosition();
 		try {

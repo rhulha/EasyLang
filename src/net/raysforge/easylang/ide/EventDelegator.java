@@ -182,12 +182,12 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 			if (ke.getKeyChar() == KeyEvent.VK_ENTER) {
 				final String s = (String) list.getSelectedValue();
 				if (s != null)
-					easyIDE.useSelectedListVlaue(s);
+					easyIDE.useSelectedListValue(s);
 			}
 		}
 
 		if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			System.out.println("sedf");
+			System.out.println("VK_ESCAPE");
 		}
 
 	}
