@@ -59,6 +59,9 @@ public class EasyBoolean implements EasyClassInterface {
 						if (closure != null)
 							closure.invoke(null, null, null, null);
 						return new EasyBoolean(true);
+					} else {
+						if (elseClosure != null)
+							elseClosure.invoke(null, null, null, null);
 					}
 				} else {
 					System.out.println("parameter to Boolean.equals must be Boolean");

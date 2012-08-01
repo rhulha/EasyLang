@@ -80,8 +80,8 @@ public class EasyLang {
 		EasyLang easyLang = new EasyLang();
 		easyLang.parse(new File("easysrc"));
 		//		runClass(easyLang.getClass("TestDatei"));
-		//runClass(easyLang.getClass("BrainTease"));
-		runClass(easyLang.getClass("TestElseClosure"));
+		runClass(easyLang.getClass("BrainTease"));
+		//		runClass(easyLang.getClass("TestElseClosure"));
 		//		runClass(easyLang.getClass("Sokoban"));
 		//		runClass(easyLang.getClass("TestFunction"));
 		//		runClass(easyLang.getClass("Test"));

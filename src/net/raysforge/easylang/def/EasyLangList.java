@@ -28,6 +28,16 @@ public class EasyLangList implements EasyClassInterface {
 				return null;
 			}
 		});
+		add(new NativeMethod("", EasyLang.rb.getString("List.ensureIndexIsVisible"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyLangList easyLangList = (EasyLangList) instance;
+				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
+				easyLangList.list.getJList().ensureIndexIsVisible((int)parameterInt.getIntValue());
+				return null;
+			}
+		});
 		add(new NativeMethod("", EasyLang.rb.getString("List.setBackgroundColor"), null) {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
@@ -35,7 +45,6 @@ public class EasyLangList implements EasyClassInterface {
 				EasyLangList easyLangList = (EasyLangList) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
 				easyLangList.list.setBackgroundColor((int)parameterInt.getIntValue(), Color.decode( parameter.get(1).toString()));
-				easyLangList.list.getJList().ensureIndexIsVisible((int)parameterInt.getIntValue());
 				return null;
 			}
 		});

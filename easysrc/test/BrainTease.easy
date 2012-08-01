@@ -54,7 +54,7 @@ publik nichts start()
 	       {
 	          ergebnis.plus!(3.zufall().plus(1));
 	       }
-	       plusOderMinus.istGleich(1)
+	       ansonsten
 	       {
 	          ergebnis.minus!(3.zufall().plus(1));
 	       }
@@ -91,11 +91,11 @@ publik nichts start()
 		  
 		  test.istGleich(meinTip){
 		  	liste.setzeHintergrundFarbe( position, "0x00FF00");
-		  }
-		  test.istNichtGleich(meinTip){
+		  } ansonsten {
 		  	liste.setzeHintergrundFarbe( position, "0xFF0000");
 		  }
 		  position.plus!(1);
+		  liste.garantiereSichtbarkeitFür(position);
 	  }
 	  fenster.male();
 	}

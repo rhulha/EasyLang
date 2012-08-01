@@ -159,7 +159,7 @@ public class EasyInteger implements EasyClassInterface {
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyInteger instanceInt = (EasyInteger) instance;
-				return new EasyInteger(EasyLang.instance.random.nextInt((int)instanceInt.getIntValue()));
+				return new EasyInteger(EasyLang.instance.random.nextInt((int) instanceInt.getIntValue()));
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Number.equals"), null) {
@@ -173,6 +173,9 @@ public class EasyInteger implements EasyClassInterface {
 					if (theyAreTheSame) {
 						List<EasyClassInterface> p = Generics.newArrayList();
 						closure.invoke(null, null, null, p);
+					} else {
+						if (elseClosure != null)
+							elseClosure.invoke(null, null, null, null);
 					}
 				}
 				return new EasyBoolean(theyAreTheSame);
@@ -196,6 +199,26 @@ public class EasyInteger implements EasyClassInterface {
 					}
 				}
 				return new EasyBoolean(isLowerThan);
+			}
+		});
+		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Number.isBiggerThan"), null) {
+			@Override
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+				assertParameterSize(parameter, 1);
+				EasyInteger instanceInt = (EasyInteger) instance;
+				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
+				boolean isBiggerThan = (instanceInt.intValue > parameterInt.intValue);
+				if (closure != null) {
+					List<EasyClassInterface> p = Generics.newArrayList();
+					if (isBiggerThan) {
+						closure.invoke(null, null, null, p);
+					} else {
+						if (elseClosure != null) {
+							elseClosure.invoke(null, null, null, p);
+						}
+					}
+				}
+				return new EasyBoolean(isBiggerThan);
 			}
 		});
 	}
