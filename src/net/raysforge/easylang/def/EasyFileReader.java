@@ -36,7 +36,7 @@ public class EasyFileReader implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("FileReader.readLine"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFileReader efr = (EasyFileReader) instance;
 				try {
@@ -49,7 +49,7 @@ public class EasyFileReader implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("FileReader.close"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFileReader efr = (EasyFileReader) instance;
 				try {
@@ -62,7 +62,7 @@ public class EasyFileReader implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("FileReader.forEachLine"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				assertClosure(closure);
 				EasyFileReader efr = (EasyFileReader) instance;
@@ -71,7 +71,7 @@ public class EasyFileReader implements EasyClassInterface {
 					while ((line = efr.br.readLine()) != null) {
 						List<EasyClassInterface> p = Generics.newArrayList();
 						p.add(new EasyString(line));
-						closure.invoke( null, null, p );
+						closure.invoke( null, null, null, p );
 					}
 				} catch (IOException e) {
 					EasyUtils.runtimeExcp(e);

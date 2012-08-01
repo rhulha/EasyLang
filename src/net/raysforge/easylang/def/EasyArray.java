@@ -32,7 +32,7 @@ public class EasyArray implements EasyClassInterface {
 	static {
 		add(new NativeMethod("", EasyLang.rb.getString("Array.get"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -52,7 +52,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.clear"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyArray easyArray = (EasyArray) instance;
 				easyArray.map.clear();
@@ -62,7 +62,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.remove"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -77,7 +77,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Array.keyCount"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyArray easyArray = (EasyArray) instance;
 				return new EasyInteger(easyArray.map.size());
@@ -85,7 +85,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Array.containsKey"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -93,14 +93,14 @@ public class EasyArray implements EasyClassInterface {
 					throw new RuntimeException("parameter must be a String");
 				}
 				if (closure != null && easyArray.map.containsKey(p0.toString())) {
-					closure.invoke(null, null, null);
+					closure.invoke(null, null, null, null);
 				}
 				return new EasyBoolean(easyArray.map.containsKey(p0.toString()));
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Array.containsKeyNot"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -108,7 +108,7 @@ public class EasyArray implements EasyClassInterface {
 					throw new RuntimeException("parameter must be a String");
 				}
 				if (closure != null && !easyArray.map.containsKey(p0.toString())) {
-					closure.invoke(null, null, null);
+					closure.invoke(null, null, null, null);
 				}
 				EasyBoolean easyBoolean = new EasyBoolean(!easyArray.map.containsKey(p0.toString()));
 				return easyBoolean;
@@ -116,7 +116,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.write"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyArray easyArray = (EasyArray) instance;
 
@@ -132,7 +132,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.add"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				EasyArray easyArray = (EasyArray) instance;
 
 				EasyClassInterface p0 = parameter.get(0);
@@ -160,7 +160,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.forEachKey"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				assertClosure(closure);
 				EasyArray easyArray = (EasyArray) instance;
@@ -169,7 +169,7 @@ public class EasyArray implements EasyClassInterface {
 				for (String key : easyArray.map.keySet()) {
 					p.clear();
 					p.add(new EasyString(key));
-					closure.invoke(null, null, p);
+					closure.invoke(null, null, null, p);
 				}
 				return null;
 			}

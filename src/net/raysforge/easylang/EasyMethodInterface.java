@@ -10,7 +10,7 @@ public interface EasyMethodInterface {
 	
 	public String getReturnType();
 	
-	public EasyClassInterface invoke( EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter);
+	public EasyClassInterface invoke( EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter);
 	
 
 }

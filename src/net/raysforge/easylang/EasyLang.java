@@ -80,7 +80,8 @@ public class EasyLang {
 		EasyLang easyLang = new EasyLang();
 		easyLang.parse(new File("easysrc"));
 		//		runClass(easyLang.getClass("TestDatei"));
-		runClass(easyLang.getClass("BrainTease"));
+		//runClass(easyLang.getClass("BrainTease"));
+		runClass(easyLang.getClass("TestElseClosure"));
 		//		runClass(easyLang.getClass("Sokoban"));
 		//		runClass(easyLang.getClass("TestFunction"));
 		//		runClass(easyLang.getClass("Test"));
@@ -99,7 +100,7 @@ public class EasyLang {
 		{
 			EasyLang.instance.writeln("The class you are trying to start does not contain a method called 'start'");
 		}
-		method.invoke(eci, null, null);
+		method.invoke(eci, null, null, null);
 	}
 
 	public void parse(File dir) {

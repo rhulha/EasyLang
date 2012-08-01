@@ -31,7 +31,7 @@ public class NativeMethod implements EasyMethodInterface {
 		return returnType;
 	}
 	
-	public EasyClassInterface invoke( EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter)
+	public EasyClassInterface invoke( EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter)
 	{
 		return null;
 	}

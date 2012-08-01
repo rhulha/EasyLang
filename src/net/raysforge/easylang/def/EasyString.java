@@ -28,7 +28,7 @@ public class EasyString implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("String.write"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyLang.instance.writeln(instance.toString());
 				return null;
@@ -36,21 +36,21 @@ public class EasyString implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("String.append"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				return new EasyString(instance.toString() + parameter.get(0).toString());
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("String.replace"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 2);
 				return new EasyString(instance.toString().replace(parameter.get(0).toString(), parameter.get(1).toString()) );
 			}
 		});
 		add(new NativeMethod(EasyLang.rb.getString("String")+"[]", EasyLang.rb.getString("String.split"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyClassInterface p0 = parameter.get(0);
 				String[] split = instance.toString().split(p0.toString());
@@ -63,7 +63,7 @@ public class EasyString implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("String.asNumber"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				return new EasyInteger(Long.parseLong(instance.toString()));
 			}
@@ -71,7 +71,7 @@ public class EasyString implements EasyClassInterface {
 		// used for BrainTease.easy
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("String.evaluate"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				Boolean eval;
 				try {
@@ -84,13 +84,13 @@ public class EasyString implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("String.equals"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyClassInterface p0 = parameter.get(0);
 				if (closure != null) {
 					if (instance.toString().equals(p0.toString())) {
 						List<EasyClassInterface> p = Generics.newArrayList();
-						closure.invoke(null, null, p);
+						closure.invoke(null, null, null, p);
 					}
 					return null;
 				} else {

@@ -21,7 +21,7 @@ public class EasyAssert implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("Assert"), EasyLang.rb.getString("Assert.equals"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 2);
 				EasyClassInterface p0 = parameter.get(0);
 				EasyClassInterface p1 = parameter.get(1);

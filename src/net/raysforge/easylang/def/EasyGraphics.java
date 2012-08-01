@@ -32,7 +32,7 @@ public class EasyGraphics implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("Graphics"), EasyLang.rb.getString("Graphics.setColor"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyClassInterface p0 = parameter.get(0);
 				EasyGraphics eg = (EasyGraphics) instance;
@@ -42,7 +42,7 @@ public class EasyGraphics implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("Graphics.getColor"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyGraphics eg = (EasyGraphics) instance;
 				return new EasyString( "0x"+Integer.toHexString( eg.g.getColor().getRGB()&0xffffff));
@@ -50,7 +50,7 @@ public class EasyGraphics implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Graphics"), EasyLang.rb.getString("Graphics.fillRect"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 4);
 				int i1 = (int) ((EasyInteger)parameter.get(0)).getIntValue();
 				int i2 = (int) ((EasyInteger)parameter.get(1)).getIntValue();
@@ -63,7 +63,7 @@ public class EasyGraphics implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Graphics"), EasyLang.rb.getString("Graphics.drawRect"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 4);
 				int i1 = (int) ((EasyInteger)parameter.get(0)).getIntValue();
 				int i2 = (int) ((EasyInteger)parameter.get(1)).getIntValue();

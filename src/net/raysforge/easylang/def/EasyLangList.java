@@ -20,7 +20,7 @@ public class EasyLangList implements EasyClassInterface {
 	static {
 		add(new NativeMethod("", EasyLang.rb.getString("List.setFontSize"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyLangList easyLangList = (EasyLangList) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -30,7 +30,7 @@ public class EasyLangList implements EasyClassInterface {
 		});
 		add(new NativeMethod("", EasyLang.rb.getString("List.setBackgroundColor"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 2);
 				EasyLangList easyLangList = (EasyLangList) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -41,7 +41,7 @@ public class EasyLangList implements EasyClassInterface {
 		});
 		add(new NativeMethod("", EasyLang.rb.getString("List.add"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyLangList easyLangList = (EasyLangList) instance;
 				easyLangList.list.addElement(parameter.get(0));
@@ -50,7 +50,7 @@ public class EasyLangList implements EasyClassInterface {
 		});
 		add(new NativeMethod("", EasyLang.rb.getString("List.get"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyLangList easyLangList = (EasyLangList) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -59,7 +59,7 @@ public class EasyLangList implements EasyClassInterface {
 		});
 		add(new NativeMethod("", EasyLang.rb.getString("List.set"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 2);
 				EasyLangList easyLangList = (EasyLangList) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -69,7 +69,7 @@ public class EasyLangList implements EasyClassInterface {
 		});
 		add(new NativeMethod("", EasyLang.rb.getString("List.count"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyLangList easyLangList = (EasyLangList) instance;
 				return new EasyInteger(easyLangList.list.getSize());

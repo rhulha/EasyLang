@@ -36,7 +36,7 @@ public class EasyInteger implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.add") + "!", null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -46,7 +46,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.add"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -55,7 +55,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.minus") + "!", null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -65,7 +65,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.minus"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -74,7 +74,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.times") + "!", null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -84,7 +84,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.times"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				EasyInteger instanceInt = (EasyInteger) instance;
 				if (closure == null) {
 					assertParameterSize(parameter, 1);
@@ -95,7 +95,7 @@ public class EasyInteger implements EasyClassInterface {
 					for (int i = 0; i < instanceInt.intValue; i++) {
 						p.clear();
 						p.add(new EasyInteger(i));
-						closure.invoke(null, null, p);
+						closure.invoke(null, null, null, p);
 					}
 					return null;
 				}
@@ -103,7 +103,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.devidedBy") + "!", null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -113,7 +113,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.devidedBy"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -122,7 +122,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.square") + "!", null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				instanceInt.setIntValue(instanceInt.intValue * instanceInt.intValue);
@@ -131,7 +131,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.square"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				return new EasyInteger(instanceInt.intValue + instanceInt.intValue);
@@ -139,7 +139,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("Number.append"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				return new EasyString(instanceInt.intValue + parameter.get(0).toString());
@@ -147,7 +147,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.write"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyLang.instance.writeln(instanceInt);
@@ -156,7 +156,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.random"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				return new EasyInteger(EasyLang.instance.random.nextInt((int)instanceInt.getIntValue()));
@@ -164,7 +164,7 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Number.equals"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
@@ -172,7 +172,7 @@ public class EasyInteger implements EasyClassInterface {
 				if (closure != null) {
 					if (theyAreTheSame) {
 						List<EasyClassInterface> p = Generics.newArrayList();
-						closure.invoke(null, null, p);
+						closure.invoke(null, null, null, p);
 					}
 				}
 				return new EasyBoolean(theyAreTheSame);
@@ -180,15 +180,19 @@ public class EasyInteger implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Number.isLowerThan"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyInteger instanceInt = (EasyInteger) instance;
 				EasyInteger parameterInt = (EasyInteger) parameter.get(0);
 				boolean isLowerThan = (instanceInt.intValue < parameterInt.intValue);
 				if (closure != null) {
+					List<EasyClassInterface> p = Generics.newArrayList();
 					if (isLowerThan) {
-						List<EasyClassInterface> p = Generics.newArrayList();
-						closure.invoke(null, null, p);
+						closure.invoke(null, null, null, p);
+					} else {
+						if (elseClosure != null) {
+							elseClosure.invoke(null, null, null, p);
+						}
 					}
 				}
 				return new EasyBoolean(isLowerThan);

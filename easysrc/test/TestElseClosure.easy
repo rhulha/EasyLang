@@ -1,0 +1,20 @@
+
+public void start()
+{
+
+	Zahl a = 32;
+	Zahl b = 17;
+	
+	a.istKleinerAls(b) {
+	
+	   "a ist kleiner als b".schreibe();
+	
+	} ansonsten {
+
+	   "a ist nicht kleiner als b".schreibe();
+
+	}
+	
+
+}
+

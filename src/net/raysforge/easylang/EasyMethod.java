@@ -126,17 +126,25 @@ public class EasyMethod implements EasyMethodInterface {
 				TokenList parameter = tokenList.getSubList('(', ')');
 				evaluatedParams = evaluateParams(parentClass, variables, parameter);
 			}
-			EasyMethod rm = null;
+			EasyMethod em = null;
+			EasyMethod elseClosure = null;
 			if (tokenList.startsWithPattern("{")) {
 				tokenList.remove("{");
-				rm = EasyMethod.parseClosure(parentClass, variables, tokenList);
+				em = EasyMethod.parseClosure(parentClass, variables, tokenList);
+				
+				if (tokenList.hasMore() && tokenList.indexOf(EasyLang.rb.getString("else")) == 0) {
+					tokenList.pop();
+					tokenList.remove("{");
+					elseClosure = EasyMethod.parseClosure(parentClass, variables, tokenList);
+				}
+				
 			}
 			//System.out.println(methodName);
 			EasyMethodInterface method = value.getMethod(methodName);
 			if (method == null) {
 				EasyLang.instance.writeln("The method you are trying to use does not exist: " + methodName);
 			} else {
-				value = method.invoke(value, rm, evaluatedParams);
+				value = method.invoke(value, em, elseClosure, evaluatedParams);
 			}
 		}
 		return value;
@@ -213,7 +221,7 @@ public class EasyMethod implements EasyMethodInterface {
 	}
 
 	@Override
-	public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, List<EasyClassInterface> parameter) {
+	public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 		if (closureSurroundingClass == null && instance == null)
 			throw new NullPointerException("instance variable is not set");
 		EasyClass instance_ = (EasyClass) (closureSurroundingClass == null ? instance : closureSurroundingClass);
