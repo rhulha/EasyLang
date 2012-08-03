@@ -168,24 +168,20 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 					int end = textArea.getLineEndOffset(line);
 					String str = doc.getText(start, end - start - 1);
 					for (int i = 0; i < str.length(); i++) {
-						if( str.charAt(i) != ' ')
-						{
+						if (str.charAt(i) != ' ') {
 							str = str.substring(0, i);
 							break;
 						}
 					}
-					doc.insertString(textArea.getCaretPosition(), '\n' + str, null); 
+					doc.insertString(textArea.getCaretPosition(), '\n' + str, null);
 				} catch (BadLocationException ble) {
 					// TODO: handle exception
 				}
 			}
 		}
 		if (source instanceof JList) {
-			JList list = (JList) source;
 			if (ke.getKeyChar() == KeyEvent.VK_ENTER) {
-				final String s = (String) list.getSelectedValue();
-				if (s != null)
-					easyIDE.useSelectedListValue(s);
+				easyIDE.useSelectedListValue();
 			}
 		}
 

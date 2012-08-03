@@ -54,9 +54,9 @@ public class EasyIDE {
 	private final File projectsHome;
 	private JTabbedPane tabbedPane;
 	private EventDelegator delegator;
-	private JPopupMenu popupMenu = new JPopupMenu();
+	private JPopupMenu autoCompletePopupMenu = new JPopupMenu();
 	private JList autoCompleteList = new JList();
-	private DefaultListModel defaultListModel;
+	private DefaultListModel autoCompleteListModel;
 
 	public EasyIDE(File projectsHome) {
 
@@ -112,14 +112,11 @@ public class EasyIDE {
 		autoCompleteList.addKeyListener(delegator);
 		autoCompleteList.addMouseListener(delegator);
 
-		defaultListModel = new DefaultListModel();
-		autoCompleteList.setModel(defaultListModel);
-		defaultListModel.addElement("test2");
-		defaultListModel.addElement("test3");
-		defaultListModel.addElement("test4");
+		autoCompleteListModel = new DefaultListModel();
+		autoCompleteList.setModel(autoCompleteListModel);
 
-		popupMenu.setPreferredSize(new Dimension(100, 100));
-		popupMenu.add(new JScrollPane(autoCompleteList));
+		autoCompletePopupMenu.setPreferredSize(new Dimension(400, 200));
+		autoCompletePopupMenu.add(new JScrollPane(autoCompleteList));
 
 	}
 
@@ -195,9 +192,7 @@ public class EasyIDE {
 			}
 		} else if (source instanceof JList) {
 			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-				final String s = (String) autoCompleteList.getSelectedValue();
-				if (s != null)
-					useSelectedListValue(s);
+				useSelectedListValue();
 			}
 		}
 
@@ -310,7 +305,7 @@ public class EasyIDE {
 	private static String partial = "";
 
 	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
-		defaultListModel.clear();
+		autoCompleteListModel.clear();
 
 		String text = null;
 		try {
@@ -344,7 +339,7 @@ public class EasyIDE {
 					Map<String, EasyMethodInterface> methods = class1.getMethods();
 					for (String key : methods.keySet()) {
 						if (key.startsWith(pac.partial.s()))
-							defaultListModel.addElement(key);
+							autoCompleteListModel.addElement(new AutoCompleteElement(key, ElementType.METHOD));
 					}
 				}
 			} else if (fav.vars.containsKey(pac.rootVar.s())) {
@@ -357,7 +352,7 @@ public class EasyIDE {
 						if (pac.partial != null)
 							s = pac.partial.s();
 						if (key.startsWith(s))
-							defaultListModel.addElement(key);
+							autoCompleteListModel.addElement(new AutoCompleteElement(key, ElementType.METHOD));
 					}
 				}
 
@@ -369,16 +364,16 @@ public class EasyIDE {
 			HashMap<String, EasyClassInterface> classes = EasyLang.instance.getClasses();
 			for (String name : classes.keySet()) {
 				if (name.startsWith(s))
-				defaultListModel.addElement(name);
+					autoCompleteListModel.addElement(new AutoCompleteElement(name, ElementType.CLASS));
 			}
-			
+
 			for (String key : fav.vars.keySet()) {
 				if (key.startsWith(s))
-					defaultListModel.addElement(key);
+					autoCompleteListModel.addElement(new AutoCompleteElement(key, ElementType.VARIABLE));
 			}
 		}
 
-		popupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);
+		autoCompletePopupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
@@ -387,22 +382,29 @@ public class EasyIDE {
 		});
 	}
 
-	public void useSelectedListValue(String s) {
-		System.out.println(s);
-		final int cp = getSelectedTextArea().getCaretPosition();
+	public void useSelectedListValue() {
+		AutoCompleteElement ace = (AutoCompleteElement) autoCompleteList.getSelectedValue();
+		if (ace == null)
+			return;
+		String s = ace.name;
+		if( ace.type == ElementType.CLASS)
+			s = ace.name + " " + ace.name.toLowerCase() + " = " + EasyLang.rb.getString("new") + " " + ace.name + "();";
+		if( ace.type == ElementType.METHOD)
+			s = ace.name + "();";
+		int cp = getSelectedTextArea().getCaretPosition();
 		try {
 			s = s.substring(partial.length()); // for example if one auto completes this: 'x.min', then we only want to insert the 'us' => minus.
 			getSelectedTextArea().getDocument().insertString(cp, s, null);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		popupMenu.setVisible(false);
+		autoCompletePopupMenu.setVisible(false);
 
 	}
 
 	public void saveAllTextAreas() {
 		for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-			if (tabbedPane.getTitleAt(i).startsWith("*")){
+			if (tabbedPane.getTitleAt(i).startsWith("*")) {
 				String text = ((JTextArea) ((JScrollPane) tabbedPane.getComponent(i)).getViewport().getView()).getText();
 				File file = new File(tabbedPane.getToolTipTextAt(i));
 				FileUtils.writeCompleteFile(file, text);
