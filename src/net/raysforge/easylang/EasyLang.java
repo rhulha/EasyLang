@@ -138,7 +138,7 @@ public class EasyLang {
 	public void unregisterClasses(String name) {
 		classes.remove(name);
 	}
-
+	
 	public void setOutput(Output op) {
 		this.output = op;
 	}
@@ -146,5 +146,10 @@ public class EasyLang {
 	public void writeln(Object o) {
 		output.writeln(o);
 	}
+
+	public HashMap<String, EasyClassInterface> getClasses() {
+		return classes;
+	}
+
 
 }

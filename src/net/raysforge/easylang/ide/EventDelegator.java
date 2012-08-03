@@ -50,6 +50,9 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 			int result = JOptionPane.showConfirmDialog(easyIDE.getJFrame(), "You have unsaved changes. Do you want to save them ?");
 			if (result == JOptionPane.NO_OPTION) {
 				easyIDE.getJFrame().dispose();
+			} else if (result == JOptionPane.YES_OPTION) {
+				easyIDE.saveAllTextAreas();
+				easyIDE.getJFrame().dispose();
 			}
 		} else {
 			easyIDE.getJFrame().dispose();

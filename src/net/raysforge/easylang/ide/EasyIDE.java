@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -336,7 +337,7 @@ public class EasyIDE {
 		else
 			partial = "";
 
-		if (pac.rootVar != null) {
+		if (pac.rootVar != null && !pac.rootVar.equals(pac.partial)) {
 			if (pac.rootVar.isQuote()) {
 				EasyClassInterface class1 = easyLang.getClass(EasyLang.rb.getString("String"));
 				if (class1 != null) {
@@ -362,11 +363,17 @@ public class EasyIDE {
 
 			}
 		} else {
+			String s = "";
+			if (pac.partial != null)
+				s = pac.partial.s();
+			HashMap<String, EasyClassInterface> classes = EasyLang.instance.getClasses();
+			for (String name : classes.keySet()) {
+				if (name.startsWith(s))
+				defaultListModel.addElement(name);
+			}
+			
 			for (String key : fav.vars.keySet()) {
-				String s = "";
-				if (pac.partial != null)
-					s = pac.partial.s();
-				if (s.length() == 0 || key.startsWith(s))
+				if (key.startsWith(s))
 					defaultListModel.addElement(key);
 			}
 		}
@@ -391,6 +398,16 @@ public class EasyIDE {
 		}
 		popupMenu.setVisible(false);
 
+	}
+
+	public void saveAllTextAreas() {
+		for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+			if (tabbedPane.getTitleAt(i).startsWith("*")){
+				String text = ((JTextArea) ((JScrollPane) tabbedPane.getComponent(i)).getViewport().getView()).getText();
+				File file = new File(tabbedPane.getToolTipTextAt(i));
+				FileUtils.writeCompleteFile(file, text);
+			}
+		}
 	}
 
 }
