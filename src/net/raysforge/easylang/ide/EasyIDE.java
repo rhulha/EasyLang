@@ -110,6 +110,9 @@ public class EasyIDE {
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSave"), SAVE, delegator);
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 
+		JMenu templatesMenuItem = es.addMenuItem(rb.getString("Templates"));
+		es.addMenuItem(templatesMenuItem, "start", "start", delegator);
+
 		es.addToolBarItem(rb.getString("MenuItemSave"), SAVE, delegator);
 		es.addToolBarItem(rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 		es.addToolBarItem(rb.getString("MenuItemCloseTab"), CLOSE_TAB, delegator);
@@ -249,6 +252,11 @@ public class EasyIDE {
 			} else {
 				tabbedPane.removeTabAt(selectedIndex);
 			}
+		} else if (e.getActionCommand().equals("start")) {
+			JTextArea selectedTextArea = getSelectedTextArea();
+			if( selectedTextArea == null)
+				return;
+			selectedTextArea.insert("publik nichts start()\n{\n}\n", selectedTextArea.getCaretPosition());
 		} else if (e.getActionCommand().equals(NEW_FILE)) {
 			if (easyTree.isSelected(1)) {
 				File projectFolder = new File(projectsHome, easyTree.getSelectedNode(1).toString());
@@ -437,6 +445,7 @@ public class EasyIDE {
 		}
 
 		autoCompletePopupMenu.show(invoker, caretPosition.x, caretPosition.y + 16);
+		autoCompleteList.setSelectedIndex(0);
 		SwingUtilities.invokeLater(new Runnable() {
 
 			public void run() {
