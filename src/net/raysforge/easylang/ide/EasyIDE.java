@@ -1,12 +1,18 @@
 package net.raysforge.easylang.ide;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -46,6 +52,7 @@ public class EasyIDE {
 	private static final String SAVE = "save";
 	private static final String SAVE_ALL = "saveAll";
 	private static final String RUN = "run";
+	private static final String CLOSE_TAB = "closeTab";
 
 	private EasySwing es;
 	private EasyTextArea console;
@@ -61,7 +68,7 @@ public class EasyIDE {
 	public EasyIDE(File projectsHome) {
 
 		this.projectsHome = projectsHome;
-		ResourceBundle rb = ResourceBundle.getBundle("net.raysforge.easylang.ide.EasyIDE");
+		rb = ResourceBundle.getBundle("net.raysforge.easylang.ide.EasyIDE");
 
 		delegator = new EventDelegator(this);
 
@@ -71,7 +78,7 @@ public class EasyIDE {
 
 		EasySplitPane codeAndConsole = new EasySplitPane(false, 400);
 		EasySplitPane treeAndSplitPane = new EasySplitPane(true, 200);
-		easyTree = new EasyTree("Projects");
+		easyTree = new EasyTree(rb.getString("Projects"));
 		easyTree.setShowsRootHandles(false);
 		easyTree.setEditable();
 		easyTree.setValueForPathChangedListener(delegator);
@@ -103,10 +110,9 @@ public class EasyIDE {
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSave"), SAVE, delegator);
 		es.addMenuItem(fileMenuItem, rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 
-		es.addToolBarItem(rb.getString("MenuItemNewProject"), NEW_PROJECT, delegator);
-		es.addToolBarItem(rb.getString("MenuItemNewFile"), NEW_FILE, delegator);
 		es.addToolBarItem(rb.getString("MenuItemSave"), SAVE, delegator);
 		es.addToolBarItem(rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
+		es.addToolBarItem(rb.getString("MenuItemCloseTab"), CLOSE_TAB, delegator);
 		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
 
 		autoCompleteList.addKeyListener(delegator);
@@ -206,6 +212,8 @@ public class EasyIDE {
 			console.setText("");
 			EasyLang.instance.unregisterClasses("test");
 			JTextArea textArea = getSelectedTextArea();
+			if( textArea == null)
+				return;
 			EasyClass.parse("test", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
 			EasyLang.runClass(easyLang.getClass("test"));
 		} else if (e.getActionCommand().equals(NEW_PROJECT)) {
@@ -225,6 +233,22 @@ public class EasyIDE {
 					tabbedPane.setTitleAt(i, title.substring(1));
 				}
 			}
+		} else if (e.getActionCommand().equals(CLOSE_TAB)) {
+			//tabbedPane.getSelectedComponent();
+			int selectedIndex = tabbedPane.getSelectedIndex();
+			if (selectedIndex == -1)
+				return;
+			if (tabbedPane.getTitleAt(selectedIndex).startsWith("*")) {
+				int result = JOptionPane.showConfirmDialog(getJFrame(), rb.getString("UnsavedChanges"));
+				if (result == JOptionPane.NO_OPTION) {
+					tabbedPane.removeTabAt(selectedIndex);
+				} else if (result == JOptionPane.YES_OPTION) {
+					saveSelectedTextArea();
+					tabbedPane.removeTabAt(selectedIndex);
+				}
+			} else {
+				tabbedPane.removeTabAt(selectedIndex);
+			}
 		} else if (e.getActionCommand().equals(NEW_FILE)) {
 			if (easyTree.isSelected(1)) {
 				File projectFolder = new File(projectsHome, easyTree.getSelectedNode(1).toString());
@@ -241,7 +265,10 @@ public class EasyIDE {
 	}
 
 	private JTextArea getSelectedTextArea() {
-		return (JTextArea) ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport().getView();
+		Component selectedComponent = tabbedPane.getSelectedComponent();
+		if (selectedComponent == null)
+			return null;
+		return (JTextArea) ((JScrollPane) selectedComponent).getViewport().getView();
 	}
 
 	private JTextArea getTextArea(int index) {
@@ -253,7 +280,10 @@ public class EasyIDE {
 	}
 
 	private File getSelectedFile() {
-		return new File(tabbedPane.getToolTipTextAt(tabbedPane.getSelectedIndex()));
+		int selectedIndex = tabbedPane.getSelectedIndex();
+		if (selectedIndex == -1)
+			return null;
+		return new File(tabbedPane.getToolTipTextAt(selectedIndex));
 	}
 
 	public static void main(String[] args) {
@@ -268,9 +298,38 @@ public class EasyIDE {
 			if (!projectsHome.mkdir()) {
 				JOptionPane.showMessageDialog(null, "projectsHome could not be created: " + projectsHome);
 				System.exit(2);
+			} else {
+				File examplesHome = new File(projectsHome, "Beispiele");
+				if (examplesHome.mkdir()) {
+					createExampleFile(examplesHome, "Kopfnuss.easy");
+					createExampleFile(examplesHome, "AnsonstenBeispiel.easy");
+					createExampleFile(examplesHome, "DateiLeserBeispiel.easy");
+					createExampleFile(examplesHome, "Feld.easy");
+					createExampleFile(examplesHome, "Grafik.easy");
+					createExampleFile(examplesHome, "HalloWelt.easy");
+					createExampleFile(examplesHome, "Methoden.easy");
+					createExampleFile(examplesHome, "Schleife.easy");
+					createExampleFile(examplesHome, "Zahlen.easy");
+					createExampleFile(examplesHome, "Zeichen.easy");
+					//createExampleFile(examplesHome, "sokoban/Sokoban.easy");
+				}
 			}
 		}
 		new EasyIDE(projectsHome).start();
+	}
+
+	private static void createExampleFile(File examplesHome, String filename) {
+		try {
+			InputStream resourceAsStream = EasyIDE.class.getResourceAsStream("/net/raysforge/easylang/examples/de/" + filename);
+			ReadableByteChannel rbc = Channels.newChannel(resourceAsStream);
+			FileOutputStream fos = new FileOutputStream(new File(examplesHome, filename));
+			FileChannel channel = fos.getChannel();
+			channel.transferFrom(rbc, 0, Integer.MAX_VALUE);
+			fos.close();
+			resourceAsStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean checkIfAnyTabIsModified() {
@@ -298,11 +357,15 @@ public class EasyIDE {
 	}
 
 	public void saveSelectedTextArea() {
-		FileUtils.writeCompleteFile(getSelectedFile(), getSelectedTextArea().getText());
+		File selectedFile = getSelectedFile();
+		if (selectedFile == null)
+			return;
+		FileUtils.writeCompleteFile(selectedFile, getSelectedTextArea().getText());
 		setSelectedTabToSaved();
 	}
 
 	private static String partial = "";
+	public final ResourceBundle rb;
 
 	public void showAutoCompleteBox(JTextArea invoker, Point caretPosition) {
 		autoCompleteListModel.clear();
@@ -387,9 +450,9 @@ public class EasyIDE {
 		if (ace == null)
 			return;
 		String s = ace.name;
-		if( ace.type == ElementType.CLASS)
+		if (ace.type == ElementType.CLASS)
 			s = ace.name + " " + ace.name.toLowerCase() + " = " + EasyLang.rb.getString("new") + " " + ace.name + "();";
-		if( ace.type == ElementType.METHOD)
+		if (ace.type == ElementType.METHOD)
 			s = ace.name + "();";
 		int cp = getSelectedTextArea().getCaretPosition();
 		try {

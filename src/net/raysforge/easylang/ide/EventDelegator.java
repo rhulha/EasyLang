@@ -47,7 +47,7 @@ public class EventDelegator implements ActionListener, Output, ValueForPathChang
 	@Override
 	public void windowClosing(WindowEvent we) {
 		if (easyIDE.checkIfAnyTabIsModified()) {
-			int result = JOptionPane.showConfirmDialog(easyIDE.getJFrame(), "You have unsaved changes. Do you want to save them ?");
+			int result = JOptionPane.showConfirmDialog(easyIDE.getJFrame(), easyIDE.rb.getString("UnsavedChanges"));
 			if (result == JOptionPane.NO_OPTION) {
 				easyIDE.getJFrame().dispose();
 			} else if (result == JOptionPane.YES_OPTION) {
