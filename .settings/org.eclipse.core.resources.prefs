@@ -1,14 +1,5 @@
 eclipse.preferences.version=1
-encoding//easysrc/test/BrainTease.easy=UTF-8
-encoding//easysrc/test/Loop.easy=UTF-8
-encoding//easysrc/test/Roboter.easy=UTF-8
 encoding//easysrc/test/SimpleTest.easy=UTF-8
-encoding//easysrc/test/Sokoban.easy=UTF-8
 encoding//easysrc/test/Test.easy=UTF-8
-encoding//easysrc/test/TestArray.easy=UTF-8
-encoding//easysrc/test/TestDatei.easy=UTF-8
-encoding//easysrc/test/TestEvalExpr.easy=UTF-8
-encoding//easysrc/test/TestFunction.easy=UTF-8
-encoding//easysrc/test/TestGrafik.easy=UTF-8
-encoding//easysrc/test/TestHashMap.easy=UTF-8
-encoding//easysrc/test/TestString.easy=UTF-8
+encoding//src/net/raysforge/easylang/examples/de=UTF-8
+encoding//src/net/raysforge/easylang/examples/de/Kopfnuss.easy=UTF-8

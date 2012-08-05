@@ -80,16 +80,16 @@ public class EasyLang {
 		EasyLang easyLang = new EasyLang();
 		easyLang.parse(new File("easysrc"));
 		//		runClass(easyLang.getClass("TestDatei"));
-		runClass(easyLang.getClass("BrainTease"));
+		// runClass(easyLang.getClass("BrainTease"));
 		//		runClass(easyLang.getClass("TestElseClosure"));
 		//		runClass(easyLang.getClass("Sokoban"));
-		//		runClass(easyLang.getClass("TestFunction"));
+				//runClass(easyLang.getClass("TestFunction"));
 		//		runClass(easyLang.getClass("Test"));
-		//		runClass(easyLang.getClass("TestString"));
+		runClass(easyLang.getClass("TestString"));
 		//		runClass(easyLang.getClass("Loop"));
 		//		runClass(easyLang.getClass("TestGrafik"));
 		//		runClass(easyLang.getClass("SimpleTest"));
-		//		runClass(easyLang.getClass("TestArray"));
+		//runClass(easyLang.getClass("TestArray"));
 		//		runClass(easyLang.getClass("TestHashMap"));
 	}
 
