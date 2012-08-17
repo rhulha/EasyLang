@@ -1,0 +1,7 @@
+
+publik nichts start()
+{
+
+	"Hallo Welt".schreibe();
+
+}

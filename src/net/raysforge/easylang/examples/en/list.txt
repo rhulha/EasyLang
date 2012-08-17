@@ -1,0 +1,10 @@
+BrainTeaser.easy
+ElseExample.easy
+Field.easy
+FileReaderExample.easy
+Graphics.easy
+HelloWorld.easy
+Loop.easy
+Methods.easy
+Numbers.easy
+Strings.easy

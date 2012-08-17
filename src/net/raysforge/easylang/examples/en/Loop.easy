@@ -1,0 +1,21 @@
+
+
+
+publik nichts start()
+{
+
+	Zahl x = 7;
+	Zahl y = 3;
+	
+	y.mal { 
+	  "Hello".schreibe();
+	}
+	
+	y.mal { 
+		x.mal { 
+		   Zahl z -> z.schreibe();
+		}
+	}
+
+}
+

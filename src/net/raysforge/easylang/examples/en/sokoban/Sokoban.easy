@@ -1,0 +1,140 @@
+
+
+Fenster fenster = neu Fenster();
+Zeichen[] level = neu Zeichen[];
+Zeichen[] ziele = neu Zeichen[];
+Zahl spielerX = 0;
+Zahl spielerY = 0;
+Zahl feldGröße = 40;
+Zahl levelcounter = -1;
+
+publik nichts ladeLevel()
+{
+	"start lade level".schreibe();
+	level.löschen(); 
+	ziele.löschen(); 
+	DateiLeser dl = neu DateiLeser("easysrc/test/level0".und(levelcounter.plus!(1)).und(".sokoban"));
+	dl.fürJedeZeile{
+		Zeichen zeile -> 
+		Zeichen[] parts = zeile.spalte(":");
+		level[parts[0]] = parts[1];
+		parts[1].istGleich("Spieler"){
+			Zeichen[] coords = parts[0].spalte("-");
+			spielerX = coords[0].alsZahl();
+			spielerY = coords[1].alsZahl();
+		}
+		parts[1].istGleich("Ziel"){
+			ziele[parts[0]] = parts[1]; 
+		}
+		
+	}
+	dl.ende();
+	fenster.male();
+	#spielerX.schreibe();
+	#spielerY.schreibe();
+	"ende lade level".schreibe();
+}
+
+publik nichts start()
+{
+	fenster.setzeTitel("Sokoban");
+	fenster.setzeBreite(800);
+	fenster.setzeHöhe(600);
+	fenster.fügeWerkzeugLeistenPunktHinzu("Neuer Versuch"){
+		levelcounter.minus!(1);
+		selbst.ladeLevel();
+	}
+	
+	Zeichen[] farben = neu Zeichen[];
+	farben["Wand"] = "0x000000";
+	farben["Ziel"] = "0x00ff00";
+	farben["Spieler"] = "0xff0000";
+	farben["Kiste"] = "0x0000ff";
+	
+	selbst.ladeLevel();
+
+	fenster.setzeTastenDruckBehandler{
+	  Zahl taste ->
+	  Zahl dx = 0;
+	  Zahl dy = 0;
+
+	  # links
+	  taste.istGleich(37){
+	  	dx = -1;
+	  }
+	  # hoch
+	  taste.istGleich(38){
+	  	dy = -1;
+	  }
+	  # rechts
+	  taste.istGleich(39){
+	  	dx = 1;
+	  }
+	  # runter
+	  taste.istGleich(40){
+	  	dy = 1;
+	  }
+	  
+	  Zeichen zielZeichen = spielerX.plus(dx).und("-").und(spielerY.plus(dy));
+	  level.enthältSchlüssel(zielZeichen){
+		  Zeichen feld = level[zielZeichen];
+		  feld.istGleich("Kiste"){
+		  	Zeichen doppelZielZeichen = spielerX.plus(dx).plus(dx).und("-").und(spielerY.plus(dy).plus(dy));
+		  	level.enthältSchlüsselNicht(doppelZielZeichen){
+		  		level.entferne(zielZeichen);
+		  		level[doppelZielZeichen] = "Kiste";
+		  	}
+		  	level[doppelZielZeichen].istGleich("Ziel"){
+		  		level.entferne(zielZeichen);
+		  		level[doppelZielZeichen] = "Kiste";
+		  	}
+		  }
+	  }
+	  
+	  level.enthältSchlüsselNicht(zielZeichen).oder(level[zielZeichen].istGleich("Ziel")){
+		  level.entferne(spielerX.und("-").und(spielerY));
+		  level[zielZeichen] = "Spieler";
+		  spielerX.plus!(dx);
+		  spielerY.plus!(dy);
+		  fenster.male();
+	  }
+	  
+	  Zahl zähler = 0;
+	  ziele.fürJedenSchlüssel{
+	  	Zeichen schlüssel ->
+	  	level[schlüssel].istGleich("Kiste"){
+	  	  zähler.plus!(1);
+	  	}
+	  }
+	  zähler.istGleich(ziele.anzahlSchlüssel()) {
+	  	"Sieg".schreibe();
+	  	selbst.ladeLevel();
+	  }
+	  
+	  
+	}
+	
+	fenster.male{
+	  Grafik g ->
+		Zahl w = fenster.holeBreite().geteiltDurch( feldGröße);
+		Zahl h = fenster.holeHöhe().geteiltDurch( feldGröße);
+		w.mal{
+			Zahl x ->
+			h.mal{
+				Zahl y ->
+				ziele.enthältSchlüssel(x.und("-").und(y)){
+					g.setzeFarbe(farben[ziele[x.und("-").und(y)]]);
+					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+				}
+				level.enthältSchlüssel(x.und("-").und(y)){
+					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
+					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
+				}
+				g.setzeFarbe("0x000000");
+				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+			}
+		}
+	}
+
+	fenster.zeigeAn();
+}

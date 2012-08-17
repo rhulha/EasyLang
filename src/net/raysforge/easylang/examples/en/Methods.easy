@@ -1,0 +1,16 @@
+
+Zahl x = 40;
+
+publik nichts start()
+{
+   x = 2;
+   x.schreibe();
+   selbst.test();
+   x.schreibe();
+}
+
+
+publik nichts test()
+{
+   x.schreibe();
+}

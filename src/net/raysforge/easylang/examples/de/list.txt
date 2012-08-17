@@ -1,0 +1,10 @@
+Kopfnuss.easy
+AnsonstenBeispiel.easy
+DateiLeserBeispiel.easy
+Feld.easy
+Grafik.easy
+HalloWelt.easy
+Methoden.easy
+Schleife.easy
+Zahlen.easy
+Zeichen.easy

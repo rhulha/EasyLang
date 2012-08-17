@@ -1,0 +1,20 @@
+
+
+publik nichts start()
+{
+
+	Zahl[] x = neu Zahl[];
+	Zahl y = 200;
+	
+	x[y] = 17;
+	x[0].schreibe();
+	x[y].schreibe();
+
+	Zeichen[] test = neu Zeichen[];
+	test["hallo"] = "welt";
+	test["hallo"].schreibe();
+	
+	Zeichen z = test["hallo"]; 
+	z.schreibe();
+
+}

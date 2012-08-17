@@ -1,0 +1,106 @@
+
+
+Fenster fenster = neu Fenster();
+Liste liste = neu Liste();
+
+Zahl position = 0;
+
+publik nichts start()
+{
+
+	fenster.setzeTitel("BrainTease");
+	fenster.setzeBreite(800);
+	fenster.setzeHöhe(600);
+	
+	fenster.fügeWerkzeugLeistenPunktHinzu("Neuer Versuch"){
+		
+	}
+	
+	liste.setzeSchriftGröße(32);
+	
+	25.mal{
+	    Zahl a = 9.zufall().plus(1);
+	    Zahl b = 9.zufall().plus(1);
+	    Zahl operation = 4.zufall();
+	    Zahl korrekt = 2.zufall();
+	    Zahl ergebnis = 0;
+	    Zeichen op = "";
+	    
+	    operation.istGleich(0)
+	    {
+	    	ergebnis = a.plus(b);
+	    	op = "+";
+	    }
+	    operation.istGleich(1)
+	    {
+	    	ergebnis = a.minus(b);
+	    	op = "-";
+	    }
+	    operation.istGleich(2)
+	    {
+	    	ergebnis = a.mal(b);
+	    	op = "x";
+	    }
+	    operation.istGleich(3)
+	    {
+	    	ergebnis = a.mal(b);
+	    	op = ":";
+	    }
+	    
+	    korrekt.istGleich(0)
+	    {
+	       Zahl plusOderMinus = 2.zufall();
+	       plusOderMinus.istGleich(0)
+	       {
+	          ergebnis.plus!(3.zufall().plus(1));
+	       }
+	       ansonsten
+	       {
+	          ergebnis.minus!(3.zufall().plus(1));
+	       }
+	    }
+	    
+	    operation.istGleich(3)
+	    {
+	        Zahl temp = ergebnis;
+	        ergebnis = a;
+	    	a = temp;
+	    }
+
+		liste.fügeHinzu(a.und(op).und(b).und("=").und(ergebnis));
+	}
+		
+	fenster.fügeHinzu( liste);
+	
+	fenster.setzeTastenDruckBehandler{
+	  Zahl taste ->
+	  
+	  position.istKleinerAls(liste.anzahl())
+	  {
+	      Zeichen ausdruck = liste.hole(position);
+	      Boolean test = ausdruck.teste();
+	      test.wennFalsch()
+	      {
+	         liste.setze( position, ausdruck.ersetze("=", "≠"));
+	      }
+	      
+	      Boolean meinTip;
+
+		  # rechts
+		  meinTip = taste.istGleich(39);
+		  
+		  test.istGleich(meinTip){
+		  	liste.setzeHintergrundFarbe( position, "0x00FF00");
+		  } ansonsten {
+		  	liste.setzeHintergrundFarbe( position, "0xFF0000");
+		  }
+		  position.plus!(1);
+		  liste.garantiereSichtbarkeitFür(position);
+	  }
+	  fenster.male();
+	}
+	
+	fenster.zeigeAn();
+	
+}
+
