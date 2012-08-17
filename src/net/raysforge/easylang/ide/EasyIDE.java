@@ -6,14 +6,17 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -66,9 +69,31 @@ public class EasyIDE {
 	private DefaultListModel autoCompleteListModel;
 
 	public EasyIDE(File projectsHome) {
-
 		this.projectsHome = projectsHome;
+
 		rb = ResourceBundle.getBundle("net.raysforge.easylang.ide.EasyIDE");
+
+		String language = Locale.getDefault().getLanguage();
+		System.out.println(language);
+		
+		if (projectsHome.exists()) {
+			if (!projectsHome.isDirectory()) {
+				JOptionPane.showMessageDialog(null, "projectsHome is not a directory: " + projectsHome);
+				System.exit(1);
+			}
+		} else {
+			if (!projectsHome.mkdir()) {
+				JOptionPane.showMessageDialog(null, "projectsHome could not be created: " + projectsHome);
+				System.exit(2);
+			} else {
+				try {
+					createExampleFiles(projectsHome, language);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 
 		delegator = new EventDelegator(this);
 
@@ -127,6 +152,22 @@ public class EasyIDE {
 		autoCompletePopupMenu.setPreferredSize(new Dimension(400, 200));
 		autoCompletePopupMenu.add(new JScrollPane(autoCompleteList));
 
+	}
+
+	private void createExampleFiles(File projectsHome, String language) throws IOException {
+		String baseDir = "/net/raysforge/easylang/examples/"+language+"/";
+		
+		File examplesHome = new File(projectsHome, rb.getString("Examples"));
+		if (examplesHome.mkdir()) {
+			InputStream examplesList = EasyIDE.class.getResourceAsStream(baseDir+"list.txt");
+			BufferedReader r = new BufferedReader( new InputStreamReader(examplesList));
+			String s;
+			while ( (s = r.readLine() ) != null)
+			{
+				createExampleFile(examplesHome, baseDir, s);
+			}
+			//createExampleFile(examplesHome, "sokoban/Sokoban.easy");
+		}
 	}
 
 	private void traverse(DefaultMutableTreeNode treeNode, File directory) {
@@ -218,7 +259,12 @@ public class EasyIDE {
 			if( textArea == null)
 				return;
 			EasyClass.parse("test", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
-			EasyLang.runClass(easyLang.getClass("test"));
+			try {
+				EasyLang.runClass(easyLang.getClass("test"));
+			} catch (Exception exc) {
+				writeln(exc.getMessage());
+				exc.printStackTrace();
+			}
 		} else if (e.getActionCommand().equals(NEW_PROJECT)) {
 
 			if (new File(projectsHome, "New Project").mkdir())
@@ -294,41 +340,9 @@ public class EasyIDE {
 		return new File(tabbedPane.getToolTipTextAt(selectedIndex));
 	}
 
-	public static void main(String[] args) {
-		File userHome = new File(System.getProperty("user.home"));
-		File projectsHome = new File(userHome, "EasyLangProjects");
-		if (projectsHome.exists()) {
-			if (!projectsHome.isDirectory()) {
-				JOptionPane.showMessageDialog(null, "projectsHome is not a directory: " + projectsHome);
-				System.exit(1);
-			}
-		} else {
-			if (!projectsHome.mkdir()) {
-				JOptionPane.showMessageDialog(null, "projectsHome could not be created: " + projectsHome);
-				System.exit(2);
-			} else {
-				File examplesHome = new File(projectsHome, "Beispiele");
-				if (examplesHome.mkdir()) {
-					createExampleFile(examplesHome, "Kopfnuss.easy");
-					createExampleFile(examplesHome, "AnsonstenBeispiel.easy");
-					createExampleFile(examplesHome, "DateiLeserBeispiel.easy");
-					createExampleFile(examplesHome, "Feld.easy");
-					createExampleFile(examplesHome, "Grafik.easy");
-					createExampleFile(examplesHome, "HalloWelt.easy");
-					createExampleFile(examplesHome, "Methoden.easy");
-					createExampleFile(examplesHome, "Schleife.easy");
-					createExampleFile(examplesHome, "Zahlen.easy");
-					createExampleFile(examplesHome, "Zeichen.easy");
-					//createExampleFile(examplesHome, "sokoban/Sokoban.easy");
-				}
-			}
-		}
-		new EasyIDE(projectsHome).start();
-	}
-
-	private static void createExampleFile(File examplesHome, String filename) {
+	private static void createExampleFile(File examplesHome, String jarBaseDir, String filename) {
 		try {
-			InputStream resourceAsStream = EasyIDE.class.getResourceAsStream("/net/raysforge/easylang/examples/de/" + filename);
+			InputStream resourceAsStream = EasyIDE.class.getResourceAsStream( jarBaseDir + filename);
 			ReadableByteChannel rbc = Channels.newChannel(resourceAsStream);
 			FileOutputStream fos = new FileOutputStream(new File(examplesHome, filename));
 			FileChannel channel = fos.getChannel();
@@ -482,6 +496,13 @@ public class EasyIDE {
 				FileUtils.writeCompleteFile(file, text);
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		File userHome = new File(System.getProperty("user.home"));
+		File projectsHome = new File(userHome, "EasyLangProjects");
+
+		new EasyIDE(projectsHome).start();
 	}
 
 }

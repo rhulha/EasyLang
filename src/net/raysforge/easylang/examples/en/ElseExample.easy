@@ -2,16 +2,16 @@
 public void start()
 {
 
-	Zahl a = 32;
-	Zahl b = 17;
+	Number a = 32;
+	Number b = 17;
 	
-	a.istKleinerAls(b) {
+	a.isLowerThan(b) {
 	
-	   "a ist kleiner als b".schreibe();
+	   "a is lower than b".write();
 	
-	} ansonsten {
+	} else {
 
-	   "a ist nicht kleiner als b".schreibe();
+	   "a is not lower than b".write();
 
 	}
 	
