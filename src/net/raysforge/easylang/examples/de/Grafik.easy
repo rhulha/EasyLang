@@ -9,7 +9,7 @@ publik nichts start()
 {
 	Zahl feldGröße = 40;
 
-	fenster.setzeTitel("Sokoban");
+	fenster.setzeTitel("Test");
 	fenster.setzeBreite(800);
 	fenster.setzeHöhe(600);
 	

@@ -1,20 +1,20 @@
 
 
-publik nichts start()
+public void start()
 {
 
-	Zahl[] x = neu Zahl[];
-	Zahl y = 200;
+	Number[] x = new Number[];
+	Number y = 200;
 	
 	x[y] = 17;
-	x[0].schreibe();
-	x[y].schreibe();
+	x[0].write();
+	x[y].write();
 
-	Zeichen[] test = neu Zeichen[];
-	test["hallo"] = "welt";
-	test["hallo"].schreibe();
+	String[] test = new String[];
+	test["hello"] = "world";
+	test["hello"].write();
 	
-	Zeichen z = test["hallo"]; 
-	z.schreibe();
+	String z = test["hello"]; 
+	z.write();
 
 }

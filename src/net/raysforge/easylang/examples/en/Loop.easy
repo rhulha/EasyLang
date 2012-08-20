@@ -1,19 +1,19 @@
 
 
 
-publik nichts start()
+public void start()
 {
 
-	Zahl x = 7;
-	Zahl y = 3;
+	Number x = 7;
+	Number y = 3;
 	
-	y.mal { 
-	  "Hello".schreibe();
+	y.times { 
+	  "Hello".write();
 	}
 	
-	y.mal { 
-		x.mal { 
-		   Zahl z -> z.schreibe();
+	y.times { 
+		x.times { 
+		   Number z -> z.write();
 		}
 	}
 

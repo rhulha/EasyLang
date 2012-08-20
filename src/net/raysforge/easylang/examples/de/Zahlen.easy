@@ -9,7 +9,7 @@ publik nichts start()
 	Zahl y = 100;
 	y.schreibe();
 	x.plus!(8).schreibe();
-	y.plus!(x.plus(8)).schreibe();
+	y.plus(x.plus(8)).schreibe();
 	y.schreibe();
 
 }

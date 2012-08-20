@@ -8,7 +8,7 @@ publik nichts start()
 	Zahl y = 3;
 	
 	y.mal { 
-	  "Hello".schreibe();
+	  "Hallo".schreibe();
 	}
 	
 	y.mal { 

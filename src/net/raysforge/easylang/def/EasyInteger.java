@@ -101,7 +101,7 @@ public class EasyInteger implements EasyClassInterface {
 				}
 			}
 		});
-		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.devidedBy") + "!", null) {
+		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.dividedBy") + "!", null) {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
@@ -111,7 +111,7 @@ public class EasyInteger implements EasyClassInterface {
 				return instance;
 			}
 		});
-		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.devidedBy"), null) {
+		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Number.dividedBy"), null) {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);

@@ -1,11 +1,11 @@
 
 
 
-publik nichts start()
+public void start()
 {
 
-	"Hallo".und(" ").und("Welt!").schreibe();
+	"Hello".append(" ").append("World!").write();
 	
-	3.und("3").schreibe();
+	3.append("3").write();
 
 }

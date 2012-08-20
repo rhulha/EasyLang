@@ -12,5 +12,6 @@ publik nichts start()
 
 publik nichts test()
 {
+   x = 4;
    x.schreibe();
 }

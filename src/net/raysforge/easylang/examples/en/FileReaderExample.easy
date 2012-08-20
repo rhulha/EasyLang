@@ -1,12 +1,12 @@
 
 
-publik nichts start()
+public void start()
 {
 	
-	DateiLeser dl = neu DateiLeser("level01.sokoban");
-	dl.fürJedeZeile{
-		Zeichen zeile -> zeile.schreibe();
+	FileReader fr = new FileReader("FileReaderExample.easy");
+	fr.forEachLine{
+		String line -> line.write();
 	}
-	dl.ende();
+	fr.close();
 	
 }

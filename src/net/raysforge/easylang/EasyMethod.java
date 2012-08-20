@@ -143,6 +143,7 @@ public class EasyMethod implements EasyMethodInterface {
 			EasyMethodInterface method = value.getMethod(methodName);
 			if (method == null) {
 				EasyLang.instance.writeln("The method you are trying to use does not exist: " + methodName);
+				throw new RuntimeException("The method you are trying to use does not exist: " + methodName);
 			} else {
 				value = method.invoke(value, em, elseClosure, evaluatedParams);
 			}

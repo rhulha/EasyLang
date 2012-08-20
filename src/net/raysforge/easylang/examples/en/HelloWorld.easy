@@ -1,7 +1,7 @@
 
-publik nichts start()
+public void start()
 {
 
-	"Hallo Welt".schreibe();
+	"Hello World".write();
 
 }

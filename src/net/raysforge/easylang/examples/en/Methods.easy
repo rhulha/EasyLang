@@ -1,16 +1,17 @@
 
-Zahl x = 40;
+Number x = 40;
 
-publik nichts start()
+public void start()
 {
    x = 2;
-   x.schreibe();
-   selbst.test();
-   x.schreibe();
+   x.write();
+   this.test();
+   x.write();
 }
 
 
-publik nichts test()
+public void test()
 {
-   x.schreibe();
+   x = 4;
+   x.write();
 }
