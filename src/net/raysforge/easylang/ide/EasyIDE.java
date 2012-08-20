@@ -75,6 +75,8 @@ public class EasyIDE {
 
 		String language = Locale.getDefault().getLanguage();
 		System.out.println(language);
+
+		FileUtils.delete(projectsHome); // for testing only
 		
 		if (projectsHome.exists()) {
 			if (!projectsHome.isDirectory()) {

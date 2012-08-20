@@ -1,106 +1,105 @@
 
 
-Fenster fenster = neu Fenster();
-Liste liste = neu Liste();
+Frame frame = new Frame();
+List list = new List();
 
-Zahl position = 0;
+Number position = 0;
 
-publik nichts start()
+public void start()
 {
 
-	fenster.setzeTitel("BrainTease");
-	fenster.setzeBreite(800);
-	fenster.setzeHöhe(600);
+	frame.setTitle("BrainTease");
+	frame.setWidth(800);
+	frame.setHeight(600);
 	
-	fenster.fügeWerkzeugLeistenPunktHinzu("Neuer Versuch"){
+	frame.addToolBarItem("Try Again"){
 		
 	}
 	
-	liste.setzeSchriftGröße(32);
+	list.setFontSize(32);
 	
-	25.mal{
-	    Zahl a = 9.zufall().plus(1);
-	    Zahl b = 9.zufall().plus(1);
-	    Zahl operation = 4.zufall();
-	    Zahl korrekt = 2.zufall();
-	    Zahl ergebnis = 0;
-	    Zeichen op = "";
+	25.times {
+	    Number a = 9.random().plus(1);
+	    Number b = 9.random().plus(1);
+	    Number operation = 4.random();
+	    Number correct = 2.random();
+	    Number result = 0;
+	    String op = "";
 	    
-	    operation.istGleich(0)
+	    operation.equals(0)
 	    {
-	    	ergebnis = a.plus(b);
+	    	result = a.plus(b);
 	    	op = "+";
 	    }
-	    operation.istGleich(1)
+	    operation.equals(1)
 	    {
-	    	ergebnis = a.minus(b);
+	    	result = a.minus(b);
 	    	op = "-";
 	    }
-	    operation.istGleich(2)
+	    operation.equals(2)
 	    {
-	    	ergebnis = a.mal(b);
+	    	result = a.times(b);
 	    	op = "x";
 	    }
-	    operation.istGleich(3)
+	    operation.equals(3)
 	    {
-	    	ergebnis = a.mal(b);
+	    	result = a.times(b);
 	    	op = ":";
 	    }
 	    
-	    korrekt.istGleich(0)
+	    correct.equals(0)
 	    {
-	       Zahl plusOderMinus = 2.zufall();
-	       plusOderMinus.istGleich(0)
+	       Number plusOderMinus = 2.random();
+	       plusOderMinus.equals(0)
 	       {
-	          ergebnis.plus!(3.zufall().plus(1));
+	          result.plus!(3.random().plus(1));
 	       }
-	       ansonsten
+	       else
 	       {
-	          ergebnis.minus!(3.zufall().plus(1));
+	          result.minus!(3.random().plus(1));
 	       }
 	    }
 	    
-	    operation.istGleich(3)
+	    operation.equals(3)
 	    {
-	        Zahl temp = ergebnis;
-	        ergebnis = a;
+	        Number temp = result;
+	        result = a;
 	    	a = temp;
 	    }
 
-		liste.fügeHinzu(a.und(op).und(b).und("=").und(ergebnis));
+		list.add(a.append(op).append(b).append("=").append(result));
 	}
 		
-	fenster.fügeHinzu( liste);
+	frame.add( list);
 	
-	fenster.setzeTastenDruckBehandler{
-	  Zahl taste ->
+	frame.setKeyEventHandler{
+	  Number key ->
 	  
-	  position.istKleinerAls(liste.anzahl())
+	  position.isLowerThan(list.count())
 	  {
-	      Zeichen ausdruck = liste.hole(position);
-	      Boolean test = ausdruck.teste();
-	      test.wennFalsch()
-	      {
-	         liste.setze( position, ausdruck.ersetze("=", "≠"));
+	      String expression = list.get(position);
+	      Boolean test = expression.evaluate();
+	      test.ifFalse {
+	         list.set( position, expression.replace("=", "≠"));
 	      }
 	      
-	      Boolean meinTip;
+	      Boolean myTip;
 
-		  # rechts
-		  meinTip = taste.istGleich(39);
+		  # 39 is right key
+		  myTip = key.equals(39);
 		  
-		  test.istGleich(meinTip){
-		  	liste.setzeHintergrundFarbe( position, "0x00FF00");
-		  } ansonsten {
-		  	liste.setzeHintergrundFarbe( position, "0xFF0000");
+		  test.equals(myTip){
+		  	list.setBackgroundColor( position, "0x00FF00");
+		  } else {
+		  	list.setBackgroundColor( position, "0xFF0000");
 		  }
 		  position.plus!(1);
-		  liste.garantiereSichtbarkeitFür(position);
+		  list.ensureIndexIsVisible(position);
 	  }
-	  fenster.male();
+	  frame.repaint();
 	}
 	
-	fenster.zeigeAn();
+	frame.show();
 	
 }
 

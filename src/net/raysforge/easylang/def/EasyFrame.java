@@ -51,7 +51,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 				return null;
 			}
 		});
-		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.draw"), null) {
+		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.repaint"), null) {
 			@Override
 			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);

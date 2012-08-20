@@ -15,12 +15,11 @@ public class FileUtils {
 		try {
 			Reader reader = new InputStreamReader(new FileInputStream(f), "utf-8");
 			char buf[] = new char[10];
-			
+
 			StringWriter sw = new StringWriter();
-			
-			while (true)
-			{
-				int read = reader.read( buf, 0, buf.length);
+
+			while (true) {
+				int read = reader.read(buf, 0, buf.length);
 				if (read < 0)
 					break;
 				sw.write(buf, 0, read);
@@ -42,11 +41,24 @@ public class FileUtils {
 		}
 
 	}
-	
+
+	public static boolean delete(File f) {
+		if (f.isDirectory()) {
+			for (File c : f.listFiles())
+				delete(c);
+		}
+		if (!f.delete())
+		{
+			System.err.println("Failed to delete file: " + f);
+			return false;
+		}
+		return true;
+	}
+
 	public static void main(String[] args) {
 		char[] cf = FileUtils.readCompleteFile(new File("C:\\Coding\\Projekte\\private\\EasyLang\\easysrc\\test\\Sokoban.easy"));
 		String str = new String(cf);
 		System.out.println(str);
-		
+
 	}
 }
