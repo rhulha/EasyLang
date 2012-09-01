@@ -55,6 +55,7 @@ public class EasyIDE {
 	private static final String SAVE = "save";
 	private static final String SAVE_ALL = "saveAll";
 	private static final String RUN = "run";
+	private static final String RUN_SELECTED = "runSelected";
 	private static final String CLOSE_TAB = "closeTab";
 
 	private EasySwing es;
@@ -65,8 +66,8 @@ public class EasyIDE {
 	private JTabbedPane tabbedPane;
 	private EventDelegator delegator;
 	private JPopupMenu autoCompletePopupMenu = new JPopupMenu();
-	private JList autoCompleteList = new JList();
-	private DefaultListModel autoCompleteListModel;
+	private JList<AutoCompleteElement> autoCompleteList = new JList<AutoCompleteElement>();
+	private DefaultListModel<AutoCompleteElement> autoCompleteListModel;
 
 	public EasyIDE(File projectsHome) {
 		this.projectsHome = projectsHome;
@@ -144,11 +145,12 @@ public class EasyIDE {
 		es.addToolBarItem(rb.getString("MenuItemSaveAll"), SAVE_ALL, delegator);
 		es.addToolBarItem(rb.getString("MenuItemCloseTab"), CLOSE_TAB, delegator);
 		es.addToolBarItem(rb.getString("MenuItemRun"), RUN, delegator);
+		es.addToolBarItem(rb.getString("MenuItemRunSelected"), RUN_SELECTED, delegator);
 
 		autoCompleteList.addKeyListener(delegator);
 		autoCompleteList.addMouseListener(delegator);
 
-		autoCompleteListModel = new DefaultListModel();
+		autoCompleteListModel = new DefaultListModel<AutoCompleteElement>();
 		autoCompleteList.setModel(autoCompleteListModel);
 
 		autoCompletePopupMenu.setPreferredSize(new Dimension(400, 200));
@@ -261,6 +263,21 @@ public class EasyIDE {
 			if( textArea == null)
 				return;
 			EasyClass.parse("test", EasyUtils.convertSourceToTokenList(new EasySource(textArea.getText().toCharArray())));
+			try {
+				EasyLang.runClass(easyLang.getClass("test"));
+			} catch (Exception exc) {
+				writeln(exc.getMessage());
+				exc.printStackTrace();
+			}
+		} else if (e.getActionCommand().equals(RUN_SELECTED)) {
+			console.setText("");
+			EasyLang.instance.unregisterClasses("test");
+			JTextArea textArea = getSelectedTextArea();
+			if( textArea == null)
+				return;
+			if( textArea.getSelectedText() == null)
+				return;
+			EasyClass.parse("test", EasyUtils.convertSourceToTokenList(new EasySource(("x x start(){"+textArea.getSelectedText()+"}").toCharArray())));
 			try {
 				EasyLang.runClass(easyLang.getClass("test"));
 			} catch (Exception exc) {
