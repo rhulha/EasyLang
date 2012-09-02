@@ -1,6 +1,5 @@
 
 
-
 Frame frame = new Frame();
 
 Number fieldSize = 40;
@@ -23,7 +22,7 @@ public void start()
 				Number y ->
 					g.setColor("0xffff00");
     				g.drawRect( x.times(fieldSize), y.times(fieldSize), fieldSize, fieldSize);
-				}
+				
 			}
 		}				  
 	}

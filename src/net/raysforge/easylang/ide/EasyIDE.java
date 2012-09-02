@@ -110,6 +110,7 @@ public class EasyIDE {
 		easyTree.setShowsRootHandles(false);
 		easyTree.setEditable();
 		easyTree.setValueForPathChangedListener(delegator);
+		easyTree.getJTree().setToggleClickCount(1);
 
 		traverse(easyTree.getRootNode(), projectsHome);
 

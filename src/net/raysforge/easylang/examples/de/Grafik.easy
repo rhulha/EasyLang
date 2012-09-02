@@ -27,15 +27,11 @@ publik nichts start()
 			Zahl x ->
 			h.mal{
 				Zahl y ->
-				level.enthältSchlüssel(x.und("-").und(y)){
-					Zeichen alteFarbe = g.holeFarbe();
-					g.setzeFarbe(farben[level[x.und("-").und(y)]]);
-					g.fülleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);  
-					g.setzeFarbe( alteFarbe);
-				}
-				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+					g.setzeFarbe("0xffff00");
+    				g.maleRechteck( x.mal(feldGröße), y.mal(feldGröße), feldGröße, feldGröße);
+				
 			}
-		}				  
+		}			  
 	}
 
 	fenster.zeigeAn();

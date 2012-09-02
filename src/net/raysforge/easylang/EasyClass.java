@@ -97,6 +97,7 @@ public class EasyClass implements EasyClassInterface {
 
 			} else {
 				EasyLog.warn.log("hm: " + tokenList);
+				throw new RuntimeException("EasyLang doesn't understand these tokens: " + tokenList);
 			}
 			//EasyLog.log("XX" + token + "YY");
 		}
