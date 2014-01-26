@@ -36,7 +36,7 @@ public class EasySource {
 	}
 
 	public void eatSpacesAndReturns() {
-		while ((more()) && (isDivider(src[pos])))
+		while ((more()) && (isDivider()))
 			pos++;
 	}
 

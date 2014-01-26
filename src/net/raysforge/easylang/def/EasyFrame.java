@@ -13,7 +13,6 @@ import java.util.Map;
 import net.raysforge.commons.Generics;
 import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
-import net.raysforge.easylang.EasyMethod;
 import net.raysforge.easylang.EasyMethodInterface;
 import net.raysforge.easyswing.EasySwing;
 import net.raysforge.easyswing.eventpanel.EventPanel;
@@ -23,8 +22,8 @@ import net.raysforge.easyswing.eventpanel.PaintListener;
 public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventListener {
 
 	EasySwing easySwing = new EasySwing("", 800, 600);
-	EasyMethod paintClosure;
-	EasyMethod keyEventHandler;
+	EasyMethodInterface paintClosure;
+	EasyMethodInterface keyEventHandler;
 	private EventPanel eventPanel;
 
 	public EasyFrame() {
@@ -43,7 +42,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setTitle"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyClassInterface p0 = parameter.get(0);
 				EasyFrame ef = (EasyFrame) instance;
@@ -53,7 +52,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.repaint"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFrame ef = (EasyFrame) instance;
 				if( closure != null)
@@ -68,7 +67,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Frame.getWidth"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFrame ef = (EasyFrame) instance;
 				return new EasyInteger(ef.easySwing.getContentPane().getWidth());
@@ -76,7 +75,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Frame.getHeight"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFrame ef = (EasyFrame) instance;
 				return new EasyInteger(ef.easySwing.getContentPane().getHeight());
@@ -84,7 +83,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setWidth"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyFrame ef = (EasyFrame) instance;
 				EasyInteger p0 = (EasyInteger) parameter.get(0);
@@ -95,7 +94,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setHeight"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyFrame ef = (EasyFrame) instance;
 				EasyInteger p0 = (EasyInteger) parameter.get(0);
@@ -106,7 +105,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.show"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFrame ef = (EasyFrame) instance;
 				ef.easySwing.show();
@@ -115,7 +114,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.setKeyEventHandler"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				assertClosure(closure);
 				EasyFrame ef = (EasyFrame) instance;
@@ -125,7 +124,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.add"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyFrame ef = (EasyFrame) instance;
 				EasyLangList ell = (EasyLangList) parameter.get(0);
@@ -135,7 +134,7 @@ public class EasyFrame implements EasyClassInterface, PaintListener, AWTEventLis
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Frame.addToolBarItem"), null) {
 			@Override
-			public EasyClassInterface invoke(final EasyClassInterface instance, final EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(final EasyClassInterface instance, final EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				assertClosure(closure);
 				EasyFrame ef = (EasyFrame) instance;

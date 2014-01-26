@@ -29,10 +29,7 @@ public class EasyClass implements EasyClassInterface {
 		EasyClass rc = new EasyClass( name);
 		EasyLang.instance.registerClass(rc);
 
-		while (true) {
-
-			if (tokenList.remaining() == 0)
-				break;
+		while (tokenList.hasMore()) {
 
 			if (tokenList.startsWithPattern("ii;") || tokenList.startsWithPattern("i[]i;")) {
 				parseNewVariable( Visibility.protected_, rc, tokenList);

@@ -222,7 +222,7 @@ public class EasyMethod implements EasyMethodInterface {
 	}
 
 	@Override
-	public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+	public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 		if (closureSurroundingClass == null && instance == null)
 			throw new NullPointerException("instance variable is not set");
 		EasyClass instance_ = (EasyClass) (closureSurroundingClass == null ? instance : closureSurroundingClass);

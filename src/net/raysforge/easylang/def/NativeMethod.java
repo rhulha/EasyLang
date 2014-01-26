@@ -3,7 +3,6 @@ package net.raysforge.easylang.def;
 import java.util.List;
 
 import net.raysforge.easylang.EasyClassInterface;
-import net.raysforge.easylang.EasyMethod;
 import net.raysforge.easylang.EasyMethodInterface;
 import net.raysforge.easylang.EasyVar;
 
@@ -31,7 +30,7 @@ public class NativeMethod implements EasyMethodInterface {
 		return returnType;
 	}
 	
-	public EasyClassInterface invoke( EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter)
+	public EasyClassInterface invoke( EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter)
 	{
 		return null;
 	}

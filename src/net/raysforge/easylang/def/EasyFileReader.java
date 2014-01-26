@@ -11,7 +11,6 @@ import java.util.Map;
 import net.raysforge.commons.Generics;
 import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
-import net.raysforge.easylang.EasyMethod;
 import net.raysforge.easylang.EasyMethodInterface;
 import net.raysforge.easylang.utils.EasyUtils;
 
@@ -36,7 +35,7 @@ public class EasyFileReader implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("String"), EasyLang.rb.getString("FileReader.readLine"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFileReader efr = (EasyFileReader) instance;
 				try {
@@ -49,7 +48,7 @@ public class EasyFileReader implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("FileReader.close"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyFileReader efr = (EasyFileReader) instance;
 				try {
@@ -62,7 +61,7 @@ public class EasyFileReader implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("FileReader.forEachLine"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				assertClosure(closure);
 				EasyFileReader efr = (EasyFileReader) instance;

@@ -31,6 +31,10 @@ public class TokenList {
 		return (offset + position) < limit;
 	}
 
+	public int remaining() {
+		return limit - (offset + position);
+	}
+
 	public Token get(int i) {
 		if ((offset + position + i) >= limit)
 			EasyUtils.runtimeExcp("(offset + position + i)>=limit -> (" + offset + "+" + position + "+" + i + ")>=" + limit);
@@ -99,10 +103,6 @@ public class TokenList {
 
 		}
 		return true;
-	}
-
-	public int remaining() {
-		return limit - (offset + position);
 	}
 
 	public Token pop() {

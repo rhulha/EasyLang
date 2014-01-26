@@ -8,7 +8,6 @@ import java.util.Map;
 import net.raysforge.commons.Generics;
 import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
-import net.raysforge.easylang.EasyMethod;
 import net.raysforge.easylang.EasyMethodInterface;
 
 public class EasyArray implements EasyClassInterface {
@@ -32,7 +31,7 @@ public class EasyArray implements EasyClassInterface {
 	static {
 		add(new NativeMethod("", EasyLang.rb.getString("Array.get"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -52,7 +51,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.clear"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyArray easyArray = (EasyArray) instance;
 				easyArray.map.clear();
@@ -62,7 +61,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.remove"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -77,7 +76,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Number"), EasyLang.rb.getString("Array.keyCount"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyArray easyArray = (EasyArray) instance;
 				return new EasyInteger(easyArray.map.size());
@@ -85,7 +84,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Array.containsKey"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -100,7 +99,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("Boolean"), EasyLang.rb.getString("Array.containsKeyNot"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 1);
 				EasyArray easyArray = (EasyArray) instance;
 				EasyClassInterface p0 = parameter.get(0);
@@ -116,7 +115,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.write"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				EasyArray easyArray = (EasyArray) instance;
 
@@ -132,7 +131,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.add"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				EasyArray easyArray = (EasyArray) instance;
 
 				EasyClassInterface p0 = parameter.get(0);
@@ -160,7 +159,7 @@ public class EasyArray implements EasyClassInterface {
 		});
 		add(new NativeMethod(EasyLang.rb.getString("void"), EasyLang.rb.getString("Array.forEachKey"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 0);
 				assertClosure(closure);
 				EasyArray easyArray = (EasyArray) instance;

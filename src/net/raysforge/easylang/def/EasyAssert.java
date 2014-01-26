@@ -6,7 +6,6 @@ import java.util.Map;
 
 import net.raysforge.easylang.EasyClassInterface;
 import net.raysforge.easylang.EasyLang;
-import net.raysforge.easylang.EasyMethod;
 import net.raysforge.easylang.EasyMethodInterface;
 
 public class EasyAssert implements EasyClassInterface {
@@ -21,7 +20,7 @@ public class EasyAssert implements EasyClassInterface {
 	static {
 		add(new NativeMethod(EasyLang.rb.getString("Assert"), EasyLang.rb.getString("Assert.equals"), null) {
 			@Override
-			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethod closure, EasyMethod elseClosure, List<EasyClassInterface> parameter) {
+			public EasyClassInterface invoke(EasyClassInterface instance, EasyMethodInterface closure, EasyMethodInterface elseClosure, List<EasyClassInterface> parameter) {
 				assertParameterSize(parameter, 2);
 				EasyClassInterface p0 = parameter.get(0);
 				EasyClassInterface p1 = parameter.get(1);
